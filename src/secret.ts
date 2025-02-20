@@ -1,0 +1,1 @@
+export const host : string = "https://rider-back-api.vercel.app";
