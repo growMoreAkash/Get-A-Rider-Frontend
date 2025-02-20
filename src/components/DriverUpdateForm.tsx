@@ -26,7 +26,7 @@ interface DriverFormFields {
 }
 
 const DriverUpdateForm = ({ driver, professions, religion, occupations, onSave, onCancel }: any) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const { driverId } = useDriver();
 
     const [imagePreview, setImagePreview] = useState<string | null>(null); // For previewing image

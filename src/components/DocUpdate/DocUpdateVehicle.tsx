@@ -49,7 +49,7 @@
 
 // const DocUpdateVehicle: React.FC<DocUpdateVehicleProps> = ({ vehicle, onSave, onCancel }) => {
 //     const oldVehicleDocuments = vehicle?.vehicles[0]?.documents || {};
-//     const host = 'http://localhost:8000/api';
+//     const host = 'https://api.getarider.in/api';
 
 //     const [filePreviews, setFilePreviews] = useState<{ [key: string]: string | null }>({});
 
@@ -251,7 +251,7 @@ interface DocUpdateVehicleProps {
 
 const DocUpdateVehicle: React.FC<DocUpdateVehicleProps> = ({ vehicle, onSave, onCancel }) => {
     const oldVehicleDocuments = vehicle?.documents || {};
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
 
     const [filePreviews, setFilePreviews] = useState<{ [key: string]: string | null }>({});
 

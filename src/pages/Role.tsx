@@ -18,7 +18,7 @@ type Role = {
 };
 
 const Role = () => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const [roles, setRoles] = useState<Role[]>([]);
     const [role, setRole] = useState<Role>({ roleName: '', roleDefination: '', assignFunction: [] });
 

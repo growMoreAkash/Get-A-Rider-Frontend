@@ -124,7 +124,7 @@ function isObjectEmpty(obj: any): boolean {
     return true;
 }
 const CareCenterUpdateForm = ({ careCenter, onSave, onCancel }: any) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
 
     const partnerDetailsFromApi = careCenter?.partnerDetails ?? {};
     const partnerIsEmpty = isObjectEmpty(partnerDetailsFromApi);

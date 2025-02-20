@@ -16,7 +16,7 @@ interface TypeCardProps {
 }
 
 const TypeCard: React.FC<TypeCardProps> = ({ dataArr = [], handleTypeFormSubmit }) => {
-    const host = "http://localhost:8000/api"
+    const host = "https://api.getarider.in/api"
     const [recordsData, setRecordsData] = useState(dataArr);
     const [search, setSearch] = useState('');
     const [editingItem, setEditingItem] = useState<any | null>(null);
