@@ -9,6 +9,7 @@ import ReusableUserDriverList from '../components/ReusableUserDriverList';
 import TypeBrandCategoryList from '../components/TypeBrandCategoryList';
 import ReusableOtpPopup from '../components/Popup/ReusableOtpPopup';
 import UserDriverLogin from '../components/ReusableUserDriverForm/UserDriverLogin';
+import Cookies from 'js-cookie';
 
 const InstantDriverSignup = () => {
     const host = "https://api.getarider.in/api"
@@ -44,7 +45,11 @@ const InstantDriverSignup = () => {
             } else {
                 // If phone is found but phoneVerified is false, proceed with OTP verification
                 try {
-                    await axios.post(`${host}/signupDriver`, { phone: fullPhoneNumber });
+                    await axios.post(`${host}/signupDriver`, { phone: fullPhoneNumber }, {
+                        headers: {
+                            'Authorization': `Bearer ${Cookies.get("token")}`
+                        },
+                    });
                     setShowOtpPopup(true);
                 } catch (error) {
                     //.error('Error sending OTP:', error);
@@ -53,7 +58,11 @@ const InstantDriverSignup = () => {
             }
         } else {
             try {
-                await axios.post(`${host}/signupDriver`, { phone: fullPhoneNumber });
+                await axios.post(`${host}/signupDriver`, { phone: fullPhoneNumber }, {
+                    headers: {
+                        'Authorization': `Bearer ${Cookies.get("token")}`
+                    },
+                });
                 setShowOtpPopup(true);
             } catch (error) {
                 //.error('Error sending OTP:', error);
@@ -73,6 +82,10 @@ const InstantDriverSignup = () => {
             const response = await axios.post(`${host}/verifyOtpDriver`, {
                 phone: '+91' + phoneNumber,
                 otp: otp,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get("token")}`
+                },
             });
             setDriverId(response?.data?.driverId);
             Swal.fire('Success', 'OTP Verified Successfully', 'success');
@@ -102,6 +115,10 @@ const InstantDriverSignup = () => {
                 password: password,
                 phone: '+91' + phoneNumber,
                 driverId: driverId,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${Cookies.get("token")}`
+                },
             });
             Swal.fire('Success', 'Password set successfully', 'success');
             getAllDrivers();
