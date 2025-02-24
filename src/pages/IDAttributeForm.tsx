@@ -80,12 +80,12 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
                     break;
             }
     
-            const endpoint = getEndpoint(); // Get the correct endpoint
+            const endpoint = getEndpoint(); 
             const response = await axios.post(`http://localhost:8000/api${endpoint}`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
     
-            console.log('API Response:', response.data); // Debug the API response
+            console.log('API Response:', response.data); 
     
             reset();
             onFormSubmit();
@@ -99,22 +99,22 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
     const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedCountryId = event.target.value;
         setSelectedCountry(selectedCountryId);
-        setValue('countryId', selectedCountryId); // Use countryId instead of country
-        setSelectedState(''); // Reset state when country changes
-        setSelectedBranch(''); // Reset branch when country changes
+        setValue('countryId', selectedCountryId); 
+        setSelectedState(''); 
+        setSelectedBranch(''); 
     };
 
     const handleStateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedStateId = event.target.value;
         setSelectedState(selectedStateId);
-        setValue('stateId', selectedStateId); // Use stateId instead of state
-        setSelectedBranch(''); // Reset branch when state changes
+        setValue('stateId', selectedStateId);
+        setSelectedBranch(''); 
     };
 
     const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedBranchId = event.target.value;
         setSelectedBranch(selectedBranchId);
-        setValue('branchId', selectedBranchId); // Use branchId instead of branchCode
+        setValue('branchId', selectedBranchId); 
     };
 
     return (

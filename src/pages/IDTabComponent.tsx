@@ -18,7 +18,7 @@ interface IDState {
 }
 
 const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSubmit }) => {
-    const { country, state, branch, zone } = useGetIdCreation(); // Use the custom hook
+    const { country, state, branch, zone } = useGetIdCreation(); 
     const [activeTab, setActiveTab] = useState<string>('country');
 
     const tabs: { label: string; key: keyof IDState }[] = [
@@ -79,7 +79,7 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                             type="country"
                             masterId={firstCreateId}
                             onFormSubmit={() => {
-                                onFormSubmit(); // Refresh the country list after submission
+                                onFormSubmit(); 
                             }}
                         />
                         <div className="mt-6">
@@ -93,9 +93,9 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="state"
                             masterId={firstCreateId}
-                            countries={country} // Pass countries data
+                            countries={country}
                             onFormSubmit={() => {
-                                onFormSubmit(); // Refresh the state list after submission
+                                onFormSubmit(); 
                             }}
                         />
                         <div className="mt-6">
@@ -109,10 +109,10 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="branch"
                             masterId={firstCreateId}
-                            countries={country} // Pass countries data
-                            states={state} // Pass states data
+                            countries={country} 
+                            states={state} 
                             onFormSubmit={() => {
-                                onFormSubmit(); // Refresh the branch list after submission
+                                onFormSubmit(); 
                             }}
                         />
                         <div className="mt-6">
@@ -126,11 +126,11 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="zone"
                             masterId={firstCreateId}
-                            countries={country} // Pass countries data
-                            states={state} // Pass states data
-                            branches={branch} // Pass branches data
+                            countries={country} 
+                            states={state} 
+                            branches={branch} 
                             onFormSubmit={() => {
-                                onFormSubmit(); // Refresh the zone list after submission
+                                onFormSubmit(); 
                             }}
                         />
                         <div className="mt-6">
