@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import IDAttributeForm from './IDAttributeForm';
 import TypeBrandCategoryList from '../components/TypeBrandCategoryList';
 import useGetIdCreation from '../hooks/useGetIdCreation'; 
+
+
 
 interface IDTabComponentProps {
     firstCreateId: string;
@@ -16,7 +18,7 @@ interface IDState {
 }
 
 const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSubmit }) => {
-    const { country, state, branch, zone } = useGetIdCreation(); 
+    const { country, state, branch, zone } = useGetIdCreation(); // Use the custom hook
     const [activeTab, setActiveTab] = useState<string>('country');
 
     const tabs: { label: string; key: keyof IDState }[] = [
@@ -53,7 +55,7 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
         <div className="px-5">
             {/* Tab Navigation */}
             <div className="bg-white rounded p-1 overflow-x-hidden py-4">
-                <ul className="flex" style={{ msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <ul className="flex overflow-x-scroll space-x-4 justify-center px-2">
                     {tabs.map((tab, index) => (
                         <li key={index}>
                             <button
@@ -76,7 +78,9 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="country"
                             masterId={firstCreateId}
-                            onFormSubmit={onFormSubmit}
+                            onFormSubmit={() => {
+                                onFormSubmit(); // Refresh the country list after submission
+                            }}
                         />
                         <div className="mt-6">
                             <TypeBrandCategoryList columns={columns.country} data={country} />
@@ -89,8 +93,10 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="state"
                             masterId={firstCreateId}
-                            countries={country}
-                            onFormSubmit={onFormSubmit}
+                            countries={country} // Pass countries data
+                            onFormSubmit={() => {
+                                onFormSubmit(); // Refresh the state list after submission
+                            }}
                         />
                         <div className="mt-6">
                             <TypeBrandCategoryList columns={columns.state} data={state} />
@@ -103,8 +109,11 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="branch"
                             masterId={firstCreateId}
-                            states={state}
-                            onFormSubmit={onFormSubmit}
+                            countries={country} // Pass countries data
+                            states={state} // Pass states data
+                            onFormSubmit={() => {
+                                onFormSubmit(); // Refresh the branch list after submission
+                            }}
                         />
                         <div className="mt-6">
                             <TypeBrandCategoryList columns={columns.branch} data={branch} />
@@ -117,8 +126,12 @@ const IDTabComponent: React.FC<IDTabComponentProps> = ({ firstCreateId, onFormSu
                         <IDAttributeForm
                             type="zone"
                             masterId={firstCreateId}
-                            branches={branch}
-                            onFormSubmit={onFormSubmit}
+                            countries={country} // Pass countries data
+                            states={state} // Pass states data
+                            branches={branch} // Pass branches data
+                            onFormSubmit={() => {
+                                onFormSubmit(); // Refresh the zone list after submission
+                            }}
                         />
                         <div className="mt-6">
                             <TypeBrandCategoryList columns={columns.zone} data={zone} />

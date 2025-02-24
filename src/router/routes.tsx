@@ -145,7 +145,7 @@ const routes = [
     {
         path: dashHost + '/idAttributes',
         element: <IDAttributes />,
-        apis: ['/firstCreateMaster', '/getIdCreation', '/createCountry','createState','createBranchId','createZoneId']
+        apis: ['/firstCreateMaster', '/getIdCreation', '/createCountry','/createState','/createBranchId','/createZoneId']
     },
     {
         path: dashHost + '/idAttributesDelete',

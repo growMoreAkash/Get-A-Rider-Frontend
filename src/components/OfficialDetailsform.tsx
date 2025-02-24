@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import branchesData from './branches.json'; // Import branches JSON
-import zonesData from './zones.json'; // Import zones JSON
+import useGetIdCreation from '../hooks/useGetIdCreation';
 
 interface OfficialDetailsFormProps {
     careCenterId: string;
@@ -18,14 +17,26 @@ interface OfficialDetailsFormProps {
     };
 }
 
+interface Branch {
+    branchId: string;
+    branchName: string;
+}
+
+interface Zone {
+    zoneId: string;
+    zoneName: string;
+    branchId: string;
+}
+
 const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
     careCenterId,
     onSubmit,
     onCancel,
     initialData,
 }) => {
-    const [zones, setZones] = useState<{ zoneId: string; zoneName: string }[]>([]);
+    const { branch, zone } = useGetIdCreation(); // Use the custom hook to fetch branch and zone data
     const [selectedBranch, setSelectedBranch] = useState<string>('');
+    const [filteredZones, setFilteredZones] = useState<Zone[]>([]);
 
     const {
         register,
@@ -45,14 +56,15 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
         },
     });
 
+    // Filter zones based on the selected branch
     useEffect(() => {
         if (selectedBranch) {
-            const filteredZones = zonesData.filter(zone => zone.branchId === selectedBranch);
-            setZones(filteredZones);
+            const filteredZones = zone.filter((z: Zone) => z.branchId === selectedBranch);
+            setFilteredZones(filteredZones);
         } else {
-            setZones([]);
+            setFilteredZones([]);
         }
-    }, [selectedBranch]);
+    }, [selectedBranch, zone]);
 
     const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedBranchId = event.target.value;
@@ -81,8 +93,8 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
                 <label htmlFor="branchCovered" className="block text-sm font-medium text-gray-700">Branch Covered</label>
                 <select id="branchCovered" {...register('branchCovered')} onChange={handleBranchChange} className="form-select mt-1">
                     <option value="">Select a branch</option>
-                    {branchesData.map((branch) => (
-                        <option key={branch.branchId} value={branch.branchId}>{branch.branchName}</option>
+                    {branch.map((b: Branch) => (
+                        <option key={b.branchId} value={b.branchId}>{b.branchName}</option>
                     ))}
                 </select>
             </div>
@@ -91,8 +103,8 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
                 <label htmlFor="zoneCovered" className="block text-sm font-medium text-gray-700">Zone Covered</label>
                 <select id="zoneCovered" {...register('zoneCovered')} className="form-select mt-1" disabled={!selectedBranch}>
                     <option value="">Select a zone</option>
-                    {zones.map((zone) => (
-                        <option key={zone.zoneId} value={zone.zoneId}>{zone.zoneName}</option>
+                    {filteredZones.map((z: Zone) => (
+                        <option key={z.zoneId} value={z.zoneId}>{z.zoneName}</option>
                     ))}
                 </select>
             </div>
