@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import DriverTabComponent from '../components/DriverTabComponents';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import IDTabComponent from './IdTabComponent';
+import IDTabComponent from './IDTabComponent';
 
 const IDAttributes = () => {
     const [firstCreateId, setFirstCreateId] = useState<string>('');
