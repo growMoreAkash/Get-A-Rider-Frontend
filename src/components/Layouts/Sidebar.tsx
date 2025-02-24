@@ -221,50 +221,73 @@ const Sidebar = () => {
                                     </li>
                                 )}
 
-                            {/* Master Section */}
-                            {(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete'))) && (
-                                <li className="menu nav-item">
-                                    <button
-                                        type="button"
-                                        className={`${currentMenu === 'master' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
-                                        onClick={() => toggleMenu('master')}
-                                    >
-                                        <div className="flex items-center">
-                                            <span className="ltr:pl-3 rtl:pr-3">{t('Master')}</span>
-                                        </div>
-                                        <div className={currentMenu !== 'master' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                            <IconCaretDown />
-                                        </div>
-                                    </button>
-                                    <AnimateHeight duration={300} height={currentMenu === 'master' ? 'auto' : 0}>
-                                        <ul className="sub-menu text-gray-500">
-                                            {(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete'))) &&
-                                                <li>
-                                                    <button
-                                                        type="button"
-                                                        className={`${subMenu === 'masterDriver' ? 'active' : ''} nav-link group w-full text-gray-700`}
-                                                        onClick={() => toggleSubMenu('masterDriver')}
-                                                    >
-                                                        {t('Driver')}
-                                                        <div className={subMenu !== 'masterDriver' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                            <IconCaretDown />
-                                                        </div>
-                                                    </button>
-                                                    <AnimateHeight duration={300} height={subMenu === 'masterDriver' ? 'auto' : 0}>
-                                                        <ul className="sub-menu text-gray-500 pl-4">
-                                                            {routes.some((v) => v.includes('/driverAttributes')) && <li>
-                                                                <NavLink to="/apple/hjo/login/driverAttributes">{t('Driver Attributes')}</NavLink>
-                                                            </li>}
-                                                            {routes.some((v) => v.includes('/driverAttributesDelete')) && <li>
-                                                                <NavLink to="/apple/hjo/login/driverAttributesDelete">{t('Delete Driver Attributes')}</NavLink>
-                                                            </li>}
-                                                        </ul>
-                                                    </AnimateHeight>
-                                                </li>}
-                                        </ul>
-                                    </AnimateHeight>
-                                </li>
-                            )}
+                           {/* Master Section */}
+{(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete')) || routes.some((v) => v.includes('/idAttributes')) || routes.some((v) => v.includes('/idAttributesDelete'))) && (
+    <li className="menu nav-item">
+        <button
+            type="button"
+            className={`${currentMenu === 'master' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
+            onClick={() => toggleMenu('master')}
+        >
+            <div className="flex items-center">
+                <span className="ltr:pl-3 rtl:pr-3">{t('Master')}</span>
+            </div>
+            <div className={currentMenu !== 'master' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                <IconCaretDown />
+            </div>
+        </button>
+        <AnimateHeight duration={300} height={currentMenu === 'master' ? 'auto' : 0}>
+            <ul className="sub-menu text-gray-500">
+                {(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete'))) &&
+                    <li>
+                        <button
+                            type="button"
+                            className={`${subMenu === 'masterDriver' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                            onClick={() => toggleSubMenu('masterDriver')}
+                        >
+                            {t('Driver')}
+                            <div className={subMenu !== 'masterDriver' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                <IconCaretDown />
+                            </div>
+                        </button>
+                        <AnimateHeight duration={300} height={subMenu === 'masterDriver' ? 'auto' : 0}>
+                            <ul className="sub-menu text-gray-500 pl-4">
+                                {routes.some((v) => v.includes('/driverAttributes')) && <li>
+                                    <NavLink to="/apple/hjo/login/driverAttributes">{t('Driver Attributes')}</NavLink>
+                                </li>}
+                                {routes.some((v) => v.includes('/driverAttributesDelete')) && <li>
+                                    <NavLink to="/apple/hjo/login/driverAttributesDelete">{t('Delete Driver Attributes')}</NavLink>
+                                </li>}
+                            </ul>
+                        </AnimateHeight>
+                    </li>}
+                {(routes.some((v) => v.includes('/idAttributes')) || routes.some((v) => v.includes('/idAttributesDelete'))) &&
+                    <li>
+                        <button
+                            type="button"
+                            className={`${subMenu === 'masterId' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                            onClick={() => toggleSubMenu('masterId')}
+                        >
+                            {t('ID Creation')}
+                            <div className={subMenu !== 'masterId' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                <IconCaretDown />
+                            </div>
+                        </button>
+                        <AnimateHeight duration={300} height={subMenu === 'masterId' ? 'auto' : 0}>
+                            <ul className="sub-menu text-gray-500 pl-4">
+                                {routes.some((v) => v.includes('/idAttributes')) && <li>
+                                    <NavLink to="/apple/hjo/login/idAttributes">{t('ID Attributes')}</NavLink>
+                                </li>}
+                                {routes.some((v) => v.includes('/idAttributesDelete')) && <li>
+                                    <NavLink to="/apple/hjo/login/idAttributesDelete">{t('Delete ID Attributes')}</NavLink>
+                                </li>}
+                            </ul>
+                        </AnimateHeight>
+                    </li>}
+            </ul>
+        </AnimateHeight>
+    </li>
+)}
 
                             {/* Registration Section */}
                             {(routes.some((v) => v.includes('/instantSignup')) ||

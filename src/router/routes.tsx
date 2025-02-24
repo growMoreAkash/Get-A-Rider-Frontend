@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import DriverAttributes from '../pages/DriverAttributes';
+import IDAttributes from '../pages/IDAttributes';
 import Role from '../pages/Role';
 import AssignRole from '../pages/AssignRole';
 import InstantEmployeeSignup from '../pages/InstantEmployeeSignup';
@@ -11,6 +12,7 @@ import CareCenterUpdate from '../pages/CareCenterUpdate';
 import Login from '../pages/Login';
 import VehicleFeaturesDelete from '../pages/VehicleFeaturesDelete';
 import DriverAttributesDelete from '../pages/DriverAttributesDelete';
+import IDAttributesDelete from '../pages/IDAttributesDelete';
 const VehicleFeatures = lazy(() => import('../pages/VehicleFeatures'));
 const ReturnSection = lazy(() => import('../pages/ReturnSection'));
 const ProfileUpdate = lazy(() => import('../pages/ProfileUpdate'));
@@ -138,6 +140,16 @@ const routes = [
     {
         path: dashHost + '/driverAttributes',
         element: <DriverAttributes />,
+        apis: ['/firstCreateMaster', '/addDriverAttribute', '/getDriverAttribute']
+    },
+    {
+        path: dashHost + '/idAttributes',
+        element: <IDAttributes />,
+        apis: ['/firstCreateMaster', '/getIdCreation', '/createCountry','createState','createBranchId','createZoneId']
+    },
+    {
+        path: dashHost + '/idAttributesDelete',
+        element: <IDAttributesDelete />,
         apis: ['/firstCreateMaster', '/addDriverAttribute', '/getDriverAttribute']
     },
     {

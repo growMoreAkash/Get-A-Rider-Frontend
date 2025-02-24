@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
-
+import localCareCenters from './carecenter.json';
 interface PartnerDetails {
     partnerName: string;
     careOf: string;
@@ -369,7 +369,7 @@ const CareCenterUpdateForm = ({ careCenter, onSave, onCancel }: any) => {
             Swal.fire('Error', 'Failed to update profile. Try again.', 'error');
         }
     };
-
+    
 
     return (
         <div>
