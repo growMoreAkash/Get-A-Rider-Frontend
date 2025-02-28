@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect,RefObject,useRef } from 'react';
+import React, { useState, useEffect, RefObject, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import CareCenterUpdateForm from '../components/CareCenterUpdateForm';
 import DocUpdateCareCenter from '../components/DocUpdate/DocUpdateCareCenter';
@@ -8,7 +8,7 @@ import OfficialDetailsForm from '../components/OfficialDetailsform';
 import CareCenterDownload from '../components/CareCenterDownload';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
-import { toPng } from "html-to-image";
+import { toPng } from 'html-to-image';
 type CareCenter = {
     id: string;
     phone: string;
@@ -37,17 +37,17 @@ const CareCenterUpdate = () => {
         if (componentRef.current) {
             toPng(componentRef.current, { quality: 1 })
                 .then((dataUrl: string) => {
-                    const link = document.createElement("a");
-                    link.download = "care_center_registration.png";
+                    const link = document.createElement('a');
+                    link.download = 'care_center_registration.png';
                     link.href = dataUrl;
                     link.click();
                 })
                 .catch((error: Error) => {
-                    console.error("Error capturing image:", error);
+                    console.error('Error capturing image:', error);
                 });
         }
     };
-    
+
     const getAllCareCenters = async () => {
         try {
             const response = await axios.post(
@@ -69,8 +69,6 @@ const CareCenterUpdate = () => {
     useEffect(() => {
         getAllCareCenters();
     }, []);
-
-   
 
     const careCenterActions = [
         {
@@ -101,7 +99,7 @@ const CareCenterUpdate = () => {
                 }
             );
             setCareCenterData(response.data);
-            console.log(response.data)
+            console.log(response.data);
 
             setShowEditForm(true);
             // setEditingUser(response.data)
@@ -181,9 +179,7 @@ const CareCenterUpdate = () => {
                                 <li>
                                     <button
                                         onClick={() => setActiveTab('download')}
-                                        className={`text-capitalize px-4 py-2 rounded-md ${
-                                            activeTab === 'download' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'
-                                        }`}
+                                        className={`text-capitalize px-4 py-2 rounded-md ${activeTab === 'download' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'}`}
                                     >
                                         download
                                     </button>
@@ -208,25 +204,29 @@ const CareCenterUpdate = () => {
                             {activeTab === 'officialDetails' && (
                                 <>
                                     <OfficialDetailsForm
-                                        careCenterId={careCenterData?.id}
-                                        initialData={careCenterData?.officialDetails}
-                                        onSubmit={(data) => console.log('Submitted Data:', data)}
-                                        onCancel={() => setActiveTab('careCenterUpdate')}
+                                        careCenterId="67b55123a6ba38c1ba1c1f4f"
+                                        onSubmit={(data) => console.log(data)}
+                                        onCancel={() => console.log('Cancelled')}
+                                        initialData={{
+                                            branch: '345',
+                                            zone: 'XYZ',
+                                            numberOfZone: '02',
+                                            vehicletype: 'S',
+                                            careCenterCode: '1023',
+                                            careCenterSerial: '05',
+                                        }}
                                     />
                                 </>
                             )}
-                             {activeTab === 'download' && (
-                            <div>
-                                <h1 className="text-center text-2xl font-bold my-4">Care Center Details</h1>
-                                <CareCenterDownload ref={careCenterDownloadRef} data={careCenterData} />
-                                <button
-                                    onClick={() => handleDownloadImage(careCenterDownloadRef)}
-                                    className="bg-teal-500 text-white px-4 py-2 rounded-md mt-4"
-                                >
-                                    Download as Image
-                                </button>
-                            </div>
-                        )}
+                            {activeTab === 'download' && (
+                                <div>
+                                    <h1 className="text-center text-2xl font-bold my-4">Care Center Details</h1>
+                                    <CareCenterDownload ref={careCenterDownloadRef} data={careCenterData} />
+                                    <button onClick={() => handleDownloadImage(careCenterDownloadRef)} className="bg-teal-500 text-white px-4 py-2 rounded-md mt-4">
+                                        Download as Image
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

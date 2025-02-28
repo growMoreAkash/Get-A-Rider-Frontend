@@ -79,14 +79,14 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
                     };
                     break;
             }
-    
-            const endpoint = getEndpoint(); 
+
+            const endpoint = getEndpoint();
             const response = await axios.post(`http://localhost:8000/api${endpoint}`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
-            console.log('API Response:', response.data); 
-    
+
+            console.log('API Response:', response.data);
+
             reset();
             onFormSubmit();
             showMessage(`${type} created successfully`);
@@ -95,26 +95,26 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
             showMessage(`Error creating ${type}`, 'error');
         }
     };
-
+    
     const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedCountryId = event.target.value;
         setSelectedCountry(selectedCountryId);
-        setValue('countryId', selectedCountryId); 
-        setSelectedState(''); 
-        setSelectedBranch(''); 
+        setValue('countryId', selectedCountryId);
+        setSelectedState('');
+        setSelectedBranch('');
     };
 
     const handleStateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedStateId = event.target.value;
         setSelectedState(selectedStateId);
         setValue('stateId', selectedStateId);
-        setSelectedBranch(''); 
+        setSelectedBranch('');
     };
 
     const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedBranchId = event.target.value;
         setSelectedBranch(selectedBranchId);
-        setValue('branchId', selectedBranchId); 
+        setValue('branchId', selectedBranchId);
     };
 
     return (
@@ -140,11 +140,7 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
                 <div className="flex flex-col gap-4">
                     <div>
                         <label>Country</label>
-                        <select
-                            {...register('countryId', { required: true })}
-                            onChange={handleCountryChange}
-                            className="form-select w-full"
-                        >
+                        <select {...register('countryId', { required: true })} onChange={handleCountryChange} className="form-select w-full">
                             <option value="">Select a country</option>
                             {countries?.map((c) => (
                                 <option key={c._id} value={c._id}>
@@ -165,11 +161,7 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
                 <div className="flex flex-col gap-4">
                     <div>
                         <label>Country</label>
-                        <select
-                            {...register('countryId', { required: true })}
-                            onChange={handleCountryChange}
-                            className="form-select w-full"
-                        >
+                        <select {...register('countryId', { required: true })} onChange={handleCountryChange} className="form-select w-full">
                             <option value="">Select a country</option>
                             {countries?.map((c) => (
                                 <option key={c._id} value={c._id}>
@@ -180,12 +172,7 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
                     </div>
                     <div>
                         <label>State</label>
-                        <select
-                            {...register('stateId', { required: true })}
-                            onChange={handleStateChange}
-                            className="form-select w-full"
-                            disabled={!selectedCountry}
-                        >
+                        <select {...register('stateId', { required: true })} onChange={handleStateChange} className="form-select w-full" disabled={!selectedCountry}>
                             <option value="">Select a state</option>
                             {states
                                 ?.filter((s) => s.country === selectedCountry)
@@ -205,64 +192,52 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
 
             {/* Zone Form */}
             {type === 'zone' && (
-    <div className="flex flex-col gap-4">
-        <div>
-            <label>Country</label>
-            <select
-                {...register('countryId', { required: true })}
-                onChange={handleCountryChange}
-                className="form-select w-full"
-            >
-                <option value="">Select a country</option>
-                {countries?.map((c) => (
-                    <option key={c._id} value={c._id}>
-                        {c.name}
-                    </option>
-                ))}
-            </select>
-        </div>
-        <div>
-            <label>State</label>
-            <select
-                {...register('stateId', { required: true })}
-                onChange={handleStateChange}
-                className="form-select w-full"
-                disabled={!selectedCountry}
-            >
-                <option value="">Select a state</option>
-                {states
-                    ?.filter((s) => s.country === selectedCountry)
-                    .map((s) => (
-                        <option key={s._id} value={s._id}>
-                            {s.name}
-                        </option>
-                    ))}
-            </select>
-        </div>
-        <div>
-            <label>Branch</label>
-            <select
-                {...register('branchId', { required: true })}
-                onChange={handleBranchChange}
-                className="form-select w-full"
-                disabled={!selectedState}
-            >
-                <option value="">Select a branch</option>
-                {branches
-                    ?.filter((b) => b.state === selectedState)
-                    .map((b) => (
-                        <option key={b._id} value={b.branchId}>
-                            {b.branchName}
-                        </option>
-                    ))}
-            </select>
-        </div>
-        <div>
-            <label>Zone Name</label>
-            <input {...register('zoneName', { required: true })} className="form-input w-full" />
-        </div>
-    </div>
-)}
+                <div className="flex flex-col gap-4">
+                    <div>
+                        <label>Country</label>
+                        <select {...register('countryId', { required: true })} onChange={handleCountryChange} className="form-select w-full">
+                            <option value="">Select a country</option>
+                            {countries?.map((c) => (
+                                <option key={c._id} value={c._id}>
+                                    {c.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>State</label>
+                        <select {...register('stateId', { required: true })} onChange={handleStateChange} className="form-select w-full" disabled={!selectedCountry}>
+                            <option value="">Select a state</option>
+                            {states
+                                ?.filter((s) => s.country === selectedCountry)
+                                .map((s) => (
+                                    <option key={s._id} value={s._id}>
+                                        {s.name}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Branch</label>
+                        <select {...register('branchId', { required: true })} onChange={handleBranchChange} className="form-select w-full" disabled={!selectedState}>
+                            <option value="">Select a branch</option>
+                            {branches
+                                ?.filter((b) => b.state === selectedState)
+                                .map((b) => (
+                                    <option key={b._id} value={b._id}>
+                                        {' '}
+                                        {/* Use _id here instead of branchId */}
+                                        {b.branchName}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Zone Name</label>
+                        <input {...register('zoneName', { required: true })} className="form-input w-full" />
+                    </div>
+                </div>
+            )}
 
             <div className="flex justify-end mt-6">
                 <button type="submit" className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600">

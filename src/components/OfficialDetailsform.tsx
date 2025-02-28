@@ -7,13 +7,12 @@ interface OfficialDetailsFormProps {
     onSubmit: (data: any) => void;
     onCancel: () => void;
     initialData?: {
-        email: string;
-        phoneNumber: string;
-        whatsappNumber: string;
-        branchCovered: string;
-        zoneCovered: string;
-        franchiseConnected: string;
-        amountReceivedFromCustomer: string;
+        branch: string;
+        zone: string;
+        numberOfZone: string;
+        vehicletype: string;
+        careCenterCode: string;
+        careCenterSerial: string;
     };
 }
 
@@ -46,13 +45,12 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
         setValue,
     } = useForm({
         defaultValues: {
-            email: initialData?.email || '',
-            phoneNumber: initialData?.phoneNumber || '',
-            whatsappNumber: initialData?.whatsappNumber || '',
-            branchCovered: initialData?.branchCovered || '',
-            zoneCovered: initialData?.zoneCovered || '',
-            franchiseConnected: initialData?.franchiseConnected || '',
-            amountReceivedFromCustomer: initialData?.amountReceivedFromCustomer || '',
+            branch: initialData?.branch || '',
+            zone: initialData?.zone || '',
+            numberOfZone: initialData?.numberOfZone || '',
+            vehicletype: initialData?.vehicletype || '',
+            careCenterCode: initialData?.careCenterCode || '',
+            careCenterSerial: initialData?.careCenterSerial || '',
         },
     });
 
@@ -69,29 +67,14 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
     const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedBranchId = event.target.value;
         setSelectedBranch(selectedBranchId);
-        setValue('branchCovered', selectedBranchId);
+        setValue('branch', selectedBranchId);
     };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" {...register('email')} className="form-input mt-1" />
-            </div>
-
-            <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input type="text" id="phoneNumber" {...register('phoneNumber')} className="form-input mt-1" />
-            </div>
-
-            <div>
-                <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">WhatsApp Number</label>
-                <input type="text" id="whatsappNumber" {...register('whatsappNumber')} className="form-input mt-1" />
-            </div>
-
-            <div>
-                <label htmlFor="branchCovered" className="block text-sm font-medium text-gray-700">Branch Covered</label>
-                <select id="branchCovered" {...register('branchCovered')} onChange={handleBranchChange} className="form-select mt-1">
+                <label htmlFor="branch" className="block text-sm font-medium text-gray-700">Branch</label>
+                <select id="branch" {...register('branch')} onChange={handleBranchChange} className="form-select mt-1">
                     <option value="">Select a branch</option>
                     {branch.map((b: Branch) => (
                         <option key={b.branchId} value={b.branchId}>{b.branchName}</option>
@@ -100,8 +83,8 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
             </div>
 
             <div>
-                <label htmlFor="zoneCovered" className="block text-sm font-medium text-gray-700">Zone Covered</label>
-                <select id="zoneCovered" {...register('zoneCovered')} className="form-select mt-1" disabled={!selectedBranch}>
+                <label htmlFor="zone" className="block text-sm font-medium text-gray-700">Zone</label>
+                <select id="zone" {...register('zone')} className="form-select mt-1" disabled={!selectedBranch}>
                     <option value="">Select a zone</option>
                     {filteredZones.map((z: Zone) => (
                         <option key={z.zoneId} value={z.zoneId}>{z.zoneName}</option>
@@ -110,13 +93,28 @@ const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
             </div>
 
             <div>
-                <label htmlFor="franchiseConnected" className="block text-sm font-medium text-gray-700">Franchise Connected</label>
-                <input type="text" id="franchiseConnected" {...register('franchiseConnected')} className="form-input mt-1" />
+                <label htmlFor="numberOfZone" className="block text-sm font-medium text-gray-700">Number of Zones</label>
+                <input type="text" id="numberOfZone" {...register('numberOfZone')} className="form-input mt-1" />
             </div>
 
             <div>
-                <label htmlFor="amountReceivedFromCustomer" className="block text-sm font-medium text-gray-700">Amount Received from Customer</label>
-                <input type="text" id="amountReceivedFromCustomer" {...register('amountReceivedFromCustomer')} className="form-input mt-1" />
+                <label htmlFor="vehicletype" className="block text-sm font-medium text-gray-700">Vehicle Type</label>
+                <select id="vehicletype" {...register('vehicletype')} className="form-select mt-1">
+                    <option value="">Select vehicle type</option>
+                    <option value="R">R</option>
+                    <option value="S">S</option>
+                    <option value="T">T</option>
+                </select>
+            </div>
+
+            <div>
+                <label htmlFor="careCenterCode" className="block text-sm font-medium text-gray-700">Care Center Code</label>
+                <input type="text" id="careCenterCode" {...register('careCenterCode')} className="form-input mt-1" />
+            </div>
+
+            <div>
+                <label htmlFor="careCenterSerial" className="block text-sm font-medium text-gray-700">Care Center Serial</label>
+                <input type="text" id="careCenterSerial" {...register('careCenterSerial')} className="form-input mt-1" />
             </div>
 
             <div className="flex justify-center mt-8 space-x-4">
