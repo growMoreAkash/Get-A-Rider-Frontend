@@ -56,7 +56,7 @@ const DriverTabComponent: React.FC<DriverTabComponentProps> = ({ firstCreateId, 
 
     const fetchData = async () => {
         try {
-            var response = await axios.post(`https://api.getarider.in/api/getDriverAttribute/${firstCreateId}`, {}, {
+            var response = await axios.post(`http://localhost:8000/api/getDriverAttribute/${firstCreateId}`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

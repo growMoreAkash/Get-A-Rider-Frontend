@@ -36,7 +36,7 @@ const VehicleCategoryForm = ({ modelArr }: VehicleBrandFormProps) => {
     const handleFormSubmit = async (data: any) => {
         var token = Cookies.get('token');
         try {
-            const host = 'https://api.getarider.in/api';
+            const host = 'http://localhost:8000/api';
             const apiUrl ='/addCategory';
             const formData = new FormData();
 

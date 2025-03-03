@@ -19,7 +19,7 @@ type User = {
 };
 
 const Sidebar = () => {
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
     const dashHost = '/apple/hjo/login';
     const [currentMenu, setCurrentMenu] = useState<string>('');
     const [subMenu, setSubMenu] = useState<string>('');

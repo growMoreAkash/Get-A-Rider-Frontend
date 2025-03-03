@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
 
 
 const BrandCard = ({ dataArr = [] }: { dataArr: any[] }) => {
-    const host = "https://api.getarider.in/api"
+    const host = "http://localhost:8000/api"
     const [recordsData, setRecordsData] = useState(dataArr);
     const [search, setSearch] = useState('');
     const [editingItem, setEditingItem] = useState<any | null>(null);

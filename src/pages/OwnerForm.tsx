@@ -25,7 +25,7 @@ interface OwnerFormProps {
 }
 
 const OwnerForm: React.FC<OwnerFormProps> = ({ driverId }: any) => {
-    const host = "https://api.getarider.in/api"
+    const host = "http://localhost:8000/api"
     const {
         register,
         handleSubmit,

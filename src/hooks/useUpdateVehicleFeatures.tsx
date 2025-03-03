@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 const useUpdateVehicleFeatures = () => {
     const [loading, setLoading] = useState(false);
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
 
     const { getTypeBrandModel, fetchCategories } = useVehicleContext();
 

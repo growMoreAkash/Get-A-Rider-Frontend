@@ -16,7 +16,7 @@ interface FirstCreateProviderProps {
 
 export const FirstCreateProvider: React.FC<FirstCreateProviderProps> = ({ children }) => {
     const [firstCreateId, setFirstCreateId] = useState<string | null>(null);
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
 
     var token = Cookies.get('token');
     const callFirstCreate = async () => {

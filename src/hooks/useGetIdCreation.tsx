@@ -8,7 +8,7 @@ const useGetIdCreation = () => {
     const [branch, setBranch] = useState([]);
     const [state, setState] = useState([]);
     const token = Cookies.get('token');
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
     const [masterId, setMasterId] = useState('');
 
     const firstCreateMaster = async () => {
