@@ -1,128 +1,248 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import useGetIdCreation from '../hooks/useGetIdCreation';
 
-interface OfficialDetailsFormProps {
-    careCenterId: string;
-    onSubmit: (data: any) => void;
+interface CareCenterFormFields {
+    branch: string;
+    zone: string;
+    numberOfZone: string;
+    vehicletype: string;
+    email: string;
+    whatsappNumber: string;
+    phoneNumber: string;
+    nearestCareCenter: string;
+    computerAvailable: boolean;
+    printerAvailable: boolean;
+    franchiseAmount: number;
+}
+
+interface OfficialDetailsformProps {
+    careCenterId: string; // Passed as a prop
+    onSubmit: (data: CareCenterFormFields) => void;
     onCancel: () => void;
-    initialData?: {
-        branch: string;
-        zone: string;
-        numberOfZone: string;
-        vehicletype: string;
-        careCenterCode: string;
-        careCenterSerial: string;
-    };
+    initialData: Partial<CareCenterFormFields>; // Initial data for the form
 }
 
-interface Branch {
-    branchId: string;
-    branchName: string;
-}
-
-interface Zone {
-    zoneId: string;
-    zoneName: string;
-    branchId: string;
-}
-
-const OfficialDetailsForm: React.FC<OfficialDetailsFormProps> = ({
-    careCenterId,
-    onSubmit,
-    onCancel,
-    initialData,
-}) => {
-    const { branch, zone } = useGetIdCreation(); // Use the custom hook to fetch branch and zone data
-    const [selectedBranch, setSelectedBranch] = useState<string>('');
-    const [filteredZones, setFilteredZones] = useState<Zone[]>([]);
-
+const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: OfficialDetailsformProps) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
         reset,
-        setValue,
-    } = useForm({
+        formState: { errors },
+    } = useForm<CareCenterFormFields>({
         defaultValues: {
-            branch: initialData?.branch || '',
-            zone: initialData?.zone || '',
-            numberOfZone: initialData?.numberOfZone || '',
-            vehicletype: initialData?.vehicletype || '',
-            careCenterCode: initialData?.careCenterCode || '',
-            careCenterSerial: initialData?.careCenterSerial || '',
+            // Exclude careCenterId from defaultValues
+            branch: initialData.branch || '',
+            zone: initialData.zone || '',
+            numberOfZone: initialData.numberOfZone || '',
+            vehicletype: initialData.vehicletype || '',
+            email: initialData.email || '',
+            whatsappNumber: initialData.whatsappNumber || '',
+            phoneNumber: initialData.phoneNumber || '',
+            nearestCareCenter: initialData.nearestCareCenter || '',
+            computerAvailable: initialData.computerAvailable || false,
+            printerAvailable: initialData.printerAvailable || false,
+            franchiseAmount: initialData.franchiseAmount || 0,
         },
     });
 
-    // Filter zones based on the selected branch
     useEffect(() => {
-        if (selectedBranch) {
-            const filteredZones = zone.filter((z: Zone) => z.branchId === selectedBranch);
-            setFilteredZones(filteredZones);
-        } else {
-            setFilteredZones([]);
-        }
-    }, [selectedBranch, zone]);
-
-    const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedBranchId = event.target.value;
-        setSelectedBranch(selectedBranchId);
-        setValue('branch', selectedBranchId);
-    };
+        reset({
+            // Reset the form with initialData (excluding careCenterId)
+            branch: initialData.branch || '',
+            zone: initialData.zone || '',
+            numberOfZone: initialData.numberOfZone || '',
+            vehicletype: initialData.vehicletype || '',
+            email: initialData.email || '',
+            whatsappNumber: initialData.whatsappNumber || '',
+            phoneNumber: initialData.phoneNumber || '',
+            nearestCareCenter: initialData.nearestCareCenter || '',
+            computerAvailable: initialData.computerAvailable || false,
+            printerAvailable: initialData.printerAvailable || false,
+            franchiseAmount: initialData.franchiseAmount || 0,
+        });
+    }, [initialData, reset]);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-                <label htmlFor="branch" className="block text-sm font-medium text-gray-700">Branch</label>
-                <select id="branch" {...register('branch')} onChange={handleBranchChange} className="form-select mt-1">
-                    <option value="">Select a branch</option>
-                    {branch.map((b: Branch) => (
-                        <option key={b.branchId} value={b.branchId}>{b.branchName}</option>
-                    ))}
-                </select>
-            </div>
+        <div>
+            <div className="panel">
+                <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+                    {/* Form fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
+                        {/* Branch */}
+                        <div>
+                            <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
+                                Branch
+                            </label>
+                            <input
+                                id="branch"
+                                type="text"
+                                {...register('branch', { required: 'Branch is required' })}
+                                placeholder="Enter Branch"
+                                className="form-input mt-1"
+                            />
+                            {errors.branch && <p className="text-red-500 text-sm">{errors.branch.message}</p>}
+                        </div>
 
-            <div>
-                <label htmlFor="zone" className="block text-sm font-medium text-gray-700">Zone</label>
-                <select id="zone" {...register('zone')} className="form-select mt-1" disabled={!selectedBranch}>
-                    <option value="">Select a zone</option>
-                    {filteredZones.map((z: Zone) => (
-                        <option key={z.zoneId} value={z.zoneId}>{z.zoneName}</option>
-                    ))}
-                </select>
-            </div>
+                        {/* Zone */}
+                        <div>
+                            <label htmlFor="zone" className="block text-sm font-medium text-gray-700">
+                                Zone
+                            </label>
+                            <input
+                                id="zone"
+                                type="text"
+                                {...register('zone', { required: 'Zone is required' })}
+                                placeholder="Enter Zone"
+                                className="form-input mt-1"
+                            />
+                            {errors.zone && <p className="text-red-500 text-sm">{errors.zone.message}</p>}
+                        </div>
 
-            <div>
-                <label htmlFor="numberOfZone" className="block text-sm font-medium text-gray-700">Number of Zones</label>
-                <input type="text" id="numberOfZone" {...register('numberOfZone')} className="form-input mt-1" />
-            </div>
+                        {/* Number of Zone */}
+                        <div>
+                            <label htmlFor="numberOfZone" className="block text-sm font-medium text-gray-700">
+                                Number of Zone
+                            </label>
+                            <input
+                                id="numberOfZone"
+                                type="text"
+                                {...register('numberOfZone', { required: 'Number of Zone is required' })}
+                                placeholder="Enter Number of Zone"
+                                className="form-input mt-1"
+                            />
+                            {errors.numberOfZone && <p className="text-red-500 text-sm">{errors.numberOfZone.message}</p>}
+                        </div>
 
-            <div>
-                <label htmlFor="vehicletype" className="block text-sm font-medium text-gray-700">Vehicle Type</label>
-                <select id="vehicletype" {...register('vehicletype')} className="form-select mt-1">
-                    <option value="">Select vehicle type</option>
-                    <option value="R">R</option>
-                    <option value="S">S</option>
-                    <option value="T">T</option>
-                </select>
-            </div>
+                        {/* Vehicle Type */}
+                        <div>
+                            <label htmlFor="vehicletype" className="block text-sm font-medium text-gray-700">
+                                Vehicle Type
+                            </label>
+                            <input
+                                id="vehicletype"
+                                type="text"
+                                {...register('vehicletype', { required: 'Vehicle Type is required' })}
+                                placeholder="Enter Vehicle Type"
+                                className="form-input mt-1"
+                            />
+                            {errors.vehicletype && <p className="text-red-500 text-sm">{errors.vehicletype.message}</p>}
+                        </div>
 
-            <div>
-                <label htmlFor="careCenterCode" className="block text-sm font-medium text-gray-700">Care Center Code</label>
-                <input type="text" id="careCenterCode" {...register('careCenterCode')} className="form-input mt-1" />
-            </div>
+                        {/* Email */}
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                Email
+                            </label>
+                            <input
+                                id="email"
+                                type="email"
+                                {...register('email', { required: 'Email is required' })}
+                                placeholder="Enter Email"
+                                className="form-input mt-1"
+                            />
+                            {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                        </div>
 
-            <div>
-                <label htmlFor="careCenterSerial" className="block text-sm font-medium text-gray-700">Care Center Serial</label>
-                <input type="text" id="careCenterSerial" {...register('careCenterSerial')} className="form-input mt-1" />
-            </div>
+                        {/* Whatsapp Number */}
+                        <div>
+                            <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">
+                                Whatsapp Number
+                            </label>
+                            <input
+                                id="whatsappNumber"
+                                type="text"
+                                {...register('whatsappNumber', { required: 'Whatsapp Number is required' })}
+                                placeholder="Enter Whatsapp Number"
+                                className="form-input mt-1"
+                            />
+                            {errors.whatsappNumber && <p className="text-red-500 text-sm">{errors.whatsappNumber.message}</p>}
+                        </div>
 
-            <div className="flex justify-center mt-8 space-x-4">
-                <button type="submit" className="bg-teal-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-teal-600">Save</button>
-                <button type="button" onClick={onCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">Cancel</button>
+                        {/* Phone Number */}
+                        <div>
+                            <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                                Phone Number
+                            </label>
+                            <input
+                                id="phoneNumber"
+                                type="text"
+                                {...register('phoneNumber', { required: 'Phone Number is required' })}
+                                placeholder="Enter Phone Number"
+                                className="form-input mt-1"
+                            />
+                            {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
+                        </div>
+
+                        {/* Nearest CareCenter */}
+                        <div>
+                            <label htmlFor="nearestCareCenter" className="block text-sm font-medium text-gray-700">
+                                Nearest CareCenter
+                            </label>
+                            <input
+                                id="nearestCareCenter"
+                                type="text"
+                                {...register('nearestCareCenter', { required: 'Nearest CareCenter is required' })}
+                                placeholder="Enter Nearest CareCenter"
+                                className="form-input mt-1"
+                            />
+                            {errors.nearestCareCenter && <p className="text-red-500 text-sm">{errors.nearestCareCenter.message}</p>}
+                        </div>
+
+                        {/* Computer Available */}
+                        <div>
+                            <label htmlFor="computerAvailable" className="block text-sm font-medium text-gray-700">
+                                Computer Available
+                            </label>
+                            <input
+                                id="computerAvailable"
+                                type="checkbox"
+                                {...register('computerAvailable')}
+                                className="form-checkbox mt-1"
+                            />
+                        </div>
+
+                        {/* Printer Available */}
+                        <div>
+                            <label htmlFor="printerAvailable" className="block text-sm font-medium text-gray-700">
+                                Printer Available
+                            </label>
+                            <input
+                                id="printerAvailable"
+                                type="checkbox"
+                                {...register('printerAvailable')}
+                                className="form-checkbox mt-1"
+                            />
+                        </div>
+
+                        {/* Franchise Amount */}
+                        <div>
+                            <label htmlFor="franchiseAmount" className="block text-sm font-medium text-gray-700">
+                                Franchise Amount
+                            </label>
+                            <input
+                                id="franchiseAmount"
+                                type="number"
+                                {...register('franchiseAmount', { required: 'Franchise Amount is required' })}
+                                placeholder="Enter Franchise Amount"
+                                className="form-input mt-1"
+                            />
+                            {errors.franchiseAmount && <p className="text-red-500 text-sm">{errors.franchiseAmount.message}</p>}
+                        </div>
+                    </div>
+
+                    {/* Submit and Cancel Buttons */}
+                    <div className="flex justify-center mt-8 gap-4">
+                        <button type="submit" className="bg-teal-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-teal-600">
+                            Update Official Details
+                        </button>
+                        <button type="button" onClick={onCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     );
 };
 
-export default OfficialDetailsForm;
+export default OfficialDetailsform;
