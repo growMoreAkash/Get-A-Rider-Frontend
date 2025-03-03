@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
-import localCareCenters from './carecenter.json';
+
 interface PartnerDetails {
     partnerName: string;
     careOf: string;
@@ -287,17 +287,17 @@ const CareCenterUpdateForm = ({ careCenter, onSave, onCancel }: any) => {
                     state: careCenter?.addressDetails?.state || '',
                     pin: careCenter?.addressDetails?.pin || '',
                 },
-                officialDetails: {
-                    partnerId: careCenter?.officialDetails?.partnerId || '',
-                    securePin: careCenter?.officialDetails?.securePin || '',
-                    email: careCenter?.officialDetails?.email || '',
-                    phoneNumber: careCenter?.officialDetails?.phoneNumber || '',
-                    whatsappNumber: careCenter?.officialDetails?.whatsappNumber || '',
-                    branchCovered: careCenter?.officialDetails?.branchCovered || '',
-                    zoneCovered: careCenter?.officialDetails?.zoneCovered || '',
-                    franchiseConnected: careCenter?.officialDetails?.franchiseConnected || '',
-                    amountReceivedFromCustomer: careCenter?.officialDetails?.amountReceivedFromCustomer || '',
-                },
+                // officialDetails: {
+                //     partnerId: careCenter?.officialDetails?.partnerId || '',
+                //     securePin: careCenter?.officialDetails?.securePin || '',
+                //     email: careCenter?.officialDetails?.email || '',
+                //     phoneNumber: careCenter?.officialDetails?.phoneNumber || '',
+                //     whatsappNumber: careCenter?.officialDetails?.whatsappNumber || '',
+                //     branchCovered: careCenter?.officialDetails?.branchCovered || '',
+                //     zoneCovered: careCenter?.officialDetails?.zoneCovered || '',
+                //     franchiseConnected: careCenter?.officialDetails?.franchiseConnected || '',
+                //     amountReceivedFromCustomer: careCenter?.officialDetails?.amountReceivedFromCustomer || '',
+                // },
                 ownershipDetails: {
                     ownerOfShop: careCenter?.ownershipDetails?.ownerOfShop || '',
                 },

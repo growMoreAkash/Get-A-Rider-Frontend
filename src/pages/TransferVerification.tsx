@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import axios from 'axios';
-import { host } from '../secret';
 import Cookies from 'js-cookie';
 
 const TransferVerification = () => {
-    const host = "http://localhost:8000/api"
+    const host = "http://localhost:8000/api";
     const [page, setPage] = useState(1);
     const PAGE_SIZES = [10, 20, 30, 50];
     const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
@@ -21,12 +20,61 @@ const TransferVerification = () => {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
+    // Function to calculate profile completion percentage
+    const calculateProfilePercentage = (driver: any) => {
+        const profileFields = [
+            driver.fullname.data,
+            driver.phone.data,
+            driver.driverPhoto.data,
+            driver.identity_Type.data,
+            driver.maritial.data,
+            driver.religion.data,
+            driver.annualIncome.data,
+            driver.identity_Number.data,
+            driver.whatsapp.data,
+            driver.pincode.data,
+            driver.building_name.data,
+            driver.landmark.data,
+            driver.street_address.data,
+            driver.careof.data,
+            driver.gender.data,
+            driver.careofPhone.data,
+            driver.profession.data,
+            driver.occupation.data,
+        ];
+        const filledFields = profileFields.filter((field) => field).length;
+        const totalFields = profileFields.length;
+        return ((filledFields / totalFields) * 100).toFixed(2);
+    };
+
+    // Function to calculate document completion percentage
+    const calculateDocumentPercentage = (driver: any) => {
+        const documentFields = [
+            driver.driverDocument.aadhaarFront.data,
+            driver.driverDocument.aadhaarBack.data,
+            driver.driverDocument.panFront.data,
+            driver.driverDocument.panBack.data,
+            driver.driverDocument.drivingFront.data,
+            driver.driverDocument.drivingBack.data,
+            driver.driverDocument.addressProof.data,
+            driver.driverDocument.vehicleDriver.data,
+            driver.driverDocument.numberDriver.data,
+            driver.driverDocument.passBook.data,
+            driver.driverDocument.qrCode.data,
+            driver.driverDocument.pollution.data,
+            driver.driverDocument.care.data,
+        ];
+        const filledFields = documentFields.filter((field) => field).length;
+        const totalFields = documentFields.length;
+        return ((filledFields / totalFields) * 100).toFixed(2);
+    };
+
     const fetchData = async () => {
         try {
             const response = await axios.post(`${host}/getAllDrivers`, {
                 page,
                 limit: pageSize,
-                processingSection: 'REGISTER',
+                processingSection: 'RETURN',
                 ...(search && { registrationNumber: search }),
             }, {
                 headers: {
@@ -36,7 +84,7 @@ const TransferVerification = () => {
             });
 
             const { drivers, totalDrivers } = response.data;
-            console.log(drivers)
+            console.log(drivers);
 
             const formattedData = drivers.map((driver: any, index: number) => ({
                 id: driver._id,
@@ -46,6 +94,8 @@ const TransferVerification = () => {
                 time: driver.time,
                 registrationNumber: driver.registrationNumber,
                 phone: driver.phone?.data || 'N/A',
+                profilePercentage: calculateProfilePercentage(driver),
+                documentPercentage: calculateDocumentPercentage(driver),
             }));
 
             // Apply sorting
@@ -57,7 +107,7 @@ const TransferVerification = () => {
             setRecordsData(sortedData);
             setTotalRecords(totalDrivers);
         } catch (error) {
-            //.error('Error fetching drivers:', error);
+            console.error('Error fetching drivers:', error);
         }
     };
 
@@ -85,12 +135,12 @@ const TransferVerification = () => {
                 }
             });
 
-            //////.log('Transfer Response:', response.data);
+            console.log('Transfer Response:', response.data);
             alert('Drivers transferred successfully!');
             // Optionally, refetch data to reflect changes
             fetchData();
         } catch (error) {
-            //.error('Error during transfer:', error);
+            console.error('Error during transfer:', error);
             alert('Failed to transfer drivers.');
         }
     };
@@ -120,6 +170,8 @@ const TransferVerification = () => {
                             { accessor: 'time', title: 'Time', sortable: true },
                             { accessor: 'fullname', title: 'Full Name', sortable: true },
                             { accessor: 'phone', title: 'Phone' },
+                            { accessor: 'profilePercentage', title: 'Driver Profile %', sortable: true },
+                            { accessor: 'documentPercentage', title: 'Driver Document %', sortable: true },
                         ]}
                         highlightOnHover
                         totalRecords={totalRecords}

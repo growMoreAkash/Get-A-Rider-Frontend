@@ -108,6 +108,54 @@ const CareCenterUpdate = () => {
         }
     };
 
+      // Handle form submission
+      const handleOfficialDetailsSubmit = async (data) => {
+        const payload = {
+            careCenterId: careCenterData?._id, // Use the correct careCenterId
+            ...data, // Spread the form data (excluding careCenterId)
+        };
+
+        console.log('Submitting payload:', payload);
+
+        try {
+            const response = await axios.post(
+                `${host}/fillOfficialDetails`,
+                payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            console.log('API Response:', response.data);
+
+            if (response.status === 201) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Official details updated successfully',
+                    text: `CareCenter ID: ${response.data.officialDetails.careCenterId}, Partner ID: ${response.data.officialDetails.partnerId}`,
+                    timer: 3000,
+                });
+            } else {
+                Swal.fire('Error', 'Failed to update official details. Try again.', 'error');
+                console.log(response.status)
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Axios Error:', error.response?.data);
+                Swal.fire('Error', `Server Error: ${error.response?.data?.error || 'Unknown error'}`, 'error');
+            } else {
+                Swal.fire('Error', 'An unexpected error occurred. Try again.', 'error');
+            }
+        }
+    };
+    const handleCancel = () => {
+        console.log('Form cancelled');
+        // Add logic to handle cancellation (e.g., close the form)
+    };
     const careCenterColumns = [
         // { header: 'Id', key: '_id' },
         { header: 'Index', key: 'index' },
@@ -203,19 +251,12 @@ const CareCenterUpdate = () => {
                             )}
                             {activeTab === 'officialDetails' && (
                                 <>
-                                    <OfficialDetailsForm
-                                        careCenterId="67b55123a6ba38c1ba1c1f4f"
-                                        onSubmit={(data) => console.log(data)}
-                                        onCancel={() => console.log('Cancelled')}
-                                        initialData={{
-                                            branch: '345',
-                                            zone: 'XYZ',
-                                            numberOfZone: '02',
-                                            vehicletype: 'S',
-                                            careCenterCode: '1023',
-                                            careCenterSerial: '05',
-                                        }}
-                                    />
+                                     <OfficialDetailsForm
+                    careCenterId={careCenterData._id} // Pass the correct careCenterId
+                    onSubmit={handleOfficialDetailsSubmit}
+                    onCancel={handleCancel}
+                    initialData={careCenterData.officialDetails || {}}
+                />
                                 </>
                             )}
                             {activeTab === 'download' && (
