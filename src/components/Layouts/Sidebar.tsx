@@ -87,7 +87,7 @@ const Sidebar = () => {
                 {
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${Cookies.get("token")}`
+                        Authorization: `Bearer ${Cookies.get('token')}`,
                     },
                 }
             );
@@ -102,8 +102,7 @@ const Sidebar = () => {
         for (let i = 0; i < roles.length; i++) {
             var role = await getRole(roles[i]);
             for (let j = 0; j < role.assignFunction.length; j++) {
-                for (let k = 0; k < role.assignFunction[j].apis.length; k++)
-                    setApis((oldArray) => [...oldArray, role.assignFunction[j].apis[k]]);
+                for (let k = 0; k < role.assignFunction[j].apis.length; k++) setApis((oldArray) => [...oldArray, role.assignFunction[j].apis[k]]);
             }
         }
     };
@@ -176,118 +175,130 @@ const Sidebar = () => {
                     <PerfectScrollbar className="h-[calc(100vh-80px)] relative">
                         <ul className="relative font-semibold space-y-0.5 p-4 py-0">
                             {/* Vehicle Section */}
-                            {(routes.some((v) => v.includes('/vehicleAttributes'))
-                                || routes.some((v) => v.includes('/vehicleFeatures'))
-                                || routes.some((v) => v.includes('/vehicleFeaturesDelete'))
-                                || routes.some((v) => v.includes('/vehicleAttributesDelete'))
-                            ) && (
-                                    <li className="menu nav-item">
-                                        <button
-                                            type="button"
-                                            className={`${currentMenu === 'vehicle' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
-                                            onClick={() => toggleMenu('vehicle')}
-                                        >
-                                            <div className="flex items-center">
-                                                <span className="ltr:pl-3 rtl:pr-3">{t('Vehicle')}</span>
-                                            </div>
-                                            <div className={currentMenu !== 'vehicle' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                <IconCaretDown />
-                                            </div>
-                                        </button>
-                                        <AnimateHeight duration={300} height={currentMenu === 'vehicle' ? 'auto' : 0}>
-                                            <ul className="sub-menu text-gray-500">
-                                                {routes.some((v) => v.includes('/vehicleAttributes')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/vehicleAttributes">{t('Vehicle Attributes')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/vehicleAttributesDelete')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/vehicleAttributesDelete">{t('Delete Vehicle Attributes')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/features')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/features">{t('Vehicle features')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/featuresDelete')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/featuresDelete">{t('Delete Vehicle features')}</NavLink>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </AnimateHeight>
-                                    </li>
-                                )}
+                            {(routes.some((v) => v.includes('/vehicleAttributes')) ||
+                                routes.some((v) => v.includes('/vehicleFeatures')) ||
+                                routes.some((v) => v.includes('/vehicleFeaturesDelete')) ||
+                                routes.some((v) => v.includes('/vehicleAttributesDelete'))) && (
+                                <li className="menu nav-item">
+                                    <button
+                                        type="button"
+                                        className={`${currentMenu === 'vehicle' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
+                                        onClick={() => toggleMenu('vehicle')}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="ltr:pl-3 rtl:pr-3">{t('Vehicle')}</span>
+                                        </div>
+                                        <div className={currentMenu !== 'vehicle' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
+                                    <AnimateHeight duration={300} height={currentMenu === 'vehicle' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-gray-500">
+                                            {routes.some((v) => v.includes('/vehicleAttributes')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/vehicleAttributes">{t('Vehicle Attributes')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/vehicleAttributesDelete')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/vehicleAttributesDelete">{t('Delete Vehicle Attributes')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/features')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/features">{t('Vehicle features')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/featuresDelete')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/featuresDelete">{t('Delete Vehicle features')}</NavLink>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </AnimateHeight>
+                                </li>
+                            )}
 
-                           {/* Master Section */}
-{(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete')) || routes.some((v) => v.includes('/idAttributes')) || routes.some((v) => v.includes('/idAttributesDelete'))) && (
-    <li className="menu nav-item">
-        <button
-            type="button"
-            className={`${currentMenu === 'master' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
-            onClick={() => toggleMenu('master')}
-        >
-            <div className="flex items-center">
-                <span className="ltr:pl-3 rtl:pr-3">{t('Master')}</span>
-            </div>
-            <div className={currentMenu !== 'master' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                <IconCaretDown />
-            </div>
-        </button>
-        <AnimateHeight duration={300} height={currentMenu === 'master' ? 'auto' : 0}>
-            <ul className="sub-menu text-gray-500">
-                {(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete'))) &&
-                    <li>
-                        <button
-                            type="button"
-                            className={`${subMenu === 'masterDriver' ? 'active' : ''} nav-link group w-full text-gray-700`}
-                            onClick={() => toggleSubMenu('masterDriver')}
-                        >
-                            {t('Driver')}
-                            <div className={subMenu !== 'masterDriver' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                <IconCaretDown />
-                            </div>
-                        </button>
-                        <AnimateHeight duration={300} height={subMenu === 'masterDriver' ? 'auto' : 0}>
-                            <ul className="sub-menu text-gray-500 pl-4">
-                                {routes.some((v) => v.includes('/driverAttributes')) && <li>
-                                    <NavLink to="/apple/hjo/login/driverAttributes">{t('Driver Attributes')}</NavLink>
-                                </li>}
-                                {routes.some((v) => v.includes('/driverAttributesDelete')) && <li>
-                                    <NavLink to="/apple/hjo/login/driverAttributesDelete">{t('Delete Driver Attributes')}</NavLink>
-                                </li>}
-                            </ul>
-                        </AnimateHeight>
-                    </li>}
-                {(routes.some((v) => v.includes('/idAttributes')) || routes.some((v) => v.includes('/idAttributesDelete'))) &&
-                    <li>
-                        <button
-                            type="button"
-                            className={`${subMenu === 'masterId' ? 'active' : ''} nav-link group w-full text-gray-700`}
-                            onClick={() => toggleSubMenu('masterId')}
-                        >
-                            {t('ID Creation')}
-                            <div className={subMenu !== 'masterId' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                <IconCaretDown />
-                            </div>
-                        </button>
-                        <AnimateHeight duration={300} height={subMenu === 'masterId' ? 'auto' : 0}>
-                            <ul className="sub-menu text-gray-500 pl-4">
-                                {routes.some((v) => v.includes('/idAttributes')) && <li>
-                                    <NavLink to="/apple/hjo/login/idAttributes">{t('ID Attributes')}</NavLink>
-                                </li>}
-                                {routes.some((v) => v.includes('/idAttributesDelete')) && <li>
-                                    <NavLink to="/apple/hjo/login/idAttributesDelete">{t('Delete ID Attributes')}</NavLink>
-                                </li>}
-                            </ul>
-                        </AnimateHeight>
-                    </li>}
-            </ul>
-        </AnimateHeight>
-    </li>
-)}
+                            {/* Master Section */}
+                            {(routes.some((v) => v.includes('/driverAttributes')) ||
+                                routes.some((v) => v.includes('/driverAttributesDelete')) ||
+                                routes.some((v) => v.includes('/idAttributes')) ||
+                                routes.some((v) => v.includes('/idAttributesDelete'))) && (
+                                <li className="menu nav-item">
+                                    <button
+                                        type="button"
+                                        className={`${currentMenu === 'master' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
+                                        onClick={() => toggleMenu('master')}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="ltr:pl-3 rtl:pr-3">{t('Master')}</span>
+                                        </div>
+                                        <div className={currentMenu !== 'master' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
+                                    <AnimateHeight duration={300} height={currentMenu === 'master' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-gray-500">
+                                            {(routes.some((v) => v.includes('/driverAttributes')) || routes.some((v) => v.includes('/driverAttributesDelete'))) && (
+                                                <li>
+                                                    <button
+                                                        type="button"
+                                                        className={`${subMenu === 'masterDriver' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                                                        onClick={() => toggleSubMenu('masterDriver')}
+                                                    >
+                                                        {t('Driver')}
+                                                        <div className={subMenu !== 'masterDriver' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                            <IconCaretDown />
+                                                        </div>
+                                                    </button>
+                                                    <AnimateHeight duration={300} height={subMenu === 'masterDriver' ? 'auto' : 0}>
+                                                        <ul className="sub-menu text-gray-500 pl-4">
+                                                            {routes.some((v) => v.includes('/driverAttributes')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/driverAttributes">{t('Driver Attributes')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/driverAttributesDelete')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/driverAttributesDelete">{t('Delete Driver Attributes')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </AnimateHeight>
+                                                </li>
+                                            )}
+                                            {(routes.some((v) => v.includes('/idAttributes')) || routes.some((v) => v.includes('/idAttributesDelete'))) && (
+                                                <li>
+                                                    <button
+                                                        type="button"
+                                                        className={`${subMenu === 'masterId' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                                                        onClick={() => toggleSubMenu('masterId')}
+                                                    >
+                                                        {t('ID Creation')}
+                                                        <div className={subMenu !== 'masterId' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                            <IconCaretDown />
+                                                        </div>
+                                                    </button>
+                                                    <AnimateHeight duration={300} height={subMenu === 'masterId' ? 'auto' : 0}>
+                                                        <ul className="sub-menu text-gray-500 pl-4">
+                                                            {routes.some((v) => v.includes('/idAttributes')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/idAttributes">{t('ID Attributes')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/idAttributesDelete')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/idAttributesDelete">{t('Delete ID Attributes')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </AnimateHeight>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </AnimateHeight>
+                                </li>
+                            )}
 
                             {/* Registration Section */}
                             {(routes.some((v) => v.includes('/instantSignup')) ||
@@ -302,24 +313,24 @@ const Sidebar = () => {
                                 routes.some((v) => v.includes('/returnSection')) ||
                                 routes.some((v) => v.includes('/partnerSignup')) ||
                                 routes.some((v) => v.includes('/partnerUpdate'))) && (
-                                    <li className="menu nav-item">
-                                        <button
-                                            type="button"
-                                            className={`${currentMenu === 'registration' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
-                                            onClick={() => toggleMenu('registration')}
-                                        >
-                                            <div className="flex items-center">
-                                                <span className="ltr:pl-3 rtl:pr-3">{t('Registration')}</span>
-                                            </div>
-                                            <div className={currentMenu !== 'registration' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                <IconCaretDown />
-                                            </div>
-                                        </button>
+                                <li className="menu nav-item">
+                                    <button
+                                        type="button"
+                                        className={`${currentMenu === 'registration' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
+                                        onClick={() => toggleMenu('registration')}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="ltr:pl-3 rtl:pr-3">{t('Registration')}</span>
+                                        </div>
+                                        <div className={currentMenu !== 'registration' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
 
-                                        <AnimateHeight duration={300} height={currentMenu === 'registration' ? 'auto' : 0}>
-                                            <ul className="sub-menu text-gray-500">
-                                                {/* User Registration */}
-                                                {/* {(routes.some((v) => v.includes('/instantSignup')) || routes.some((v) => v.includes('/profileUpdate'))) && (
+                                    <AnimateHeight duration={300} height={currentMenu === 'registration' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-gray-500">
+                                            {/* User Registration */}
+                                            {/* {(routes.some((v) => v.includes('/instantSignup')) || routes.some((v) => v.includes('/profileUpdate'))) && (
                                                 <li>
                                                     <button
                                                         type="button"
@@ -348,167 +359,167 @@ const Sidebar = () => {
                                                 </li>
                                             )}*/}
 
-                                                {/* Driver Registration */}
-                                                {(routes.some((v) => v.includes('/instantDriverSignup')) ||
-                                                    routes.some((v) => v.includes('/driverUpdate')) ||
-                                                    routes.some((v) => v.includes('/transferVerification')) ||
-                                                    routes.some((v) => v.includes('/returnSection'))) && (
-                                                        <li>
-                                                            <button
-                                                                type="button"
-                                                                className={`${subMenu === 'driverRegistration' ? 'active' : ''} nav-link group w-full text-gray-700`}
-                                                                onClick={() => toggleSubMenu('driverRegistration')}
-                                                            >
-                                                                {t('Driver Registration')}
-                                                                <div className={subMenu !== 'driverRegistration' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                                    <IconCaretDown />
-                                                                </div>
-                                                            </button>
-                                                            <AnimateHeight duration={300} height={subMenu === 'driverRegistration' ? 'auto' : 0}>
-                                                                <ul className="sub-menu text-gray-500 pl-4">
-                                                                    {routes.some((v) => v.includes('/instantDriverSignup')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/instantDriverSignup">{t('Driver Signup')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                    {routes.some((v) => v.includes('/driverUpdate')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/driverUpdate">{t('Driver Update')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                    {routes.some((v) => v.includes('/transferVerification')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/transferVerification">{t('Transfer Verification')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                    {routes.some((v) => v.includes('/returnSection')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/returnSection">{t('Return Section')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                </ul>
-                                                            </AnimateHeight>
-                                                        </li>
-                                                    )}
+                                            {/* Driver Registration */}
+                                            {(routes.some((v) => v.includes('/instantDriverSignup')) ||
+                                                routes.some((v) => v.includes('/driverUpdate')) ||
+                                                routes.some((v) => v.includes('/transferVerification')) ||
+                                                routes.some((v) => v.includes('/returnSection'))) && (
+                                                <li>
+                                                    <button
+                                                        type="button"
+                                                        className={`${subMenu === 'driverRegistration' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                                                        onClick={() => toggleSubMenu('driverRegistration')}
+                                                    >
+                                                        {t('Driver Registration')}
+                                                        <div className={subMenu !== 'driverRegistration' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                            <IconCaretDown />
+                                                        </div>
+                                                    </button>
+                                                    <AnimateHeight duration={300} height={subMenu === 'driverRegistration' ? 'auto' : 0}>
+                                                        <ul className="sub-menu text-gray-500 pl-4">
+                                                            {routes.some((v) => v.includes('/instantDriverSignup')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/instantDriverSignup">{t('Driver Signup')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/driverUpdate')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/driverUpdate">{t('Driver Update')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/transferVerification')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/transferVerification">{t('Transfer Verification')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/returnSection')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/returnSection">{t('Return Section')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </AnimateHeight>
+                                                </li>
+                                            )}
 
-                                                {/* Vehicle Registration */}
-                                                {(routes.some((v) => v.includes('/vehicleSignup')) ||
-                                                    routes.some((v) => v.includes('/vehicleUpdate')) ||
-                                                    routes.some((v) => v.includes('/vehicleTransferVerification')) ||
-                                                    routes.some((v) => v.includes('/returnSection'))) && (
-                                                        <li>
-                                                            <button
-                                                                type="button"
-                                                                className={`${subMenu === 'vehicleRegistration' ? 'active' : ''} nav-link group w-full text-gray-700`}
-                                                                onClick={() => toggleSubMenu('vehicleRegistration')}
-                                                            >
-                                                                {t('Vehicle Registration')}
-                                                                <div className={subMenu !== 'vehicleRegistration' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                                    <IconCaretDown />
-                                                                </div>
-                                                            </button>
-                                                            <AnimateHeight duration={300} height={subMenu === 'vehicleRegistration' ? 'auto' : 0}>
-                                                                <ul className="sub-menu text-gray-500 pl-4">
-                                                                    {routes.some((v) => v.includes('/vehicleSignup')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/vehicleSignup">{t('Create Vehicle')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                    {routes.some((v) => v.includes('/vehicleUpdate')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/vehicleUpdate">{t('Vehicle Update')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                    {routes.some((v) => v.includes('/vehicleTransferVerification')) && (
-                                                                        <li>
-                                                                            <NavLink to="/apple/hjo/login/vehicleTransferVerification">{t('Transfer Verification')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                    {routes.some((v) => v.includes('/returnSection')) && (
-                                                                        <li>
-                                                                            <NavLink to="/vehicleReturnSection">{t('Return Section')}</NavLink>
-                                                                        </li>
-                                                                    )}
-                                                                </ul>
-                                                            </AnimateHeight>
-                                                        </li>
-                                                    )}
+                                            {/* Vehicle Registration */}
+                                            {(routes.some((v) => v.includes('/vehicleSignup')) ||
+                                                routes.some((v) => v.includes('/vehicleUpdate')) ||
+                                                routes.some((v) => v.includes('/vehicleTransferVerification')) ||
+                                                routes.some((v) => v.includes('/returnSection'))) && (
+                                                <li>
+                                                    <button
+                                                        type="button"
+                                                        className={`${subMenu === 'vehicleRegistration' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                                                        onClick={() => toggleSubMenu('vehicleRegistration')}
+                                                    >
+                                                        {t('Vehicle Registration')}
+                                                        <div className={subMenu !== 'vehicleRegistration' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                            <IconCaretDown />
+                                                        </div>
+                                                    </button>
+                                                    <AnimateHeight duration={300} height={subMenu === 'vehicleRegistration' ? 'auto' : 0}>
+                                                        <ul className="sub-menu text-gray-500 pl-4">
+                                                            {routes.some((v) => v.includes('/vehicleSignup')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/vehicleSignup">{t('Create Vehicle')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/vehicleUpdate')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/vehicleUpdate">{t('Vehicle Update')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/vehicleTransferVerification')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/vehicleTransferVerification">{t('Transfer Verification')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/returnSection')) && (
+                                                                <li>
+                                                                    <NavLink to="/vehicleReturnSection">{t('Return Section')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </AnimateHeight>
+                                                </li>
+                                            )}
 
-                                                {/* Partner Registration */}
-                                                {(routes.some((v) => v.includes('/partnerSignup')) || routes.some((v) => v.includes('/partnerUpdate'))) && (
-                                                    <li>
-                                                        <button
-                                                            type="button"
-                                                            className={`${subMenu === 'partnerRegistration' ? 'active' : ''} nav-link group w-full text-gray-700`}
-                                                            onClick={() => toggleSubMenu('partnerRegistration')}
-                                                        >
-                                                            {t('Partner Registration')}
-                                                            <div className={subMenu !== 'partnerRegistration' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                                <IconCaretDown />
-                                                            </div>
-                                                        </button>
-                                                        <AnimateHeight duration={300} height={subMenu === 'partnerRegistration' ? 'auto' : 0}>
-                                                            <ul className="sub-menu text-gray-500 pl-4">
-                                                                {routes.some((v) => v.includes('/partnerSignup')) && (
-                                                                    <li>
-                                                                        <NavLink to="/apple/hjo/login/instantSignup">{t('Instant Signup')}</NavLink>
-                                                                    </li>
-                                                                )}
-                                                                {routes.some((v) => v.includes('/partnerUpdate')) && (
-                                                                    <li>
-                                                                        <NavLink to="/apple/hjo/login/partnerUpdate">{t('Partner Update')}</NavLink>
-                                                                    </li>
-                                                                )}
-                                                            </ul>
-                                                        </AnimateHeight>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </AnimateHeight>
-                                    </li>
-                                )}
+                                            {/* Partner Registration */}
+                                            {(routes.some((v) => v.includes('/partnerSignup')) || routes.some((v) => v.includes('/partnerUpdate'))) && (
+                                                <li>
+                                                    <button
+                                                        type="button"
+                                                        className={`${subMenu === 'partnerRegistration' ? 'active' : ''} nav-link group w-full text-gray-700`}
+                                                        onClick={() => toggleSubMenu('partnerRegistration')}
+                                                    >
+                                                        {t('Partner Registration')}
+                                                        <div className={subMenu !== 'partnerRegistration' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                                            <IconCaretDown />
+                                                        </div>
+                                                    </button>
+                                                    <AnimateHeight duration={300} height={subMenu === 'partnerRegistration' ? 'auto' : 0}>
+                                                        <ul className="sub-menu text-gray-500 pl-4">
+                                                            {routes.some((v) => v.includes('/partnerSignup')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/instantSignup">{t('Instant Signup')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                            {routes.some((v) => v.includes('/partnerUpdate')) && (
+                                                                <li>
+                                                                    <NavLink to="/apple/hjo/login/partnerUpdate">{t('Partner Update')}</NavLink>
+                                                                </li>
+                                                            )}
+                                                        </ul>
+                                                    </AnimateHeight>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </AnimateHeight>
+                                </li>
+                            )}
 
                             {/* Verification Section */}
-                            {/* {(routes.some((v) => v.includes('/driverVerification')) ||
+                            {(routes.some((v) => v.includes('/driverVerification')) ||
                                 routes.some((v) => v.includes('/vehicleVerification')) ||
                                 routes.some((v) => v.includes('/partnerVerification'))) && (
-                                    <li className="menu nav-item">
-                                        <button
-                                            type="button"
-                                            className={`${currentMenu === 'verification' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
-                                            onClick={() => toggleMenu('verification')}
-                                        >
-                                            <div className="flex items-center">
-                                                <span className="ltr:pl-3 rtl:pr-3">{t('Verification')}</span>
-                                            </div>
-                                            <div className={currentMenu !== 'verification' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                <IconCaretDown />
-                                            </div>
-                                        </button>
-                                        <AnimateHeight duration={300} height={currentMenu === 'verification' ? 'auto' : 0}>
-                                            <ul className="sub-menu text-gray-500">
-                                                {routes.some((v) => v.includes('/driverVerification')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/driverVerification">{t('Driver Verification')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/vehicleVerification')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/vehicleVerification">{t('Vehicle Verification')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/partnerVerification')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/partnerVerification">{t('Partner Verification')}</NavLink>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </AnimateHeight>
-                                    </li>
-                                )}*/}
+                                <li className="menu nav-item">
+                                    <button
+                                        type="button"
+                                        className={`${currentMenu === 'verification' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
+                                        onClick={() => toggleMenu('verification')}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="ltr:pl-3 rtl:pr-3">{t('Verification')}</span>
+                                        </div>
+                                        <div className={currentMenu !== 'verification' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
+                                    <AnimateHeight duration={300} height={currentMenu === 'verification' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-gray-500">
+                                            {routes.some((v) => v.includes('/driverVerification')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/driverVerification">{t('Driver Verification')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/vehicleVerification')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/vehicleVerification">{t('Vehicle Verification')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/partnerVerification')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/partnerVerification">{t('Partner Verification')}</NavLink>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </AnimateHeight>
+                                </li>
+                            )}
 
                             {/* Fair System Section */}
-                            {/* {(routes.some((v) => v.includes('/fairSetup')) || routes.some((v) => v.includes('/zoneSetup'))) && (
+                            {(routes.some((v) => v.includes('/fairSetup')) || routes.some((v) => v.includes('/zoneSetup'))) && (
                                 <li className="menu nav-item">
                                     <button
                                         type="button"
@@ -587,7 +598,7 @@ const Sidebar = () => {
                                         </ul>
                                     </AnimateHeight>
                                 </li>
-                            )}*/}
+                            )}
 
                             {/* Client Section */}
                             {routes.some((v) => v.includes('/clientAttributes')) && (
@@ -675,55 +686,55 @@ const Sidebar = () => {
                                 routes.some((v) => v.includes('/updatePartner')) ||
                                 routes.some((v) => v.includes('/addCareCenter')) ||
                                 routes.some((v) => v.includes('/updateCareCenter'))) && (
-                                    <li className="menu nav-item">
-                                        <button
-                                            type="button"
-                                            className={`${currentMenu === 'customUser' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
-                                            onClick={() => toggleMenu('customUser')}
-                                        >
-                                            <div className="flex items-center">
-                                                <span className="ltr:pl-3 rtl:pr-3">{t('CustomUser')}</span>
-                                            </div>
-                                            <div className={currentMenu !== 'customUser' ? 'rtl:rotate-90 -rotate-90' : ''}>
-                                                <IconCaretDown />
-                                            </div>
-                                        </button>
-                                        <AnimateHeight duration={300} height={currentMenu === 'customUser' ? 'auto' : 0}>
-                                            <ul className="sub-menu text-gray-500">
-                                                {routes.some((v) => v.includes('/addEmployee')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/addEmployee">{t('addEmployee')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/updateEmployee')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/updateEmployee">{t('updateEmployee')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/addPartner')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/addPartner">{t('addPartner')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/updatePartner')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/updatePartner">{t('updatePartner')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/addCareCenter')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/addCareCenter">{t('addCareCenter')}</NavLink>
-                                                    </li>
-                                                )}
-                                                {routes.some((v) => v.includes('/updateCareCenter')) && (
-                                                    <li>
-                                                        <NavLink to="/apple/hjo/login/updateCareCenter">{t('updateCareCenter')}</NavLink>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </AnimateHeight>
-                                    </li>
-                                )}
+                                <li className="menu nav-item">
+                                    <button
+                                        type="button"
+                                        className={`${currentMenu === 'customUser' ? 'active' : ''} nav-link group w-full text-black dark:text-[#506690]`}
+                                        onClick={() => toggleMenu('customUser')}
+                                    >
+                                        <div className="flex items-center">
+                                            <span className="ltr:pl-3 rtl:pr-3">{t('CustomUser')}</span>
+                                        </div>
+                                        <div className={currentMenu !== 'customUser' ? 'rtl:rotate-90 -rotate-90' : ''}>
+                                            <IconCaretDown />
+                                        </div>
+                                    </button>
+                                    <AnimateHeight duration={300} height={currentMenu === 'customUser' ? 'auto' : 0}>
+                                        <ul className="sub-menu text-gray-500">
+                                            {routes.some((v) => v.includes('/addEmployee')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/addEmployee">{t('addEmployee')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/updateEmployee')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/updateEmployee">{t('updateEmployee')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/addPartner')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/addPartner">{t('addPartner')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/updatePartner')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/updatePartner">{t('updatePartner')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/addCareCenter')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/addCareCenter">{t('addCareCenter')}</NavLink>
+                                                </li>
+                                            )}
+                                            {routes.some((v) => v.includes('/updateCareCenter')) && (
+                                                <li>
+                                                    <NavLink to="/apple/hjo/login/updateCareCenter">{t('updateCareCenter')}</NavLink>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </AnimateHeight>
+                                </li>
+                            )}
                         </ul>
                     </PerfectScrollbar>
                 </div>

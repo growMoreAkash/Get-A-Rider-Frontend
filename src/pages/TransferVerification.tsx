@@ -75,7 +75,7 @@ const TransferVerification = () => {
             const response = await axios.post(`${host}/getAllDrivers`, {
                 page,
                 limit: pageSize,
-                // processingSection: 'REGISTER',
+                processingSection: 'REGISTER',
                 ...(search && { registrationNumber: search }),
             }, {
                 headers: {

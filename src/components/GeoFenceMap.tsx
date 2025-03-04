@@ -4,6 +4,8 @@ import useCreateMapBranch from '../hooks/useCreateMapBranch';
 import useGetIdCreation from '../hooks/useGetIdCreation';
 import Select from 'react-select';
 import TypeBrandCategoryList from './TypeBrandCategoryList';
+import useGetBranchIdData from '../hooks/useGetBranchIdData';
+import EditBranch from '../pages/EditBranch';
 
 const GeoFenceMap = () => {
     const [coordinates, setCoordinates] = useState([]);
@@ -12,6 +14,15 @@ const GeoFenceMap = () => {
     const [selectedBranch, setSelectedBranch] = useState('');
     const { zone, country, branch, state } = useGetIdCreation();
     const { createBranch, success } = useCreateMapBranch();
+
+    const [editBranch, setEditBranch] = useState(false);
+
+    const { getBranchIdData, branchData } = useGetBranchIdData();
+
+    const branchOptions = branch.map((b: any) => ({
+        value: b.branchId,
+        label: `${b.branchName} (${b.branchId})`,
+    }));
 
     const handleIframeMessage = (event: any) => {
         if (event.origin !== window.location.origin) return; // Security check
@@ -34,17 +45,12 @@ const GeoFenceMap = () => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        createBranch(branch, coordinates);
+        createBranch(selectedBranch?.value, coordinates);
         setBranchName('');
     };
 
-    console.log(branch, 'branch');
-    const branchOptions = branch.map((b: any) => ({
-        value: b.branchId,
-        label: `${b.branchName} (${b.branchId})`,
-    }));
 
-    console.log(selectedBranch, 'value');
+    // console.log(selectedBranch, 'selected branch');
 
     const branchColumn = [
         { header: 'Index', key: 'index' },
@@ -59,35 +65,58 @@ const GeoFenceMap = () => {
     const onTrashed = () => {};
     const activeTab = 'branch';
 
-    const branchActions = [{ icon: 'bi-pencil-fill', title: 'Edit', onClick: (row: any) => alert(row), className: 'text-teal-400' }];
+    const branchActions = [
+        {
+            icon: 'bi-pencil-fill',
+            title: 'Edit',
+            onClick: async (row: any) => {
+                setEditBranch(true);
+                await getBranchIdData(row.branchId);
+            },
+            className: 'text-teal-400',
+        },
+    ];
 
     return (
         <div className="flex flex-col justify-center ">
-            <div className="">
-                <div className="max-w-[55%]">
-                    {/* <div className="flex flex-col gap-2 justify-center">
-                        <label className="text-2xl font-semibold ">Enter Branch:</label>
-                        <input type="text" className="form-input w-full" value={branchName} onChange={(e) => setBranchName(e.target.value)} />
-                    </div> */}
+            {editBranch ? (
+                <>
+                    <EditBranch branch={branch} branchData={branchData} setEditBranch={setEditBranch} />
+                </>
+            ) : (
+                <div>
+                    <div className="">
+                        <div className="max-w-[50%]">
+                            <div className="flex flex-col justify-center">
+                                <label className="text-2xl font-semibold">Select Branch:</label>
+                                <Select
+                                    options={branchOptions}
+                                    value={selectedBranch}
+                                    onChange={(selectedOption: any) => setSelectedBranch(selectedOption)}
+                                    placeholder="Select a branch..."
+                                    isSearchable
+                                />
+                            </div>
 
-                    <div className="flex flex-col gap-2 justify-center">
-                        <label className="text-2xl font-semibold">Select Branch:</label>
-                        <Select options={branchOptions} value={selectedBranch} onChange={(selectedOption: any) => setSelectedBranch(selectedOption)} placeholder="Select a branch..." isSearchable />
+                            <iframe src="/geofence.html" title="Geofence Map" className="w-full h-[460px]"></iframe>
+                        </div>
+                        <button type="submit" className="btn bg-teal-500 text-white" onClick={handleSubmit}>
+                            Submit
+                        </button>
                     </div>
-
-                    <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md mt-4">
-                        <iframe src="/geofence.html" title="Geofence Map" className="w-full h-[400px]" style={{ border: 'none' }}></iframe>
+                    <div className="mt-4">
+                        <TypeBrandCategoryList
+                            columns={branchColumn}
+                            data={branch}
+                            actions={branchActions}
+                            onRefresh={onBranchRefresh}
+                            onViewLog={onViewLog}
+                            onTrashed={onTrashed}
+                            activeTab={activeTab}
+                        />
                     </div>
                 </div>
-
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
-                    Submit
-                </button>
-            </div>
-
-            <div className="mt-5">
-                <TypeBrandCategoryList columns={branchColumn} data={branch} actions={branchActions} onRefresh={onBranchRefresh} onViewLog={onViewLog} onTrashed={onTrashed} activeTab={activeTab} />
-            </div>
+            )}
         </div>
     );
 };

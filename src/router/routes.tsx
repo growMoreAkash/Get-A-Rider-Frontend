@@ -32,6 +32,9 @@ const VehicleAttributesDelete = lazy(() => import('../pages/VehicleAttributesDel
 const VehicleTransferVerification = lazy(() => import('../pages/VehicleTransferVerification'));
 const VehicleReturnSection = lazy(() => import('../pages/VehicleReturnSection'));
 const DocUpdateReusable = lazy(() => import('../components/DocUpdate/DocUpdateDriver'));
+const DeleteBranch = lazy(() => import('../pages/DeleteBranch'));
+const DeleteZone = lazy(() => import('../pages/DeleteZone'));
+const CreateZone = lazy(() => import('../pages/CreateZone'));
 
 const dashHost = 'apple/hjo/login';
 
@@ -50,7 +53,19 @@ const routes = [
     {
         path: dashHost + '/featuresDelete',
         element: <VehicleFeaturesDelete />,
-        apis: ['/firstCreate', '/getCategory', '/getVehicleOtherData', '/getAllVehicle', '/getVehicleData', '/deleteVehicleOtherData', '/deleteType', '/deleteBrand', '/deleteBrand', '/deleteModel', '/deleteCategory'],
+        apis: [
+            '/firstCreate',
+            '/getCategory',
+            '/getVehicleOtherData',
+            '/getAllVehicle',
+            '/getVehicleData',
+            '/deleteVehicleOtherData',
+            '/deleteType',
+            '/deleteBrand',
+            '/deleteBrand',
+            '/deleteModel',
+            '/deleteCategory',
+        ],
     },
     {
         path: dashHost + '/profileUpdate',
@@ -65,27 +80,51 @@ const routes = [
     {
         path: dashHost + '/vehicleUpdate',
         element: <VehicleUpdate />,
-        apis: ['/getVehicleOtherData', '/getCategory', '/getAllVehicle', '/getVehicleData', '/getAllDrivers', '/firstCreateMaster', '/getVehicle', '/updateVehicle', '/getVehicleAttribute', '/getDriverAttribute'],
+        apis: [
+            '/getVehicleOtherData',
+            '/getCategory',
+            '/getAllVehicle',
+            '/getVehicleData',
+            '/getAllDrivers',
+            '/firstCreateMaster',
+            '/getVehicle',
+            '/updateVehicle',
+            '/getVehicleAttribute',
+            '/getDriverAttribute',
+        ],
     },
     {
         path: dashHost + '/driverUpdate',
         element: <DriverUpdate />,
-        apis: ['/firstCreateMaster', '/getDriver', '/getDriverAttribute', '/getDrives', '/getOwners', '/updateProfileDriver', '/addOwner', '/getAllDrivers', '/updateOwner', '/uploadDriverDocuments', '/uploadOwnerDocuments', '/deleteDriver'],
+        apis: [
+            '/firstCreateMaster',
+            '/getDriver',
+            '/getDriverAttribute',
+            '/getDrives',
+            '/getOwners',
+            '/updateProfileDriver',
+            '/addOwner',
+            '/getAllDrivers',
+            '/updateOwner',
+            '/uploadDriverDocuments',
+            '/uploadOwnerDocuments',
+            '/deleteDriver',
+        ],
     },
     {
         path: dashHost + '/transferVerification',
         element: <TransferVerification />,
-        apis: ['/changeProcessingSection', '/getAllDrivers']
+        apis: ['/changeProcessingSection', '/getAllDrivers'],
     },
     {
         path: dashHost + '/vehicleTransferVerification',
         element: <VehicleTransferVerification />,
-        apis: ['/changeVehicleProcessingSection', '/getAllVehicle']
+        apis: ['/changeVehicleProcessingSection', '/getAllVehicle'],
     },
     {
         path: dashHost + '/returnSection',
         element: <ReturnSection />,
-        apis: ['/changeProcessingSection', '/getAllDrivers']
+        apis: ['/changeProcessingSection', '/getAllDrivers'],
     },
     {
         path: dashHost + '/driverVerification',
@@ -97,6 +136,7 @@ const routes = [
         element: <VehicleVerification />,
         apis: [],
     },
+    // iske baad
     {
         path: dashHost + '/fairSetup',
         element: <FairSetup />,
@@ -109,28 +149,56 @@ const routes = [
     },
     {
         path: dashHost + '/zoneSetup/createZone',
-        element: <CreateBranch />,
+        element: <CreateZone />,
         apis: [],
     },
     {
+        path: dashHost + '/zoneSetup/deleteZone',
+        element: <DeleteZone />,
+        apis: [],
+    },
+    {
+        path: dashHost + '/branchSetup/deleteBranch',
+        element: <DeleteBranch />,
+        apis: [],
+    },
+
+    // isek phele
+    {
         path: dashHost + '/instantDriverSignup',
         element: <InstantDriverSignup />,
-        apis: ['/signupDriver', '/verifyOtpDriver', '/addPasswordDriver']
+        apis: ['/signupDriver', '/verifyOtpDriver', '/addPasswordDriver'],
     },
     {
         path: dashHost + '/vehicleSignup',
         element: <VehicleSignup />,
-        apis: ['/getOwners', '/getSpecificData', '/createVehicle', '/getAllDrivers',"/getAllVehicle","/firstCreate","/getCategory","/getVehicleOtherData","/getVehicleData","/getAllVehicle","/getCategory","/firstCreate","/getVehicleOtherData","/getVehicleData","/getOwners"]
+        apis: [
+            '/getOwners',
+            '/getSpecificData',
+            '/createVehicle',
+            '/getAllDrivers',
+            '/getAllVehicle',
+            '/firstCreate',
+            '/getCategory',
+            '/getVehicleOtherData',
+            '/getVehicleData',
+            '/getAllVehicle',
+            '/getCategory',
+            '/firstCreate',
+            '/getVehicleOtherData',
+            '/getVehicleData',
+            '/getOwners',
+        ],
     },
     {
         path: dashHost + '/vehicleAttributes',
         element: <VehicleAttributes />,
-        apis: ['/addOtherData', '/addType', '/getCategory', '/getVehicleOtherData', '/getAllVehicle', '/getVehicleData', '/updateVehicleOtherData']
+        apis: ['/addOtherData', '/addType', '/getCategory', '/getVehicleOtherData', '/getAllVehicle', '/getVehicleData', '/updateVehicleOtherData'],
     },
     {
         path: dashHost + '/vehicleAttributesDelete',
         element: <VehicleAttributesDelete />,
-        apis: ['/getCategory', '/getVehicleOtherData', '/getAllVehicle', '/getVehicleData', '/deleteVehicleOtherData', '/deleteType', '/deleteBrand', '/deleteCategory']
+        apis: ['/getCategory', '/getVehicleOtherData', '/getAllVehicle', '/getVehicleData', '/deleteVehicleOtherData', '/deleteType', '/deleteBrand', '/deleteCategory'],
     },
     {
         path: dashHost + '/vehicleReturnSection',
@@ -140,63 +208,62 @@ const routes = [
     {
         path: dashHost + '/driverAttributes',
         element: <DriverAttributes />,
-        apis: ['/firstCreateMaster', '/addDriverAttribute', '/getDriverAttribute']
+        apis: ['/firstCreateMaster', '/addDriverAttribute', '/getDriverAttribute'],
     },
     {
         path: dashHost + '/idAttributes',
         element: <IDAttributes />,
-        apis: ['/firstCreateMaster', '/getIdCreation', '/createCountry','/createState','/createBranchId','/createZoneId']
+        apis: ['/firstCreateMaster', '/getIdCreation', '/createCountry', '/createState', '/createBranchId', '/createZoneId'],
     },
     {
         path: dashHost + '/idAttributesDelete',
         element: <IDAttributesDelete />,
-        apis: ['/firstCreateMaster', '/addDriverAttribute', '/getDriverAttribute']
+        apis: ['/firstCreateMaster', '/addDriverAttribute', '/getDriverAttribute'],
     },
     {
         path: dashHost + '/driverAttributesDelete',
         element: <DriverAttributesDelete />,
-        apis: ['/firstCreateMaster', '/deleteDriverAttribute', '/getDriverAttribute']
+        apis: ['/firstCreateMaster', '/deleteDriverAttribute', '/getDriverAttribute'],
     },
     {
         path: dashHost + '/roles',
         element: <Role />,
-        apis: ['/getApiList', '/getAllRole', '/updateRole', '/createRole']
+        apis: ['/getApiList', '/getAllRole', '/updateRole', '/createRole'],
     },
     {
         path: dashHost + '/assignRoles',
         element: <AssignRole />,
-        apis: ['/getAllRole', '/getAllEmployee', '/getAllPartner', '/getAllCareCenter', '/assignCustomUserRole']
+        apis: ['/getAllRole', '/getAllEmployee', '/getAllPartner', '/getAllCareCenter', '/assignCustomUserRole'],
     },
     {
         path: dashHost + '/addEmployee',
         element: <InstantEmployeeSignup />,
-        apis: ['/getAllEmployee', '/signupEmployee', '/verifyOtpEmployee', '/addPasswordEmployee']
-
+        apis: ['/getAllEmployee', '/signupEmployee', '/verifyOtpEmployee', '/addPasswordEmployee'],
     },
     {
         path: dashHost + '/updateEmployee',
         element: <EmployeeUpdate />,
-        apis: ['/getAllEmployee', '/getEmployee', '/updateEmployeeProfile', '/uploadEmployeeDocuments']
+        apis: ['/getAllEmployee', '/getEmployee', '/updateEmployeeProfile', '/uploadEmployeeDocuments'],
     },
     {
         path: dashHost + '/addPartner',
         element: <InstantPartnerSignup />,
-        apis: ['/getAllPartner', '/signupPartner', '/verifyOtpPartner', '/addPasswordPartner']
+        apis: ['/getAllPartner', '/signupPartner', '/verifyOtpPartner', '/addPasswordPartner'],
     },
     {
         path: dashHost + '/updatePartner',
         element: <PartnerUpdate />,
-        apis: ['/getAllPartner', '/getPartner', '/updatePartnerProfile', '/uploadPartnerDocuments']
+        apis: ['/getAllPartner', '/getPartner', '/updatePartnerProfile', '/uploadPartnerDocuments'],
     },
     {
         path: dashHost + '/addCareCenter',
         element: <InstantCareCenterSignup />,
-        apis: ['/getAllCareCenter', '/signupCareCenter', '/verifyOtpCareCenter', '/addPasswordCareCenter']
+        apis: ['/getAllCareCenter', '/signupCareCenter', '/verifyOtpCareCenter', '/addPasswordCareCenter'],
     },
     {
         path: dashHost + '/updateCareCenter',
         element: <CareCenterUpdate />,
-        apis: ['/getAllCareCenter', '/getCareCenter', '/updateCareCenterProfile', '/uploadCareCenterDocuments']
+        apis: ['/getAllCareCenter', '/getCareCenter', '/updateCareCenterProfile', '/uploadCareCenterDocuments'],
     },
 ];
 
