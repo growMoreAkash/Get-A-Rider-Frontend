@@ -384,10 +384,10 @@ const VehicleTransferVerification = () => {
                 };
             },
         });
-
+    
         if (formValues) {
             const { email, phone } = formValues;
-
+    
             if (!email || !phone) {
                 Swal.fire({
                     icon: 'error',
@@ -396,7 +396,7 @@ const VehicleTransferVerification = () => {
                 });
                 return;
             }
-
+    
             try {
                 const response = await axios.post(
                     `${host}/vehiclePayment`,
@@ -411,25 +411,27 @@ const VehicleTransferVerification = () => {
                         },
                     }
                 );
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Payment processed successfully!',
-                });
-                getAllVehicle(); // Refresh the data after payment
+    
+                // Check if the response contains the short_url
+                if (response.data && response.data.short_url) {
+                    // Redirect to the provided short URL
+                    window.location.href = response.data.short_url;
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Payment processed successfully!',
+                    });
+                    getAllVehicle(); // Refresh the data after payment
+                }
             } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: 'Failed to process payment. Please try again.',
-                    
-                    
                 });
-                
             }
         }
-        
     };
     
     return (

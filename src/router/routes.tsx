@@ -114,7 +114,7 @@ const routes = [
     {
         path: dashHost + '/transferVerification',
         element: <TransferVerification />,
-        apis: ['/changeProcessingSection', '/getAllDrivers'],
+        apis: ['/changeProcessingSection', '/getAllDrivers','/updateProfileDriver'],
     },
     {
         path: dashHost + '/vehicleTransferVerification',

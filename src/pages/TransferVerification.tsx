@@ -75,7 +75,7 @@ const TransferVerification = () => {
             const response = await axios.post(`${host}/getAllDrivers`, {
                 page,
                 limit: pageSize,
-                processingSection: 'REGISTER',
+            processingSection: 'REGISTER',
                 ...(search && { registrationNumber: search }),
             }, {
                 headers: {
@@ -175,6 +175,11 @@ const TransferVerification = () => {
         doc.save(`driver_certificate_${record.index}.pdf`);
     };
 
+    // Check if all selected records have both profile and document percentages at 100%
+    const isTransferDisabled = selectedRecords.some(
+        (record) => record.profilePercentage !== '100.00' || record.documentPercentage !== '100.00'
+    );
+
     return (
         <div>
             <div className="panel mt-6">
@@ -184,7 +189,12 @@ const TransferVerification = () => {
                     </div>
 
                     <div>
-                        <button type="button" className="btn bg-teal-500 text-white hover:bg-teal-600 ltr:ml-4 rtl:mr-4" onClick={handleTransfer}>
+                        <button
+                            type="button"
+                            className="btn bg-teal-500 text-white hover:bg-teal-600 ltr:ml-4 rtl:mr-4"
+                            onClick={handleTransfer}
+                            disabled={isTransferDisabled}
+                        >
                             Transfer
                         </button>
                     </div>
