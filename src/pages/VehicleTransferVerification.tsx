@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
+import { toPng } from 'html-to-image';
+import VehicleDownload from './VehicleDownload';
+import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
@@ -90,12 +93,15 @@ interface Vehicle {
             verified: boolean;
         };
         _id: string;
+        processingSection :string;
     } | null;
     date: string;
     time: string;
     processingSection: string;
     isDriver: boolean;
     active: boolean;
+    payment?: string; 
+    
 }
 
 interface APIResponse {
@@ -120,6 +126,7 @@ interface TableRecord {
     driverDocumentsPercentage: number;
     vehicleProfilePercentage: number;
     vehicleDocumentsPercentage: number;
+    payment: string; // Add payment field
 }
 
 const VehicleTransferVerification = () => {
@@ -139,7 +146,6 @@ const VehicleTransferVerification = () => {
 
     const token = Cookies.get('token');
 
-  
     const calculatePercentage = (fields: Record<string, any>, totalFields: number): number => {
         const filledFields = Object.values(fields).filter(
             (field) => (field.data && field.data !== '') || field.verified
@@ -156,7 +162,6 @@ const VehicleTransferVerification = () => {
                     apiUrl: '/getAllVehicle',
                     page,
                     limit: pageSize,
-                    // processingSection : 'REGISTER',
                     ...(search && { registrationNumber: search }),
                     sortBy: sortStatus.columnAccessor,
                     sortOrder: sortStatus.direction,
@@ -167,9 +172,9 @@ const VehicleTransferVerification = () => {
                     },
                 }
             );
-    
+
             const { vehicles, totalVehicles } = response.data;
-    
+
             const formattedData = vehicles.map((vehicle) => {
                 // Driver Profile Percentage
                 const driverProfileFields = vehicle.driverId
@@ -194,12 +199,12 @@ const VehicleTransferVerification = () => {
                           occupation: vehicle.driverId.occupation,
                       }
                     : {};
-                const driverProfilePercentage = calculatePercentage(driverProfileFields, 18); 
-    
-                
+                const driverProfilePercentage = calculatePercentage(driverProfileFields, 18);
+
+                // Driver Documents Percentage
                 const driverDocumentsFields = vehicle.driverId?.driverDocument || {};
-                const driverDocumentsPercentage = calculatePercentage(driverDocumentsFields, 12); 
-    
+                const driverDocumentsPercentage = calculatePercentage(driverDocumentsFields, 12);
+
                 // Vehicle Profile Percentage
                 const vehicleProfileFields = {
                     model: vehicle.details.model,
@@ -215,12 +220,12 @@ const VehicleTransferVerification = () => {
                     gearType: vehicle.otherDetails.gearType,
                     regYear: vehicle.otherDetails.regYear,
                 };
-                const vehicleProfilePercentage = calculatePercentage(vehicleProfileFields, 12); 
-    
-                //  Vehicle Documents Percentage
+                const vehicleProfilePercentage = calculatePercentage(vehicleProfileFields, 12);
+
+                // Vehicle Documents Percentage
                 const vehicleDocumentsFields = vehicle.documents;
                 const vehicleDocumentsPercentage = calculatePercentage(vehicleDocumentsFields, 9);
-    
+
                 return {
                     id: vehicle._id,
                     date: vehicle.date,
@@ -232,12 +237,15 @@ const VehicleTransferVerification = () => {
                     vehicleId: vehicle._id,
                     vehicleModel: vehicle.details.model.data,
                     driverProfilePercentage,
+                    DriverTransfer : vehicle.driverId?.processingSection|| 'N/A',
                     driverDocumentsPercentage,
                     vehicleProfilePercentage,
                     vehicleDocumentsPercentage,
+                    payment: vehicle.payment || 'Pending',
+                     
                 };
             });
-    
+
             setRecordsData(formattedData);
             setTotalRecords(totalVehicles);
         } catch (error) {
@@ -252,7 +260,7 @@ const VehicleTransferVerification = () => {
             setIsLoading(false);
         }
     };
-    
+
     useEffect(() => {
         getAllVehicle();
     }, [page, pageSize, search, sortStatus]);
@@ -261,6 +269,58 @@ const VehicleTransferVerification = () => {
         setPage(1);
     }, [pageSize]);
 
+   
+
+    const handleDownload = async (id: string, driverId: string, vehicleId: string, vehicleModel: string) => {
+      
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.width = '800px';
+        container.style.padding = '20px';
+        container.style.backgroundColor = '#ffffff';
+        document.body.appendChild(container);
+    
+       
+        const root = createRoot(container);
+        root.render(
+            <VehicleDownload
+                driverId={driverId}
+                vehicleId={vehicleId}
+                vehicleModel={vehicleModel}
+            />
+        );
+    
+      
+        await new Promise((resolve) => setTimeout(resolve, 100));
+    
+        try {
+            console.log(container.innerHTML);
+            const dataUrl = await toPng(container, {
+                skipFonts: true, 
+            });
+    
+           
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `vehicle_details_${id}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error generating PNG:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to generate the download file. Please try again.',
+            });
+        } finally {
+           
+            root.unmount();
+            document.body.removeChild(container);
+        }
+    };
+    
     const handleTransfer = async () => {
         if (selectedRecords.length === 0) {
             Swal.fire({
@@ -303,6 +363,68 @@ const VehicleTransferVerification = () => {
         }
     };
 
+    const handlePayment = async (vehicleId: string) => {
+        const { value: formValues } = await Swal.fire({
+            title: 'Enter Payment Details',
+            html:
+                '<input id="swal-input1" class="swal2-input" placeholder="Email">' +
+                '<input id="swal-input2" class="swal2-input" placeholder="Phone">',
+            focusConfirm: false,
+            showCancelButton: true,
+            preConfirm: () => {
+                return {
+                    email: (document.getElementById('swal-input1') as HTMLInputElement).value,
+                    phone: (document.getElementById('swal-input2') as HTMLInputElement).value,
+                };
+            },
+        });
+
+        if (formValues) {
+            const { email, phone } = formValues;
+
+            if (!email || !phone) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please fill in both email and phone fields.',
+                });
+                return;
+            }
+
+            try {
+                const response = await axios.post(
+                    `${host}/vehiclePayment`,
+                    {
+                        vehicleId,
+                        phone,
+                        email,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Payment processed successfully!',
+                });
+                getAllVehicle(); // Refresh the data after payment
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to process payment. Please try again.',
+                    
+                });
+                
+            }
+        }
+        
+    };
+    
     return (
         <div>
             <div className="panel mt-6">
@@ -365,12 +487,6 @@ const VehicleTransferVerification = () => {
                                     title: 'Driver ID',
                                     sortable: true,
                                 },
-                                // {
-                                //     accessor: 'vehicleId',
-                                //     title: 'Vehicle ID',
-                                //     sortable: true,
-                                // },
-                                
                                 {
                                     accessor: 'vehicleModel',
                                     title: 'Vehicle Model',
@@ -401,10 +517,39 @@ const VehicleTransferVerification = () => {
                                     render: ({ vehicleDocumentsPercentage }) => `${vehicleDocumentsPercentage}%`,
                                 },
                                 {
-                                     accessor: 'vehicleId',
-                                    title: 'payment',
+                                    accessor: 'DriverTransfer',
+                                    title: 'Driver Transfer',
                                     sortable: true,
                                 },
+                                {
+                                    accessor: 'payment',
+                                    title: 'Payment',
+                                    render: ({ id, payment }) => (
+                                        <button
+                                            type="button"
+                                            className={`btn ${
+                                                payment === 'Paid' ? 'bg-green-500' : 'bg-red-500'
+                                            } text-white`}
+                                            onClick={() => handlePayment(id)}
+                                            disabled={payment === 'Paid'}
+                                        >
+                                            {payment === 'Paid' ? 'Paid' : 'Pay Now'}
+                                        </button>
+                                    ),
+                                },
+                                {
+                                    accessor: 'download',
+                                    title: 'Download',
+                                    render: ({ id, driverId, vehicleId, vehicleModel, }) => (
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary"
+                                            onClick={() => handleDownload(id, driverId, vehicleId, vehicleModel,)}
+                                        >
+                                            Download
+                                        </button>
+                                    ),
+                                }
                             ]}
                             highlightOnHover
                             totalRecords={totalRecords}
@@ -421,7 +566,6 @@ const VehicleTransferVerification = () => {
                             paginationText={({ from, to, totalRecords }) => `Showing ${from} to ${to} of ${totalRecords} entries`}
                         />
                     )}
-                    
                 </div>
             </div>
         </div>

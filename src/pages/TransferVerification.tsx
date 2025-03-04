@@ -3,6 +3,7 @@ import sortBy from 'lodash/sortBy';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import jsPDF from 'jspdf';
 
 const TransferVerification = () => {
     const host = "http://localhost:8000/api";
@@ -74,7 +75,7 @@ const TransferVerification = () => {
             const response = await axios.post(`${host}/getAllDrivers`, {
                 page,
                 limit: pageSize,
-                processingSection: 'RETURN',
+                // processingSection: 'REGISTER',
                 ...(search && { registrationNumber: search }),
             }, {
                 headers: {
@@ -145,6 +146,35 @@ const TransferVerification = () => {
         }
     };
 
+    const handleDownload = (record: any) => {
+        // Create a new PDF instance
+        const doc = new jsPDF();
+
+        // Set font and size for the title
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Driver Information Certificate', 15, 20);
+
+        // Set font and size for the content
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'normal');
+
+        // Add driver information in a document/certificate format
+        doc.text(`Driver Name: ${record.fullname}`, 15, 40);
+        doc.text(`Registration Number: ${record.registrationNumber}`, 15, 50);
+        doc.text(`Phone: ${record.phone}`, 15, 60);
+        doc.text(`Date: ${record.date}`, 15, 70);
+        doc.text(`Time: ${record.time}`, 15, 80);
+        doc.text(`Profile Completion: ${record.profilePercentage}%`, 15, 90);
+        doc.text(`Document Completion: ${record.documentPercentage}%`, 15, 100);
+
+        // Add a border around the certificate
+        doc.rect(10, 10, 190, 100);
+
+        // Save the PDF
+        doc.save(`driver_certificate_${record.index}.pdf`);
+    };
+
     return (
         <div>
             <div className="panel mt-6">
@@ -172,6 +202,18 @@ const TransferVerification = () => {
                             { accessor: 'phone', title: 'Phone' },
                             { accessor: 'profilePercentage', title: 'Driver Profile %', sortable: true },
                             { accessor: 'documentPercentage', title: 'Driver Document %', sortable: true },
+                            {
+                                accessor: 'actions',
+                                title: 'Actions',
+                                render: (record) => (
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => handleDownload(record)}
+                                    >
+                                        Download
+                                    </button>
+                                ),
+                            },
                         ]}
                         highlightOnHover
                         totalRecords={totalRecords}
