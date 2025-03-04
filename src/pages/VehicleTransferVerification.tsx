@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-import { toPng } from 'html-to-image';
+// import { toPng } from 'html-to-image';
 import VehicleDownload from './VehicleDownload';
-import { createRoot } from 'react-dom/client';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+// import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
@@ -162,6 +165,7 @@ const VehicleTransferVerification = () => {
                     apiUrl: '/getAllVehicle',
                     page,
                     limit: pageSize,
+                    processingSection: 'REGISTER',
                     ...(search && { registrationNumber: search }),
                     sortBy: sortStatus.columnAccessor,
                     sortOrder: sortStatus.direction,
@@ -270,55 +274,57 @@ const VehicleTransferVerification = () => {
     }, [pageSize]);
 
    
-
     const handleDownload = async (id: string, driverId: string, vehicleId: string, vehicleModel: string) => {
-      
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.left = '-9999px';
-        container.style.width = '800px';
-        container.style.padding = '20px';
-        container.style.backgroundColor = '#ffffff';
-        document.body.appendChild(container);
-    
-       
-        const root = createRoot(container);
-        root.render(
-            <VehicleDownload
-                driverId={driverId}
-                vehicleId={vehicleId}
-                vehicleModel={vehicleModel}
-            />
-        );
-    
-      
-        await new Promise((resolve) => setTimeout(resolve, 100));
-    
-        try {
-            console.log(container.innerHTML);
-            const dataUrl = await toPng(container, {
-                skipFonts: true, 
-            });
-    
-           
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `vehicle_details_${id}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.error('Error generating PNG:', error);
+        const vehicle = recordsData.find((v) => v.id === id);
+        if (!vehicle) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Failed to generate the download file. Please try again.',
+                text: 'Vehicle details not found.',
             });
-        } finally {
-           
-            root.unmount();
-            document.body.removeChild(container);
+            return;
         }
+    
+        // Create PDF instance
+        const doc = new jsPDF('p', 'mm', 'a4');
+    
+        // Certificate Background
+        doc.setFillColor(240, 240, 240);
+        doc.rect(5, 5, 200, 287, 'F');
+    
+        // Title
+        doc.setFont('times', 'bold');
+        doc.setFontSize(22);
+        doc.text('Vehicle Registration Certificate', 105, 40, { align: 'center' });
+    
+        // Subtitle
+        doc.setFont('times', 'normal');
+        doc.setFontSize(14);
+        doc.text(`This is to certify that the following vehicle has been successfully registered.`, 105, 55, { align: 'center' });
+    
+        // Vehicle Details
+        doc.setFont('times', 'bold');
+        doc.setFontSize(16);
+        doc.text(`Vehicle Details:`, 20, 75);
+    
+        doc.setFont('times', 'normal');
+        doc.setFontSize(14);
+        doc.text(`Vehicle Registration No: ${vehicle.vehicleRegistrationNumber}`, 20, 90);
+        doc.text(`Vehicle Model: ${vehicle.vehicleModel}`, 20, 105);
+        doc.text(`Owner Name: ${vehicle.driverName}`, 20, 120);
+        doc.text(`Driver ID: ${vehicle.driverId}`, 20, 135);
+        doc.text(`Phone Number: ${vehicle.phoneNumber}`, 20, 150);
+        doc.text(`Processing Section: ${vehicle.DriverTransfer}`, 20, 165);
+    
+        // Signature Section
+        doc.setFont('times', 'bold');
+        doc.text('Authorized Signatory', 160, 260);
+        doc.setFontSize(12);
+        doc.text('Date:', 20, 270);
+        doc.text(vehicle.date, 40, 270);
+    
+        // Save PDF
+        doc.save(`Vehicle_Certificate_${vehicle.vehicleRegistrationNumber}.pdf`);
     };
     
     const handleTransfer = async () => {
@@ -417,6 +423,7 @@ const VehicleTransferVerification = () => {
                     icon: 'error',
                     title: 'Error',
                     text: 'Failed to process payment. Please try again.',
+                    
                     
                 });
                 
@@ -544,7 +551,7 @@ const VehicleTransferVerification = () => {
                                         <button
                                             type="button"
                                             className="btn btn-primary"
-                                            onClick={() => handleDownload(id, driverId, vehicleId, vehicleModel,)}
+                                            onClick={() => handleDownload(id, driverId, vehicleId, vehicleModel)}
                                         >
                                             Download
                                         </button>

@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import useGetIdCreation from '../hooks/useGetIdCreation'; // Adjust the import path as necessary
 
 interface CareCenterFormFields {
-    branch: string;
-    zone: string;
+    branch: string; // This will store the branchId
+    zone: string; // This will store the zoneId
     numberOfZone: string;
     vehicletype: string;
     email: string;
@@ -27,10 +28,10 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors },
     } = useForm<CareCenterFormFields>({
         defaultValues: {
-            // Exclude careCenterId from defaultValues
             branch: initialData.branch || '',
             zone: initialData.zone || '',
             numberOfZone: initialData.numberOfZone || '',
@@ -45,9 +46,19 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
         },
     });
 
+    // Fetch branch and zone data using the custom hook
+    const { branch, zone, refetchData } = useGetIdCreation();
+
+    // Watch the selected branch
+    const selectedBranch = watch('branch');
+
+    // Filter zones based on the selected branch's branchCode
+    const filteredZones = selectedBranch
+        ? zone.filter((z) => z.branchCode === branch.find((b) => b.branchId === selectedBranch)?.branchCode)
+        : [];
+
     useEffect(() => {
         reset({
-            // Reset the form with initialData (excluding careCenterId)
             branch: initialData.branch || '',
             zone: initialData.zone || '',
             numberOfZone: initialData.numberOfZone || '',
@@ -68,33 +79,44 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
                     {/* Form fields */}
                     <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
-                        {/* Branch */}
+                        {/* Branch Dropdown */}
                         <div>
                             <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
                                 Branch
                             </label>
-                            <input
+                            <select
                                 id="branch"
-                                type="text"
                                 {...register('branch', { required: 'Branch is required' })}
-                                placeholder="Enter Branch"
-                                className="form-input mt-1"
-                            />
+                                className="form-select mt-1"
+                            >
+                                <option value="">Select Branch</option>
+                                {branch.map((b) => (
+                                    <option key={b._id} value={b.branchId}>
+                                        {b.branchName}
+                                    </option>
+                                ))}
+                            </select>
                             {errors.branch && <p className="text-red-500 text-sm">{errors.branch.message}</p>}
                         </div>
 
-                        {/* Zone */}
+                        {/* Zone Dropdown */}
                         <div>
                             <label htmlFor="zone" className="block text-sm font-medium text-gray-700">
                                 Zone
                             </label>
-                            <input
+                            <select
                                 id="zone"
-                                type="text"
                                 {...register('zone', { required: 'Zone is required' })}
-                                placeholder="Enter Zone"
-                                className="form-input mt-1"
-                            />
+                                className="form-select mt-1"
+                                disabled={!selectedBranch} // Disable if no branch is selected
+                            >
+                                <option value="">Select Zone</option>
+                                {filteredZones.map((z) => (
+                                    <option key={z._id} value={z.zoneId}>
+                                        {z.zoneName}
+                                    </option>
+                                ))}
+                            </select>
                             {errors.zone && <p className="text-red-500 text-sm">{errors.zone.message}</p>}
                         </div>
 

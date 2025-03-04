@@ -119,7 +119,7 @@ const routes = [
     {
         path: dashHost + '/vehicleTransferVerification',
         element: <VehicleTransferVerification />,
-        apis: ['/changeVehicleProcessingSection', '/getAllVehicle'],
+        apis: ['/changeVehicleProcessingSection', '/getAllVehicle','/vehiclePayment'],
     },
     {
         path: dashHost + '/returnSection',
