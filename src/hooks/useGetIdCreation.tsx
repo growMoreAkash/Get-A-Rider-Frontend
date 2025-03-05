@@ -32,38 +32,39 @@ const useGetIdCreation = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchIdCreation = async () => {
-            try {
-                const response = await axios.post(
-                    `${host}/getIdCreation/${masterId}`,
-                    {
-                        apiUrl: '/getIdCreation/:MasterId',
+    const fetchIdCreation = async () => {
+        try {
+            const response = await axios.post(
+                `${host}/getIdCreation/${masterId}`,
+                {
+                    apiUrl: '/getIdCreation/:MasterId',
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
                     },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                if (response.data && response.data.idCreation) {
-                    setZone(response.data.idCreation.zone || []);
-                    setCountry(response.data.idCreation.country || []);
-                    setBranch(response.data.idCreation.branch || []);
-                    setState(response.data.idCreation.state || []);
                 }
-            } catch (error) {
-                console.error('Error fetching ID creation data:', error);
+            );
+
+            if (response.data && response.data.idCreation) {
+                setZone(response.data.idCreation.zone || []);
+                setCountry(response.data.idCreation.country || []);
+                setBranch(response.data.idCreation.branch || []);
+                setState(response.data.idCreation.state || []);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching ID creation data:', error);
+        }
+    };
+
+    useEffect(() => {
         if (masterId) {
             fetchIdCreation();
         }
         firstCreateMaster();
     }, [masterId]);
 
-    return { zone, country, branch, state };
+    return { zone, country, branch, state, refetchData: fetchIdCreation };
 };
 
 export default useGetIdCreation;

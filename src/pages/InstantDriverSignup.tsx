@@ -45,9 +45,12 @@ const InstantDriverSignup = () => {
             } else {
                 // If phone is found but phoneVerified is false, proceed with OTP verification
                 try {
+                    var token = Cookies.get("token");
+
                     await axios.post(`${host}/signupDriver`, { phone: fullPhoneNumber }, {
                         headers: {
-                            'Authorization': `Bearer ${Cookies.get("token")}`
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
                         },
                     });
                     setShowOtpPopup(true);
@@ -58,9 +61,11 @@ const InstantDriverSignup = () => {
             }
         } else {
             try {
+                var token = Cookies.get("token");
                 await axios.post(`${host}/signupDriver`, { phone: fullPhoneNumber }, {
                     headers: {
-                        'Authorization': `Bearer ${Cookies.get("token")}`
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                 });
                 setShowOtpPopup(true);
@@ -84,6 +89,8 @@ const InstantDriverSignup = () => {
                 otp: otp,
             }, {
                 headers: {
+                    'Content-Type': 'application/json',
+
                     'Authorization': `Bearer ${Cookies.get("token")}`
                 },
             });
@@ -117,6 +124,7 @@ const InstantDriverSignup = () => {
                 driverId: driverId,
             }, {
                 headers: {
+                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${Cookies.get("token")}`
                 },
             });

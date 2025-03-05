@@ -1,12 +1,14 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, RefObject, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import CareCenterUpdateForm from '../components/CareCenterUpdateForm';
 import DocUpdateCareCenter from '../components/DocUpdate/DocUpdateCareCenter';
 import TypeBrandCategoryList from '../components/TypeBrandCategoryList';
+import OfficialDetailsForm from '../components/OfficialDetailsform';
+import CareCenterDownload from '../components/CareCenterDownload';
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
-
+import { toPng } from 'html-to-image';
 type CareCenter = {
     id: string;
     phone: string;
@@ -14,6 +16,7 @@ type CareCenter = {
 };
 
 const CareCenterUpdate = () => {
+    const careCenterDownloadRef = useRef(null);
     const host = 'http://localhost:8000/api';
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const handleLoginSuccess = () => {
@@ -30,13 +33,32 @@ const CareCenterUpdate = () => {
 
     var token = Cookies.get('token');
 
+    const handleDownloadImage = (componentRef: RefObject<HTMLElement>) => {
+        if (componentRef.current) {
+            toPng(componentRef.current, { quality: 1 })
+                .then((dataUrl: string) => {
+                    const link = document.createElement('a');
+                    link.download = 'care_center_registration.png';
+                    link.href = dataUrl;
+                    link.click();
+                })
+                .catch((error: Error) => {
+                    console.error('Error capturing image:', error);
+                });
+        }
+    };
+
     const getAllCareCenters = async () => {
         try {
-            const response = await axios.post(`${host}/getAllCareCenter`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.post(
+                `${host}/getAllCareCenter`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setCareCenters(response?.data?.entity);
         } catch (error) {
             //.error('Error fetching careCenters:', error);
@@ -65,15 +87,19 @@ const CareCenterUpdate = () => {
 
     const handleEdit = async (row: any) => {
         try {
-            const response = await axios.post(`${host}/getCareCenter/${row._id}`, {
-                apiUrl : '/getCareCenter/:id'
-            } , {
-                headers: {
-                    Authorization: `Bearer ${token}`,
+            const response = await axios.post(
+                `${host}/getCareCenter/${row._id}`,
+                {
+                    apiUrl: '/getCareCenter/:id',
                 },
-            });
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setCareCenterData(response.data);
-            //.log(response.data)
+            console.log(response.data);
 
             setShowEditForm(true);
             // setEditingUser(response.data)
@@ -82,6 +108,54 @@ const CareCenterUpdate = () => {
         }
     };
 
+      // Handle form submission
+      const handleOfficialDetailsSubmit = async (data) => {
+        const payload = {
+            careCenterId: careCenterData?._id, // Use the correct careCenterId
+            ...data, // Spread the form data (excluding careCenterId)
+        };
+
+        console.log('Submitting payload:', payload);
+
+        try {
+            const response = await axios.post(
+                `${host}/fillOfficialDetails`,
+                payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            console.log('API Response:', response.data);
+
+            if (response.status === 201) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Official details updated successfully',
+                    text: `CareCenter ID: ${response.data.officialDetails.careCenterId}, Partner ID: ${response.data.officialDetails.partnerId}`,
+                    timer: 3000,
+                });
+            } else {
+                Swal.fire('Error', 'Failed to update official details. Try again.', 'error');
+                console.log(response.status)
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Axios Error:', error.response?.data);
+                Swal.fire('Error', `Server Error: ${error.response?.data?.error || 'Unknown error'}`, 'error');
+            } else {
+                Swal.fire('Error', 'An unexpected error occurred. Try again.', 'error');
+            }
+        }
+    };
+    const handleCancel = () => {
+        console.log('Form cancelled');
+        // Add logic to handle cancellation (e.g., close the form)
+    };
     const careCenterColumns = [
         // { header: 'Id', key: '_id' },
         { header: 'Index', key: 'index' },
@@ -140,6 +214,24 @@ const CareCenterUpdate = () => {
                                         CareCenter Document Update
                                     </button>
                                 </li>
+                                <li>
+                                    <button
+                                        onClick={() => setActiveTab('officialDetails')}
+                                        className={`text-capitalize px-4 py-2 rounded-md ${
+                                            activeTab === 'officialDetails' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'
+                                        }`}
+                                    >
+                                        Official Details
+                                    </button>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => setActiveTab('download')}
+                                        className={`text-capitalize px-4 py-2 rounded-md ${activeTab === 'download' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'}`}
+                                    >
+                                        download
+                                    </button>
+                                </li>
                             </ul>
                         </div>
 
@@ -156,6 +248,25 @@ const CareCenterUpdate = () => {
                                 <>
                                     <DocUpdateCareCenter careCenter={careCenterData} />
                                 </>
+                            )}
+                            {activeTab === 'officialDetails' && (
+                                <>
+                                     <OfficialDetailsForm
+                    careCenterId={careCenterData._id} // Pass the correct careCenterId
+                    onSubmit={handleOfficialDetailsSubmit}
+                    onCancel={handleCancel}
+                    initialData={careCenterData.officialDetails || {}}
+                />
+                                </>
+                            )}
+                            {activeTab === 'download' && (
+                                <div>
+                                    <h1 className="text-center text-2xl font-bold my-4">Care Center Details</h1>
+                                    <CareCenterDownload ref={careCenterDownloadRef} data={careCenterData} />
+                                    <button onClick={() => handleDownloadImage(careCenterDownloadRef)} className="bg-teal-500 text-white px-4 py-2 rounded-md mt-4">
+                                        Download as Image
+                                    </button>
+                                </div>
                             )}
                         </div>
                     </div>

@@ -287,17 +287,17 @@ const CareCenterUpdateForm = ({ careCenter, onSave, onCancel }: any) => {
                     state: careCenter?.addressDetails?.state || '',
                     pin: careCenter?.addressDetails?.pin || '',
                 },
-                officialDetails: {
-                    partnerId: careCenter?.officialDetails?.partnerId || '',
-                    securePin: careCenter?.officialDetails?.securePin || '',
-                    email: careCenter?.officialDetails?.email || '',
-                    phoneNumber: careCenter?.officialDetails?.phoneNumber || '',
-                    whatsappNumber: careCenter?.officialDetails?.whatsappNumber || '',
-                    branchCovered: careCenter?.officialDetails?.branchCovered || '',
-                    zoneCovered: careCenter?.officialDetails?.zoneCovered || '',
-                    franchiseConnected: careCenter?.officialDetails?.franchiseConnected || '',
-                    amountReceivedFromCustomer: careCenter?.officialDetails?.amountReceivedFromCustomer || '',
-                },
+                // officialDetails: {
+                //     partnerId: careCenter?.officialDetails?.partnerId || '',
+                //     securePin: careCenter?.officialDetails?.securePin || '',
+                //     email: careCenter?.officialDetails?.email || '',
+                //     phoneNumber: careCenter?.officialDetails?.phoneNumber || '',
+                //     whatsappNumber: careCenter?.officialDetails?.whatsappNumber || '',
+                //     branchCovered: careCenter?.officialDetails?.branchCovered || '',
+                //     zoneCovered: careCenter?.officialDetails?.zoneCovered || '',
+                //     franchiseConnected: careCenter?.officialDetails?.franchiseConnected || '',
+                //     amountReceivedFromCustomer: careCenter?.officialDetails?.amountReceivedFromCustomer || '',
+                // },
                 ownershipDetails: {
                     ownerOfShop: careCenter?.ownershipDetails?.ownerOfShop || '',
                 },
@@ -369,7 +369,7 @@ const CareCenterUpdateForm = ({ careCenter, onSave, onCancel }: any) => {
             Swal.fire('Error', 'Failed to update profile. Try again.', 'error');
         }
     };
-
+    
 
     return (
         <div>
