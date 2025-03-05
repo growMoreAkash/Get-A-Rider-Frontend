@@ -114,12 +114,14 @@ const routes = [
     {
         path: dashHost + '/transferVerification',
         element: <TransferVerification />,
-        apis: ['/changeProcessingSection', '/getAllDrivers','/updateProfileDriver'],
+        apis: ["/changeProcessingSection", "/getAllDrivers","/updateDriverPrintout"]
+,
     },
     {
         path: dashHost + '/vehicleTransferVerification',
         element: <VehicleTransferVerification />,
-        apis: ['/changeVehicleProcessingSection', '/getAllVehicle','/vehiclePayment'],
+        apis: ["/changeVehicleProcessingSection", "/getAllVehicle", "/vehiclePayment", "/vehiclePaymentCallback", "/updateVehiclePrintout"]
+        ,
     },
     {
         path: dashHost + '/returnSection',
@@ -263,7 +265,8 @@ const routes = [
     {
         path: dashHost + '/updateCareCenter',
         element: <CareCenterUpdate />,
-        apis: ['/getAllCareCenter', '/getCareCenter', '/updateCareCenterProfile', '/uploadCareCenterDocuments'],
+       apis: ["/getAllCareCenter", "/getCareCenter", "/updateCareCenterProfile", "/uploadCareCenterDocuments","/sendCareCenterDetails","/fillOfficialDetails"]
+
     },
 ];
 

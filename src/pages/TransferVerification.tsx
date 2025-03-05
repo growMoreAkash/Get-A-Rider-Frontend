@@ -146,19 +146,20 @@ const TransferVerification = () => {
         }
     };
 
-    const handleDownload = (record: any) => {
+    const handleDownload = async (record: any) => {
+        console.log("recoed id",record.id)
         // Create a new PDF instance
         const doc = new jsPDF();
-
+    
         // Set font and size for the title
         doc.setFontSize(20);
         doc.setFont('helvetica', 'bold');
         doc.text('Driver Information Certificate', 15, 20);
-
+    
         // Set font and size for the content
         doc.setFontSize(12);
         doc.setFont('helvetica', 'normal');
-
+    
         // Add driver information in a document/certificate format
         doc.text(`Driver Name: ${record.fullname}`, 15, 40);
         doc.text(`Registration Number: ${record.registrationNumber}`, 15, 50);
@@ -167,12 +168,33 @@ const TransferVerification = () => {
         doc.text(`Time: ${record.time}`, 15, 80);
         doc.text(`Profile Completion: ${record.profilePercentage}%`, 15, 90);
         doc.text(`Document Completion: ${record.documentPercentage}%`, 15, 100);
-
+    
         // Add a border around the certificate
         doc.rect(10, 10, 190, 100);
-
+    
         // Save the PDF
         doc.save(`driver_certificate_${record.index}.pdf`);
+        
+        // Call the API to update the printout status
+        try {
+            const response = await fetch(`${host}/updateDriverPrintout/${record.id}`, {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get("token")}`,
+                },
+                body: JSON.stringify({ printout: true }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to update printout status');
+            }
+    
+            const result = await response.text(); // Get the plain text response
+            console.log('Printout status updated successfully:', result); // Log the result
+        } catch (error) {
+            console.error('Error updating printout status:', error);
+        }
     };
 
     // Check if all selected records have both profile and document percentages at 100%

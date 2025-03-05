@@ -47,7 +47,25 @@ const CareCenterUpdate = () => {
                 });
         }
     };
+    const handleSendDetails = async (careCenterId: string) => {
+        try {
+            const response = await axios.post(
+                `${host}/sendCareCenterDetails/${careCenterId}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
+            // Assuming the response is a plain text message
+            Swal.fire('Success', response.data, 'success');
+        } catch (error) {
+            console.error('Error sending details:', error);
+            Swal.fire('Error', 'Failed to send details. Please try again.', 'error');
+        }
+    };
     const getAllCareCenters = async () => {
         try {
             const response = await axios.post(
@@ -108,8 +126,8 @@ const CareCenterUpdate = () => {
         }
     };
 
-      // Handle form submission
-      const handleOfficialDetailsSubmit = async (data) => {
+    // Handle form submission
+    const handleOfficialDetailsSubmit = async (data) => {
         const payload = {
             careCenterId: careCenterData?._id, // Use the correct careCenterId
             ...data, // Spread the form data (excluding careCenterId)
@@ -118,16 +136,12 @@ const CareCenterUpdate = () => {
         console.log('Submitting payload:', payload);
 
         try {
-            const response = await axios.post(
-                `${host}/fillOfficialDetails`,
-                payload,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await axios.post(`${host}/fillOfficialDetails`, payload, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             console.log('API Response:', response.data);
 
@@ -140,7 +154,7 @@ const CareCenterUpdate = () => {
                 });
             } else {
                 Swal.fire('Error', 'Failed to update official details. Try again.', 'error');
-                console.log(response.status)
+                console.log(response.status);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -251,12 +265,12 @@ const CareCenterUpdate = () => {
                             )}
                             {activeTab === 'officialDetails' && (
                                 <>
-                                     <OfficialDetailsForm
-                    careCenterId={careCenterData._id} // Pass the correct careCenterId
-                    onSubmit={handleOfficialDetailsSubmit}
-                    onCancel={handleCancel}
-                    initialData={careCenterData.officialDetails || {}}
-                />
+                                    <OfficialDetailsForm
+                                        careCenterId={careCenterData._id} // Pass the correct careCenterId
+                                        onSubmit={handleOfficialDetailsSubmit}
+                                        onCancel={handleCancel}
+                                        initialData={careCenterData.officialDetails || {}}
+                                    />
                                 </>
                             )}
                             {activeTab === 'download' && (
@@ -265,6 +279,9 @@ const CareCenterUpdate = () => {
                                     <CareCenterDownload ref={careCenterDownloadRef} data={careCenterData} />
                                     <button onClick={() => handleDownloadImage(careCenterDownloadRef)} className="bg-teal-500 text-white px-4 py-2 rounded-md mt-4">
                                         Download as Image
+                                    </button>
+                                    <button onClick={() => handleSendDetails(careCenterData._id)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 ml-4">
+                                        Send Details
                                     </button>
                                 </div>
                             )}
