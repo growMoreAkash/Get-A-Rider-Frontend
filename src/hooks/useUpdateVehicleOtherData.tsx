@@ -10,7 +10,7 @@ const useUpdateVehicleOtherData = () => {
     const [loading, setLoading] = useState(false);
     const { fetchVehicleOtherData } = useVehicleContext();
     const { firstCreateId } = useFirstCreate();
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
 
     const showMessage = (msg = '', type = 'success') => {
         const toast: any = Swal.mixin({

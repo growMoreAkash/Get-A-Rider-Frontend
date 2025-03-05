@@ -72,7 +72,7 @@ const DocUpdateCareCenter: React.FC<DocUpdateCareCenterProps> = ({
   var token = Cookies.get('token');
 
   // Replace with your actual backend URL:
-  const host = 'http://localhost:8000/api';
+  const host = 'https://api.getarider.in/api';
 
   // We'll store previews in an object keyed by field name
   const [filePreviews, setFilePreviews] = useState<{ [key: string]: string | null }>({});

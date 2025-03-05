@@ -87,7 +87,7 @@ interface VehicleProviderProps {
 }
 
 export const VehicleProvider: React.FC<VehicleProviderProps> = ({ children }) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const [categories, setCategories] = useState<Category[]>([]);
     const [typeArr, setTypeArr] = useState<TypeData[]>([]);
     const [brandArr, setBrandArr] = useState<BrandData[]>([]);

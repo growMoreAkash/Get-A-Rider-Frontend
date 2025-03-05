@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
 
 const useProcessingSectionVerify = () => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const token = Cookies.get('token');
 
     const showMessage = (msg = '', type = 'success') => {

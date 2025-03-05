@@ -8,7 +8,7 @@ const useCreateMapBranch = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
 
     const createBranch = async (branchName: any, coordinates: any) => {
         setLoading(true);

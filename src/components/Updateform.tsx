@@ -21,7 +21,7 @@ interface UpdateFormFields {
 }
 
 const Updateform = ({ user, onSave, onCancel }: any) => {
-    const host = "http://localhost:8000/api"
+    const host = "https://api.getarider.in/api"
 
     const { userId } = useAuth();
     const [imagePreview, setImagePreview] = useState<string | null>(null); // For previewing image

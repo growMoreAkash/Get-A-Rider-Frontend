@@ -12,7 +12,7 @@ type FareData = {
 };
 
 const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const [formData, setFormData] = useState<FareData>({
         baseFare: '',
         farePerKm: '',

@@ -5,7 +5,7 @@ import { useVehicleContext } from '../context/VehicleContext';
 import Cookies from 'js-cookie';
 
 const useDeleteVehicleAttributes = () => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const { firstCreateId } = useFirstCreate();
     const { fetchVehicleOtherData } = useVehicleContext();
     const { getTypeBrandModel,fetchCategories } = useVehicleContext();

@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 
 const DriverLoginForm = ({ onLoginSuccess }: any) => {
-    const host = "http://localhost:8000/api"
+    const host = "https://api.getarider.in/api"
     const {
         register,
         handleSubmit,

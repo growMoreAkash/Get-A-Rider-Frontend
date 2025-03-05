@@ -45,7 +45,7 @@ interface PartnerFormFields {
 }
 
 const PartnerUpdateForm = ({ partner, onSave, onCancel }: any) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
 
     const {
         register,

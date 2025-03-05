@@ -36,7 +36,7 @@ const VehicleModelForm = ({ typeArr, brandArr }: VehicleModelFormProps) => {
     } = useForm();
     const selectedType = watch('type');
 
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const { getTypeBrandModel } = useVehicleContext();
 
     const typeOptions = typeArr?.map((type: any) => ({

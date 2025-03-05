@@ -133,7 +133,7 @@ interface TableRecord {
 }
 
 const VehicleTransferVerification = () => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const [page, setPage] = useState<number>(1);
     const PAGE_SIZES = [10, 20, 30, 50];
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
@@ -639,7 +639,7 @@ export default VehicleTransferVerification;
 // }
 
 // const VehicleTransferVerification = () => {
-//     const host = 'http://localhost:8000/api';
+//     const host = 'https://api.getarider.in/api';
 //     const [page, setPage] = useState<number>(1);
 //     const PAGE_SIZES = [10, 20, 30, 50];
 //     const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);

@@ -3,7 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const useGetAllBranches = () => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const [branchZoneData, setBranchZoneData] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);

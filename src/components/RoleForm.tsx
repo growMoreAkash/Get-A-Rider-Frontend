@@ -21,7 +21,7 @@ type RoleFormProps = {
 };
 
 const RoleForm = ({ title, data, onSubmit }: RoleFormProps) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const [apiFunctions, setApiFunctions] = useState({});
     const [role, setRole] = useState<Role>(data || { roleName: '', roleDefination: '', assignFunction: [] });
     const [selectedSection, setSelectedSection] = useState(0);
