@@ -17,7 +17,7 @@ interface VehicleBrandFormProps {
 }
 
 const VehicleBrandForm = ({ typeArr }: VehicleBrandFormProps) => {
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const {
         register,
         handleSubmit,

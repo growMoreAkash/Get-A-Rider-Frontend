@@ -13,7 +13,7 @@ import Cookies from 'js-cookie';
 
 // Example: if you have the host in a secret file, import it
 // import { host } from '../secret';
-const host = 'http://localhost:8000/api'; // or from secret if needed
+const host = 'https://api.getarider.in/api'; // or from secret if needed
 
 const VehicleUpdate = () => {
     const { vehicles } = useVehicleContext();

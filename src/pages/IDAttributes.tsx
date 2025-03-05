@@ -11,7 +11,7 @@ const IDAttributes = () => {
 
     const fetchFirstCreateId = async () => {
         try {
-            var response = await axios.post('http://localhost:8000/api/firstCreateMaster', {}, {
+            var response = await axios.post('https://api.getarider.in/api/firstCreateMaster', {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

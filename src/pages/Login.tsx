@@ -10,7 +10,7 @@ type User = {
 };
 
 const Login = () => {
-    const host = "http://localhost:8000/api";
+    const host = "https://api.getarider.in/api";
     const [type, setType] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');

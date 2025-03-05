@@ -24,7 +24,7 @@ export const DriverProvider: React.FC<DriverProviderProps> = ({ children }) => {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const getAllDrivers = async () => {
-        const host = 'http://localhost:8000/api';
+        const host = 'https://api.getarider.in/api';
         const apiUrl = '/getAllDrivers';
         var token = Cookies.get('token');
 

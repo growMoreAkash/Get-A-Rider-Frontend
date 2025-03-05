@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // const apiUrl = import.meta.env.VITE_API_URL;
 
-    const host = 'http://localhost:8000/api';
+    const host = 'https://api.getarider.in/api';
     const getAllUsers = async () => {
         try {
             const response = await axios.post(

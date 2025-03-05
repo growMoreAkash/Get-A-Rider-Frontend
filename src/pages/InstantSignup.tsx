@@ -20,7 +20,7 @@ interface User {
 }
 
 const InstantSignup = () => {
-    const host = "http://localhost:8000/api"
+    const host = "https://api.getarider.in/api"
     const [showOtpPopup, setShowOtpPopup] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [otp, setOtp] = useState('');
