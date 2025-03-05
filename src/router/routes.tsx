@@ -128,11 +128,11 @@ const routes = [
         element: <ReturnSection />,
         apis: ['/changeProcessingSection', '/getAllDrivers'],
     },
-    // {
-    //     path: dashHost + '/driverVerification',
-    //     element: <DriverVerification />,
-    //     apis: [],
-    // },
+    {
+        path: dashHost + '/driverVerification',
+        element: <DriverVerification />,
+        apis: ['/getAllDrivers','/changeProcessingSection'],
+    },
     // {
     //     path: dashHost + '/vehicleVerification',
     //     element: <VehicleVerification />,
@@ -142,7 +142,7 @@ const routes = [
     {
         path: dashHost + '/fairSetup',
         element: <FairSetup />,
-        apis: ["/getZone", "/getAllZonesByBranch", "/addFareToZone"]
+        apis: ["/getZone", "/getAllZonesByBranch", "/addFareToZone",'/getIdCreation/:MasterId','/getVehicleOtherData']
     },
     {
         path: dashHost + '/branchSetup/createBranch',

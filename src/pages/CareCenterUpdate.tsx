@@ -59,7 +59,7 @@ const CareCenterUpdate = () => {
                 }
             );
 
-            // Assuming the response is a plain text message
+           
             Swal.fire('Success', response.data, 'success');
         } catch (error) {
             console.error('Error sending details:', error);
@@ -92,13 +92,13 @@ const CareCenterUpdate = () => {
         {
             icon: 'bi-pencil-fill',
             title: 'Edit',
-            onClick: (row: any) => handleEdit(row), // Trigger edit when clicked
+            onClick: (row: any) => handleEdit(row), 
             className: 'text-teal-400',
         },
         {
             icon: 'bi-trash-fill',
             title: 'Delete',
-            onClick: (row: any) => {}, // Handle delete (not implemented here)
+            onClick: (row: any) => {},
             className: 'text-red-400',
         },
     ];
@@ -129,8 +129,8 @@ const CareCenterUpdate = () => {
     // Handle form submission
     const handleOfficialDetailsSubmit = async (data) => {
         const payload = {
-            careCenterId: careCenterData?._id, // Use the correct careCenterId
-            ...data, // Spread the form data (excluding careCenterId)
+            careCenterId: careCenterData?._id, 
+            ...data, 
         };
 
         console.log('Submitting payload:', payload);
@@ -168,7 +168,7 @@ const CareCenterUpdate = () => {
     };
     const handleCancel = () => {
         console.log('Form cancelled');
-        // Add logic to handle cancellation (e.g., close the form)
+        
     };
     const careCenterColumns = [
         // { header: 'Id', key: '_id' },

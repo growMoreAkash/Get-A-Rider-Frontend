@@ -99,7 +99,6 @@ const TransferVerification = () => {
                 documentPercentage: calculateDocumentPercentage(driver),
             }));
 
-            // Apply sorting
             const sortedData = sortStatus.columnAccessor ? sortBy(formattedData, sortStatus.columnAccessor) : formattedData;
 
             if (sortStatus.direction === 'desc') {
@@ -114,7 +113,6 @@ const TransferVerification = () => {
 
     useEffect(() => {
         fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, pageSize, search, sortStatus]);
 
     const handleTransfer = async () => {
@@ -138,7 +136,7 @@ const TransferVerification = () => {
 
             console.log('Transfer Response:', response.data);
             alert('Drivers transferred successfully!');
-            // Optionally, refetch data to reflect changes
+            
             fetchData();
         } catch (error) {
             console.error('Error during transfer:', error);
@@ -175,7 +173,7 @@ const TransferVerification = () => {
         // Save the PDF
         doc.save(`driver_certificate_${record.index}.pdf`);
         
-        // Call the API to update the printout status
+        
         try {
             const response = await fetch(`${host}/updateDriverPrintout/${record.id}`, {
                 method: 'POST', 
@@ -190,14 +188,14 @@ const TransferVerification = () => {
                 throw new Error('Failed to update printout status');
             }
     
-            const result = await response.text(); // Get the plain text response
-            console.log('Printout status updated successfully:', result); // Log the result
+            const result = await response.text(); 
+            console.log('Printout status updated successfully:', result); 
         } catch (error) {
             console.error('Error updating printout status:', error);
         }
     };
 
-    // Check if all selected records have both profile and document percentages at 100%
+    
     const isTransferDisabled = selectedRecords.some(
         (record) => record.profilePercentage !== '100.00' || record.documentPercentage !== '100.00'
     );

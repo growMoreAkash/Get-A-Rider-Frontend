@@ -248,11 +248,11 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import useGetIdCreation from '../hooks/useGetIdCreation'; // Custom hook for fetching branch and zone data
+import useGetIdCreation from '../hooks/useGetIdCreation';
 
 interface CareCenterFormFields {
-  branch: string; // This will store the branchId (branch code)
-  zone: string; // This will store the zoneId
+  branch: string; 
+  zone: string; 
   numberOfZone: string;
   vehicletype: string;
   email: string;
@@ -265,10 +265,10 @@ interface CareCenterFormFields {
 }
 
 interface OfficialDetailsformProps {
-  careCenterId: string; // Passed as a prop
+  careCenterId: string; 
   onSubmit: (data: CareCenterFormFields) => void;
   onCancel: () => void;
-  initialData: Partial<CareCenterFormFields>; // Initial data for the form
+  initialData: Partial<CareCenterFormFields>; 
 }
 
 const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: OfficialDetailsformProps) => {
@@ -281,41 +281,31 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
     formState: { errors },
   } = useForm<CareCenterFormFields>();
 
-  // Fetch branch and zone data using the custom hook
+
   const { branch, zone } = useGetIdCreation();
 
-  // State for showing suggestions
   const [showBranchSuggestions, setShowBranchSuggestions] = useState(false);
   const [showZoneSuggestions, setShowZoneSuggestions] = useState(false);
 
-  // State for displaying branch name
   const [displayBranchName, setDisplayBranchName] = useState('');
 
-  // State for displaying zone name
   const [displayZoneName, setDisplayZoneName] = useState('');
 
-  // State for filtered zones
   const [filteredZones, setFilteredZones] = useState<{ zoneId: string; zoneName: string }[]>([]);
 
-  // Watch the selected branch
   const selectedBranch = watch('branch');
 
-  // Refs for branch and zone dropdowns
   const branchDropdownRef = useRef<HTMLDivElement>(null);
   const zoneDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Reset form when initialData changes
   useEffect(() => {
     if (initialData && branch.length > 0 && zone.length > 0) {
-      // Find the branch name corresponding to the branch code in initialData
       const initialBranch = branch.find((b) => b.branchId === initialData.branch);
       const initialBranchName = initialBranch ? initialBranch.branchName : '';
 
-      // Find the zone name corresponding to the zoneId in initialData
       const initialZone = zone.find((z) => z.zoneId === initialData.zone);
       const initialZoneName = initialZone ? initialZone.zoneName : '';
 
-      // Set the form values
       reset({
          branch:  initialBranchName,
          zone: initialZoneName,
@@ -330,13 +320,10 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
         franchiseAmount: initialData.franchiseAmount || 0,
       });
 
-      // Set the display branch name
       setDisplayBranchName(initialBranchName);
 
-      // Set the display zone name
       setDisplayZoneName(initialZoneName);
 
-      // Filter zones based on the selected branch
       if (initialData.branch) {
         const filtered = zone.filter((z) => z.branchCode === initialBranch?.branchCode);
         setFilteredZones(filtered);
@@ -344,36 +331,29 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
     }
   }, [initialData, reset, branch, zone]);
 
-  // Handle branch selection
   const handleBranchSelection = (branchId: string, branchName: string) => {
     setValue('branch', branchId); // Set branchId in form
     setDisplayBranchName(branchName); // Set branch name for display
     setShowBranchSuggestions(false); // Hide suggestions
 
-    // Find the selected branch
     const selectedBranch = branch.find((b) => b.branchId === branchId);
     if (selectedBranch) {
-      // Filter zones based on the selected branch's branchCode
       const filtered = zone.filter((z) => z.branchCode === selectedBranch.branchCode);
       setFilteredZones(filtered);
     }
 
-    // Clear the selected zone when the branch changes
     setValue('zone', '');
-    setDisplayZoneName(''); // Clear the displayed zone name
+    setDisplayZoneName(''); 
   };
 
-  // Handle zone selection
   const handleZoneSelection = (zoneId: string, zoneName: string) => {
-    setValue('zone', zoneId); // Set zoneId in form
-    setDisplayZoneName(zoneName); // Set zone name for display
-    setShowZoneSuggestions(false); // Hide suggestions
+    setValue('zone', zoneId); 
+    setDisplayZoneName(zoneName); 
+    setShowZoneSuggestions(false); 
   };
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Close branch dropdown if clicked outside
       if (
         branchDropdownRef.current &&
         !branchDropdownRef.current.contains(event.target as Node)
@@ -381,7 +361,6 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
         setShowBranchSuggestions(false);
       }
 
-      // Close zone dropdown if clicked outside
       if (
         zoneDropdownRef.current &&
         !zoneDropdownRef.current.contains(event.target as Node)
@@ -390,16 +369,13 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
       }
     };
 
-    // Add event listener for clicks outside
     document.addEventListener('mousedown', handleClickOutside);
 
-    // Cleanup event listener
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // Close dropdowns when submitting or canceling the form
   const handleFormSubmit = (data: CareCenterFormFields) => {
     setShowBranchSuggestions(false);
     setShowZoneSuggestions(false);
@@ -588,8 +564,7 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                             />
                             {errors.franchiseAmount && <p className="text-red-500 text-sm">{errors.franchiseAmount.message}</p>}
                         </div>
-            {/* Other fields (e.g., Vehicle Type, Email, etc.) */}
-            {/* ... */}
+            
           </div>
 
           {/* Submit and Cancel Buttons */}
@@ -597,9 +572,9 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
             <button type="submit" className="bg-teal-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-teal-600">
               Update Official Details
             </button>
-            <button type="button" onClick={handleFormCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">
+            {/* <button type="button" onClick={handleFormCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">
               Cancel
-            </button>
+            </button> */}
           </div>
         </form>
       </div>
