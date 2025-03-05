@@ -53,6 +53,29 @@ function InitMap() {
 
     drawingManager.setMap(map);
 
+    var searchBox = new google.maps.places.SearchBox(document.getElementById('search-box'));
+
+    // Bias search results towards the current map view
+    map.addListener('bounds_changed', function () {
+        searchBox.setBounds(map.getBounds());
+    });
+
+    searchBox.addListener('places_changed', function () {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) return;
+
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(place => {
+            if (!place.geometry) return;
+            if (place.geometry.viewport) bounds.union(place.geometry.viewport);
+            else bounds.extend(place.geometry.location);
+        });
+
+        map.fitBounds(bounds);
+    });
+
+
     function clearSelection() {
         if (selectedShape) {
             selectedShape.setEditable(false);
@@ -76,7 +99,7 @@ function InitMap() {
             selectedShape.setMap(null);
             drawingManager.setMap(null);
             coordinates.splice(0, coordinates.length);
-            document.getElementById('info').innerHTML = '';
+            // document.getElementById('info').innerHTML = '';
         }
     }
 
@@ -117,11 +140,8 @@ function InitMap() {
         for (var i = 0; i < len; i++) {
             coordinates.push(newShape.getPath().getAt(i).toUrlValue(5));
         }
-        document.getElementById('info').innerHTML = coordinates;
+        // document.getElementById('info').innerHTML = coordinates;
         window.parent.postMessage({ type: 'SEND_COORDINATES', data: coordinates }, '*');
-
-        // document.getElementById("info").innerHTML = coordinates;
-        //////.log(coordinates);
         return coordinates;
     }
 
@@ -138,10 +158,10 @@ function InitMap() {
             coordinates.splice(0, coordinates.length);
             var len = event.getPath().getLength();
             for (var i = 0; i < len; i++) {
-                document.getElementById('info').innerHTML = coordinates;
+                // document.getElementById('info').innerHTML = coordinates;
                 coordinates.push(event.getPath().getAt(i).toUrlValue(5));
             }
-            document.getElementById('info').innerHTML = coordinates;
+            // document.getElementById('info').innerHTML = coordinates;
             window.parent.postMessage({ type: 'SEND_COORDINATES', data: coordinates }, '*');
             //////.log(coordinates);
         });
@@ -150,10 +170,10 @@ function InitMap() {
             coordinates.splice(0, coordinates.length);
             var len = event.getPath().getLength();
             for (var i = 0; i < len; i++) {
-                document.getElementById('info').innerHTML = coordinates;
+                // document.getElementById('info').innerHTML = coordinates;
                 coordinates.push(event.getPath().getAt(i).toUrlValue(5));
             }
-            document.getElementById('info').innerHTML = coordinates;
+            // document.getElementById('info').innerHTML = coordinates;
             window.parent.postMessage({ type: 'SEND_COORDINATES', data: coordinates }, '*'); // ✅ Ensures React gets the latest data
         });
 

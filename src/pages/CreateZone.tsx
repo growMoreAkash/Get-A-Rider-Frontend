@@ -32,7 +32,7 @@ const CreateZone = () => {
     const [editZone, setEditZone] = useState(false);
 
     const { branchZoneData, getZoneByBranch , zoneData } = useGetAllBranches();
-    console.log(branchZoneData, 'branches');
+
 
     const { getBranchIdData, branchData } = useGetBranchIdData();
 
@@ -53,7 +53,7 @@ const CreateZone = () => {
         };
     }, []);
 
-    console.log(coordinates, 'coordinates');
+    // console.log(coordinates, 'coordinates');
 
     const handleSubmit = (e: any) => {
         e.preventDefault();

@@ -11,7 +11,7 @@ const GeoFenceMap = () => {
     const [coordinates, setCoordinates] = useState([]);
     const [branchName, setBranchName] = useState('');
     const iframeRef = useRef(null);
-    const [selectedBranch, setSelectedBranch] = useState('');
+    const [selectedBranch, setSelectedBranch] = useState<any>('');
     const { zone, country, branch, state } = useGetIdCreation();
     const { createBranch, success } = useCreateMapBranch();
 
@@ -41,7 +41,7 @@ const GeoFenceMap = () => {
         };
     }, []);
 
-    console.log(coordinates, 'coordinates');
+    // console.log(coordinates, 'coordinates');
 
     const handleSubmit = (e: any) => {
         e.preventDefault();

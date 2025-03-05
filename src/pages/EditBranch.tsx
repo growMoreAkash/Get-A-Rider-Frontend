@@ -6,6 +6,11 @@ import axios from 'axios';
 import { useVehicleContext } from '../context/VehicleContext';
 import Cookies from 'js-cookie';
 
+type branch = {
+    value: string;
+    label: string;
+};
+
 const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
     const host = "http://localhost:8000/api"
     const [coordinates, setCoordinates] = useState([]);
@@ -20,9 +25,9 @@ const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
 
     var token = Cookies.get('token');
 
-    const [selectedBranch, setSelectedBranch] = useState(null);
+    const [selectedBranch, setSelectedBranch] = useState<branch>();
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<any>({
         baseFare: '',
         farePerKm: '',
         cancellationFee: '',
@@ -60,7 +65,7 @@ const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
 
     const handleChange = (e: any) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({
+        setFormData((prevData : any) => ({
             ...prevData,
             [name]: name === 'branchName' ? value : value === '' ? '' : Number(value),
         }));
@@ -82,9 +87,8 @@ const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
         });
 
         const requestData = {
-            vehicleType: selectedTypes, // Array of selected type IDs
             branchPrice: formData, // Spread existing fare-related form data
-            branchId,
+            branchId : selectedBranch?.value,
             branchVertex: formattedCoordinates,
         };
 
@@ -143,7 +147,7 @@ const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
             </div> */}
 
             <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" onSubmit={handleSubmit}>
-                {/* {Object.keys(formData).map(
+                {Object.keys(formData).map(
                     (key) =>
                         key !== 'branchId' &&
                         key !== 'branchName' && (
@@ -161,7 +165,7 @@ const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
                                 />
                             </div>
                         )
-                )} */}
+                )}
                 <div className="flex justify-center mt-4 sm:col-span-2 md:col-span-3 lg:col-span-4">
                     <iframe src="/geofence.html" title="Geofence Map" className="w-full h-[460px]"></iframe>
                 </div>

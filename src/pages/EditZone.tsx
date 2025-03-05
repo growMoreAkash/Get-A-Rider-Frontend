@@ -35,8 +35,10 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
 
     const [branchId, setBranchId] = useState('');
     const [zoneId, setZoneId] = useState('');
+    const [selectedTypes, setSelectedTypes] = useState<string[]>(() => {
+        return branchData?.vehicleType?.map((vehicle: any) => vehicle.name) || [];
+    });
 
-    const [selectedTypes, setSelectedTypes] = useState<string[]>(() => branchData?.vehicleType?.filter((vehicle: any) => vehicle.active).map((vehicle: any) => vehicle._id) || []);
     const [selectedBranch, setSelectedBranch] = useState(null);
     const [selectedZone, setSelectedZone] = useState(null);
 
@@ -74,25 +76,23 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
         label: `${z.zoneName} (${z.zoneId})`,
     }));
 
-    console.log(typeArr, 'typeArr');
-
     useEffect(() => {
         if (branchData) {
             // Set default form values from the first vehicle type
-            if (branchData.vehicleType?.length > 0) {
-                const firstVehicle = branchData.vehicleType[0];
+            // if (branchData.vehicleType?.length > 0) {
+            //     const firstVehicle = branchData.vehicleType[0];
 
-                setFormData({
-                    baseFare: firstVehicle.price.baseFare,
-                    farePerKm: firstVehicle.price.farePerKm,
-                    cancellationFee: firstVehicle.price.cancellationFee,
-                    minimumCancellationFee: firstVehicle.price.minimumCancellationFee,
-                    ideleFee: firstVehicle.price.ideleFee,
-                    tripDelayFee: firstVehicle.price.tripDelayFee,
-                    tax: firstVehicle.price.tax,
-                    convenience: firstVehicle.price.convenience,
-                });
-            }
+            //     setFormData({
+            //         baseFare: firstVehicle.price.baseFare,
+            //         farePerKm: firstVehicle.price.farePerKm,
+            //         cancellationFee: firstVehicle.price.cancellationFee,
+            //         minimumCancellationFee: firstVehicle.price.minimumCancellationFee,
+            //         ideleFee: firstVehicle.price.ideleFee,
+            //         tripDelayFee: firstVehicle.price.tripDelayFee,
+            //         tax: firstVehicle.price.tax,
+            //         convenience: firstVehicle.price.convenience,
+            //     });
+            // }
 
             // Set default selected branch
             if (branchData.branchId) {
@@ -110,7 +110,7 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
 
             setCoordinates(branchData.vertex?.map(({ latitude, longitude }: any) => `${latitude}, ${longitude}`));
 
-            const defaultSelectedTypes = branchData.vehicleType?.filter((vehicle: any) => vehicle.active).map((vehicle: any) => vehicle._id);
+            const defaultSelectedTypes = branchData.vehicleType?.filter((vehicle: any) => vehicle.active).map((vehicle: any) => vehicle.name);
 
             console.log('Default selected types:', defaultSelectedTypes);
             setSelectedTypes(defaultSelectedTypes);
@@ -118,8 +118,14 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
         }
     }, [branchData]);
 
-    const handleTypeChange = (id: string) => {
-        setSelectedTypes((prev) => (prev?.includes(id) ? prev?.filter((t) => t !== id) : [...prev, id]));
+    const handleTypeChange = (name: string) => {
+        setSelectedTypes((prev) => {
+            if (prev.includes(name)) {
+                return prev.filter((t) => t !== name); // Remove if already selected
+            } else {
+                return [...prev, name]; // Add if not selected
+            }
+        });
     };
 
     const handleIframeMessage = (event: any) => {
@@ -152,12 +158,6 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
             vehicleType: selectedTypes, // Array of selected type IDs
             vertex: formattedCoordinates,
         };
-        const requestData2 = {
-            zoneId,
-            vehicleType: selectedTypes, // Array of selected type IDs
-            price: formData,
-        };
-
         try {
             const response = await axios.put(`${host}/updateZone`, requestData, {
                 headers: {
@@ -165,22 +165,15 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log('Branch updated successfully', response.data);
+            setSelectedTypes([]); // Clear selected vehicle types
+            setCoordinates([]); // Clear coordinates
+            setEditZone(false);
         } catch (error: any) {
             console.error('Error updating branch:', error.response?.data || error.message);
         }
-
-        try {
-            await axios.put(`${host}/addFareToZone`, requestData2, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-        } catch (error) {
-            alert('Error adding fare');
-        }
     };
+
+    console.log(selectedTypes, 'selectedType');
 
     return (
         <div>
@@ -205,7 +198,7 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
                     >
                         {typeArr.map((type: any) => (
                             <label key={type._id} className="flex items-center gap-2 border p-2 rounded-md min-w-max">
-                                <input type="checkbox" value={type._id} checked={selectedTypes?.includes(type._id)} onChange={() => handleTypeChange(type._id)} />
+                                <input type="checkbox" value={type.name} checked={selectedTypes?.includes(type.name)} onChange={() => handleTypeChange(type.name)} />
                                 {type.name}
                             </label>
                         ))}
@@ -213,7 +206,7 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
                 </div>
 
                 <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" onSubmit={handleSubmit}>
-                    {Object.keys(formData).map(
+                    {/* {Object.keys(formData).map(
                         (key) =>
                             key !== 'branchId' &&
                             key !== 'zoneId' &&
@@ -232,7 +225,7 @@ const EditZone = ({ branchData, branch, zone, setEditZone }: any) => {
                                     />
                                 </div>
                             )
-                    )}
+                    )} */}
                     <div className="flex justify-center mt-4 sm:col-span-2 md:col-span-3 lg:col-span-4">
                         <iframe src="/geofence.html" title="Geofence Map" className="w-full h-[460px]"></iframe>
                     </div>
