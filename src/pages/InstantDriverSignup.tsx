@@ -90,6 +90,7 @@ const InstantDriverSignup = () => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
+
                     'Authorization': `Bearer ${Cookies.get("token")}`
                 },
             });
