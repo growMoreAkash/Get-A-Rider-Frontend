@@ -13,7 +13,7 @@ const TypeReusableForm = ({ title, firstCreateId, handleTypeFormSubmit }: any) =
         reset,
     } = useForm();
 
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
 
     const registerTitle = title?.toLowerCase().replace(/\s/g, '');
 

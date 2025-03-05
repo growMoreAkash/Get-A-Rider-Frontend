@@ -7,7 +7,7 @@ import { useVehicleContext } from '../context/VehicleContext';
 import Cookies from 'js-cookie';
 
 const EditBranch = ({ branch, branchData, setEditBranch }: any) => {
-    const host = "https://api.getarider.in/api"
+    const host = "http://localhost:8000/api"
     const [coordinates, setCoordinates] = useState([]);
     const [vertex, setVertex] = useState([]);
     const [selectedTypes, setSelectedTypes] = useState<string[]>([]);

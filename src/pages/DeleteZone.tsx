@@ -24,7 +24,7 @@ const DeleteZone = () => {
     var token = Cookies.get('token');
 
     const deleteZone = async (branchId: any, zoneId: any) => {
-        const host = 'https://api.getarider.in/api';
+        const host = 'http://localhost:8000/api';
         try {
             await axios.put(
                 `${host}/deleteZone/${branchId}/${zoneId}`,

@@ -17,7 +17,7 @@ type CareCenter = {
 
 const CareCenterUpdate = () => {
     const careCenterDownloadRef = useRef(null);
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const handleLoginSuccess = () => {
         setIsLoggedIn(true);

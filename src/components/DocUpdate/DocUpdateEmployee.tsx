@@ -44,7 +44,7 @@ interface DocUpdateEmployeeProps {
 // 2) Main Component
 const DocUpdateEmployee: React.FC<DocUpdateEmployeeProps> = ({ employee, onSave, onCancel }) => {
     // Replace with your actual backend URL:
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
 
     // 3) We'll store previews in an object keyed by field name
     const [filePreviews, setFilePreviews] = useState<{

@@ -81,7 +81,7 @@ const IDAttributeForm: React.FC<IDAttributeFormProps> = ({ type, masterId, count
             }
 
             const endpoint = getEndpoint();
-            const response = await axios.post(`https://api.getarider.in/api${endpoint}`, payload, {
+            const response = await axios.post(`http://localhost:8000/api${endpoint}`, payload, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 

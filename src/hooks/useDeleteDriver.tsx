@@ -4,7 +4,7 @@ import React from 'react';
 import Swal from 'sweetalert2';
 
 const useDeleteDriver = () => {
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
     const onDriverDelete = async (id: string) => {
         try {
             await axios.put(`${host}/deleteDriver/${id}`, {

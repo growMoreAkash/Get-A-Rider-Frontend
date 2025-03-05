@@ -42,7 +42,7 @@ interface DocUpdateOwnerProps {
 // 2) Main Component
 const DocUpdateOwner: React.FC<DocUpdateOwnerProps> = ({ driverId, owners, selectedOwner, setSelectedOwner, fetchOwners, onSave, onCancel }) => {
     // Replace with your actual backend URL:
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
 
     // 3) We'll store previews in an object keyed by field name
     const [filePreviews, setFilePreviews] = useState<{

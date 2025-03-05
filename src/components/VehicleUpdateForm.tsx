@@ -12,7 +12,7 @@ interface DropdownItem {
 }
 
 const VehicleUpdateForm = ({ vehicle, fetchVehicleOtherData, driver, professions, occupations, onSave, onCancel }: any) => {
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
 
     type OldValue = string | { data?: string };
     console.log("object")

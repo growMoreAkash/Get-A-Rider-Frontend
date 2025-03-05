@@ -15,7 +15,7 @@ import useDeleteDriver from '../hooks/useDeleteDriver';
 import Cookies from 'js-cookie';
 
 const DriverUpdate = () => {
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const handleLoginSuccess = () => {
         setIsLoggedIn(true);
@@ -41,12 +41,12 @@ const DriverUpdate = () => {
 
     const fetchAttributes = async () => {
         try {
-            var firstCreateId = (await axios.post('https://api.getarider.in/api/firstCreateMaster', {}, {
+            var firstCreateId = (await axios.post('http://localhost:8000/api/firstCreateMaster', {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })).data.id;
-            var response = await axios.post(`https://api.getarider.in/api/getDriverAttribute/${firstCreateId}`, {}, {
+            var response = await axios.post(`http://localhost:8000/api/getDriverAttribute/${firstCreateId}`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

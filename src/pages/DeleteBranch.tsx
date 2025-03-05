@@ -25,7 +25,7 @@ const DeleteBranch = () => {
     const activeTab = 'branch';
 
     const deleteBranch = async (branchId: any) => {
-        const host = 'https://api.getarider.in/api';
+        const host = 'http://localhost:8000/api';
         try {
             await axios.put(
                 `${host}/deleteBranch/${branchId}`,

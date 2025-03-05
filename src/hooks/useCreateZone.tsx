@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 
 const useCreateZone = () => {
-    const host = 'https://api.getarider.in/api';
+    const host = 'http://localhost:8000/api';
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
