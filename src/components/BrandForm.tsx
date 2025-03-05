@@ -87,7 +87,6 @@ const BrandForm = ({ typeArr }: any) => {
                     <input type="text" id="brand" {...register('brand', { required: 'Brand is required' })} className="form-input w-full" />
                     {errors?.brand && <p className="text-red-500 text-sm">{errors?.brand?.message as string}</p>}
                 </div>
-                http://localhost:8000/api
                 <div>
                     <label htmlFor="description" className="text-md font-semibold">
                         Short Description
