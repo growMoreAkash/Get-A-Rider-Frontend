@@ -126,41 +126,41 @@ const routes = [
         element: <ReturnSection />,
         apis: ['/changeProcessingSection', '/getAllDrivers'],
     },
-    {
-        path: dashHost + '/driverVerification',
-        element: <DriverVerification />,
-        apis: [],
-    },
-    {
-        path: dashHost + '/vehicleVerification',
-        element: <VehicleVerification />,
-        apis: [],
-    },
+    // {
+    //     path: dashHost + '/driverVerification',
+    //     element: <DriverVerification />,
+    //     apis: [],
+    // },
+    // {
+    //     path: dashHost + '/vehicleVerification',
+    //     element: <VehicleVerification />,
+    //     apis: [],
+    // },
     // iske baad
     {
         path: dashHost + '/fairSetup',
         element: <FairSetup />,
-        apis: [],
+        apis: ["/getZone", "/getAllZonesByBranch", "/addFareToZone"]
     },
     {
         path: dashHost + '/branchSetup/createBranch',
         element: <CreateBranch />,
-        apis: [],
+        apis: ["/createBranch", "/firstCreateMaster", "/getIdCreation"]
     },
     {
         path: dashHost + '/zoneSetup/createZone',
         element: <CreateZone />,
-        apis: [],
+        apis: ["/createZone", "/firstCreateMaster", "/getIdCreation"]
     },
     {
         path: dashHost + '/zoneSetup/deleteZone',
         element: <DeleteZone />,
-        apis: [],
+        apis: ["/createZone", "/firstCreateMaster", "/getIdCreation"]
     },
     {
         path: dashHost + '/branchSetup/deleteBranch',
         element: <DeleteBranch />,
-        apis: [],
+        apis: ["/createZone", "/firstCreateMaster", "/getIdCreation"]
     },
 
     // isek phele

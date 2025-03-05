@@ -88,7 +88,7 @@ const VehicleUpdate = () => {
                 }
             );
             // The response should contain the vehicle object
-            setVehicleData(response.data.vehicles); // store in state
+            setVehicleData(response.data.vehicle); // store in state
             setShowEditForm(true);
         } catch (error) {
             alert('Error fetching data from API');
@@ -125,8 +125,10 @@ const VehicleUpdate = () => {
     const onRefresh = () => {
         getAllDrivers(); // Refresh driver list (and thereby vehicles if needed)
     };
-    const onViewLog = () => {};
-    const onTrashed = () => {};
+    const onViewLog = () => { };
+    const onTrashed = () => { };
+
+    console.log(vehicleData, "VD")
 
     return (
         <div className="flex flex-col justify-center">
@@ -144,9 +146,8 @@ const VehicleUpdate = () => {
                                 <li>
                                     <button
                                         onClick={() => setActiveTab('driverUpdate')}
-                                        className={`text-capitalize px-4 py-2 rounded-md ${
-                                            activeTab === 'driverUpdate' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'
-                                        }`}
+                                        className={`text-capitalize px-4 py-2 rounded-md ${activeTab === 'driverUpdate' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'
+                                            }`}
                                     >
                                         Vehicle Update
                                     </button>
@@ -154,9 +155,8 @@ const VehicleUpdate = () => {
                                 <li>
                                     <button
                                         onClick={() => setActiveTab('driverDocUpdate')}
-                                        className={`text-capitalize px-4 py-2 rounded-md ${
-                                            activeTab === 'driverDocUpdate' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'
-                                        }`}
+                                        className={`text-capitalize px-4 py-2 rounded-md ${activeTab === 'driverDocUpdate' ? 'bg-teal-500 text-white font-semibold' : 'text-gray-700 hover:text-teal-500'
+                                            }`}
                                     >
                                         Vehicle Document Update
                                     </button>

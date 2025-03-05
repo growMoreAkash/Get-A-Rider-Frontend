@@ -11,7 +11,7 @@ interface DropdownItem {
     name: string;
 }
 
-const DriverUpdateForm = ({ vehicle, fetchVehicleOtherData, driver, professions, occupations, onSave, onCancel }: any) => {
+const VehicleUpdateForm = ({ vehicle, fetchVehicleOtherData, driver, professions, occupations, onSave, onCancel }: any) => {
     const host = 'http://localhost:8000/api';
 
     type OldValue = string | { data?: string };
@@ -297,4 +297,4 @@ const DriverUpdateForm = ({ vehicle, fetchVehicleOtherData, driver, professions,
     );
 };
 
-export default DriverUpdateForm;
+export default VehicleUpdateForm;
