@@ -5,6 +5,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useVehicleContext } from '../context/VehicleContext';
 import TypeBrandCategoryList from '../components/TypeBrandCategoryList';
+import useGetAllBranches from '../hooks/useGetAllBranches';
 
 type branch = {
     value: string;
@@ -16,7 +17,6 @@ type FareData = {
 };
 
 const FairSetup = () => {
-    const { branch } = useGetIdCreation();
     // const { typeArr } = useVehicleContext();\
     const [typeArr, setTypeArr] = useState([]);
     const token = Cookies.get('token');
@@ -43,6 +43,7 @@ const FairSetup = () => {
     });
 
     const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+    const { branch } = useGetAllBranches();
 
     const [activeTab, setActiveTab] = useState<string>('DAYSHARE');
     const [daySharedPrice, setDaySharedPrice] = useState([]);
@@ -58,8 +59,12 @@ const FairSetup = () => {
 
     const branchOptions = branch.map((b: any) => ({
         value: b.branchId,
-        label: `${b.branchName} (${b.branchId})`,
+        label: `branch: (${b.branchId})`,
     }));
+
+    console.log(zoneOptions, 'zoneoptions');
+
+    console.log(branch, 'branch');
 
     const handleChange = (selectedOption: any) => {
         setSelectedBranch(selectedOption);

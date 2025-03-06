@@ -8,6 +8,7 @@ const useGetAllBranches = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [zoneData,setZoneData] = useState<any[]>([]);
+    const [branch, setBranch] = useState([]);
 
     var token = Cookies.get('token');
     const fetchBranches = async () => {
@@ -19,6 +20,8 @@ const useGetAllBranches = () => {
                 },
             });
             const extractedZones: any = response.data.branches.flatMap((branch: { zones: any }) => branch.zones);
+            const extractedData = response.data?.branches.map((item:any) => ({ branchId: item.branchId }));
+            setBranch(extractedData);
             setBranchZoneData(extractedZones);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to fetch branches');
@@ -48,7 +51,7 @@ const useGetAllBranches = () => {
         fetchBranches();
     }, []);
 
-    return { branchZoneData, loading, error, getZoneByBranch,zoneData };
+    return { branchZoneData, loading, error, getZoneByBranch,zoneData , branch };
 };
 
 export default useGetAllBranches;
