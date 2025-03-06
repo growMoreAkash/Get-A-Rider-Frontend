@@ -163,19 +163,40 @@ const FairSetup = () => {
             );
             setNightReservedPrice(extractedNightReservedPrice);
 
-            const type = response.data.zones.flatMap((zone: any) =>
-                zone.vehicleType.map((vehicle: any) => ({
-                    name: vehicle.name,
-                }))
-            );
+            // const type = response.data.zones.flatMap((zone: any) =>
+            //     zone.vehicleType.map((vehicle: any) => ({
+            //         name: vehicle.name,
+            //     }))
+            // );
 
-            setTypeArr(type);
+            // setTypeArr(type);
         } catch (error) {
             setZone([]);
             setDaySharedPrice([]);
             setDayReservedPrice([]);
             setNightReservedPrice([]);
             setNightSharedPrice([]);
+            alert('error');
+        }
+    };
+
+    const fetchZoneByBranch = async () => {
+        try {
+            const response = await axios.get(`${host}/getZone/${selectedBranch?.value}/zone/${selectedZone?.value}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Include token in the request headers
+                },
+            });
+
+            // const type = response.data.zone.flatMap((zone: any) =>
+            //     zone.vehicleType.map((vehicle: any) => ({
+            //         name: vehicle.name,
+            //     }))
+            // );
+            const type = response.data.zone.vehicleType.map((vehicle: any) => ({ name: vehicle.name }));
+            setTypeArr(type);
+        } catch (error) {
+            console.log(error);
             alert('error');
         }
     };
@@ -204,7 +225,10 @@ const FairSetup = () => {
         if (selectedBranch?.value) {
             fetchZone();
         }
-    }, [selectedBranch]);
+        if (selectedZone?.value) {
+            fetchZoneByBranch();
+        }
+    }, [selectedBranch, selectedZone]);
 
     console.log(zone, 'zone');
     console.log(typeArr, 'typeArr');
@@ -267,6 +291,8 @@ const FairSetup = () => {
             alert('Error');
         }
     };
+
+    console.log(typeArr, 'typeArr');
 
     return (
         <div className="panel">
