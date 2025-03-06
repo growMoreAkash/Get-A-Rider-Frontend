@@ -17,7 +17,8 @@ type FareData = {
 
 const FairSetup = () => {
     const { branch } = useGetIdCreation();
-    const { typeArr } = useVehicleContext();
+    // const { typeArr } = useVehicleContext();\
+    const [typeArr, setTypeArr] = useState([]);
     const token = Cookies.get('token');
     const host = 'http://localhost:8000/api';
 
@@ -37,6 +38,8 @@ const FairSetup = () => {
         tripDelayFee: '',
         tax: '',
         convenience: '',
+        indexReg: '',
+        indexDed: '',
     });
 
     const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -159,6 +162,14 @@ const FairSetup = () => {
                 }))
             );
             setNightReservedPrice(extractedNightReservedPrice);
+
+            const type = response.data.zones.flatMap((zone: any) =>
+                zone.vehicleType.map((vehicle: any) => ({
+                    name: vehicle.name,
+                }))
+            );
+
+            setTypeArr(type);
         } catch (error) {
             setZone([]);
             setDaySharedPrice([]);
@@ -208,6 +219,8 @@ const FairSetup = () => {
         { header: 'Idele Fee', key: 'ideleFee' },
         { header: 'Tax', key: 'tax' },
         { header: 'Convenience', key: 'convenience' },
+        { header: 'IndexReg', key: 'indexReg' },
+        { header: 'IndexDed', key: 'indexDed' },
     ];
 
     const onTypeRefresh = () => {};
@@ -238,10 +251,24 @@ const FairSetup = () => {
             alert('Success');
 
             setSelectedTypes([]);
+            setFormData({
+                baseFare: '',
+                farePerKm: '',
+                cancellationFee: '',
+                minimumCancellationFee: '',
+                ideleFee: '',
+                tripDelayFee: '',
+                tax: '',
+                convenience: '',
+                indexReg: '',
+                indexDed: '',
+            });
         } catch (error: any) {
             alert('Error');
         }
     };
+
+    console.log(daySharedPrice, 'daySharedPrice');
 
     return (
         <div className="panel">
@@ -282,7 +309,7 @@ const FairSetup = () => {
                 <label className="text-lg font-medium">Select Types:</label>
                 <div className="flex gap-4 overflow-x-auto whitespace-nowrap mt-2 p-2 border rounded-md scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200" style={{ maxWidth: '100%' }}>
                     {typeArr.map((type: any) => (
-                        <label key={type._id} className="flex items-center gap-2 border p-2 rounded-md min-w-max">
+                        <label key={type.name} className="flex items-center gap-2 border p-2 rounded-md min-w-max">
                             <input type="checkbox" value={type.name} onChange={() => handleTypeChange(type.name)} checked={selectedTypes.includes(type.name)} />
                             {type.name}
                         </label>
