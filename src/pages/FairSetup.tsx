@@ -268,8 +268,6 @@ const FairSetup = () => {
         }
     };
 
-    console.log(daySharedPrice, 'daySharedPrice');
-
     return (
         <div className="panel">
             <div className="bg-white rounded">
