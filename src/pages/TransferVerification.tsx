@@ -4,7 +4,12 @@ import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import jsPDF from 'jspdf';
-
+import autoTable from 'jspdf-autotable';
+import barcode from "../assets/barcode1.svg";
+import icon from "../assets/icon_home.svg";
+import GYH from "../assets/gyh_logo.png";
+import bar1 from "../assets/bar1.png";
+import icon1 from "../assets/icon1.png";
 const TransferVerification = () => {
     const host = "http://localhost:8000/api";
     const [page, setPage] = useState(1);
@@ -144,56 +149,89 @@ const TransferVerification = () => {
         }
     };
 
-    const handleDownload = async (record: any) => {
-        console.log("recoed id",record.id)
-        // Create a new PDF instance
-        const doc = new jsPDF();
+
+
+const handleDownload = async (record) => {
+    const doc = new jsPDF();
     
-        // Set font and size for the title
-        doc.setFontSize(20);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Driver Information Certificate', 15, 20);
+    // Logo
+    const imgLogo = icon1; // Update with actual path
+    doc.addImage(imgLogo, 'PNG', 15, 10, 40, 15);
+
+    // Title
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Driver-Vehicle Details', 80, 20);
+
+    // Subtitle
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Get A Ride', 90, 28);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'italic');
+    doc.text('by Get Your Homes', 92, 33);
     
-        // Set font and size for the content
-        doc.setFontSize(12);
-        doc.setFont('helvetica', 'normal');
+    // Barcode (Placeholder, replace with actual barcode logic if needed)
+    const barcodeImg = bar1; // Update with actual barcode image
+    doc.addImage(barcodeImg, 'PNG', 160, 10, 30, 15);
     
-        // Add driver information in a document/certificate format
-        doc.text(`Driver Name: ${record.fullname}`, 15, 40);
-        doc.text(`Registration Number: ${record.registrationNumber}`, 15, 50);
-        doc.text(`Phone: ${record.phone}`, 15, 60);
-        doc.text(`Date: ${record.date}`, 15, 70);
-        doc.text(`Time: ${record.time}`, 15, 80);
-        doc.text(`Profile Completion: ${record.profilePercentage}%`, 15, 90);
-        doc.text(`Document Completion: ${record.documentPercentage}%`, 15, 100);
+    // Applicant Details
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Application Number: ${record.registrationNumber}`, 15, 45);
+    doc.text(`Beneficiary Name: ${record.fullname}`, 15, 50);
+    doc.text(`Branch: ${record.branch}`, 15, 55);
+    doc.text(`Zone: ${record.zone}`, 15, 60);
+    doc.text(`Centre ID: ${record.centreId}`, 15, 65);
+   // doc.text(`Center Location: ${record.centerLocation}`, 15, 70);
     
-        // Add a border around the certificate
-        doc.rect(10, 10, 190, 100);
+    // Draw Box for Driver's Details
+    doc.rect(10, 110, 190, 90); // (x, y, width, height)
     
-        // Save the PDF
-        doc.save(`driver_certificate_${record.index}.pdf`);
-        
-        
-        try {
-            const response = await fetch(`${host}/updateDriverPrintout/${record.id}`, {
-                method: 'POST', 
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${Cookies.get("token")}`,
-                },
-                body: JSON.stringify({ printout: true }),
-            });
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Driver's Details", 15, 120);
+
+    // Inside Box
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Name: ${record.fullname}`, 15, 130);
+    doc.text(`Phone: ${record.phone}`, 15, 140);
+    doc.text(`WhatsApp: ${record.whatsapp}`, 15, 150);
+    doc.text(`Care of: ${record.careof}`, 15, 160);
+    doc.text(`Care of phone: ${record.careofPhone}`, 15, 170);
+    doc.text(`Pincode: ${record.pincode}`, 15, 180);
+    doc.text(`Street Address: ${record.street_address}`, 15, 190);
     
-            if (!response.ok) {
-                throw new Error('Failed to update printout status');
-            }
+    // Footer Details
+    doc.setFontSize(9);
+    doc.text('Official Details', 15, doc.internal.pageSize.height - 30);
+    doc.text('Get A Ride by Get Your Homes', 15, doc.internal.pageSize.height - 25);
+    doc.text(`Address: ${record.address}`, 15, doc.internal.pageSize.height - 20);
+    doc.text(`Phone: ${record.companyPhone}`, 15, doc.internal.pageSize.height - 15);
+    doc.text(`WhatsApp: ${record.companyWhatsapp}`, 75, doc.internal.pageSize.height - 15);
+    doc.text(`Email: ${record.companyEmail}`, 135, doc.internal.pageSize.height - 15);
     
-            const result = await response.text(); 
-            console.log('Printout status updated successfully:', result); 
-        } catch (error) {
-            console.error('Error updating printout status:', error);
-        }
-    };
+    // Save the PDF
+    doc.save(`driver_certificate_${record.index}.pdf`);
+    
+    // Update Printout Status
+    try {
+        const response = await fetch(`${host}/updateDriverPrintout/${record.id}`, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${Cookies.get("token")}`,
+            },
+            body: JSON.stringify({ printout: true }),
+        });
+        if (!response.ok) throw new Error('Failed to update printout status');
+        console.log('Printout status updated successfully');
+    } catch (error) {
+        console.error('Error updating printout status:', error);
+    }
+};
+
 
     
     const isTransferDisabled = selectedRecords.some(

@@ -275,8 +275,11 @@ const CareCenterUpdate = () => {
                             )}
                             {activeTab === 'download' && (
                                 <div>
-                                    <h1 className="text-center text-2xl font-bold my-4">Care Center Details</h1>
+                                    <h1 className="text-center text-2xl font-bold my-4">Shop Owner</h1>
+                                    <div className='overflow-x-auto'>
                                     <CareCenterDownload ref={careCenterDownloadRef} data={careCenterData} />
+
+                                    </div>
                                     <button onClick={() => handleDownloadImage(careCenterDownloadRef)} className="bg-teal-500 text-white px-4 py-2 rounded-md mt-4">
                                         Download as Image
                                     </button>
