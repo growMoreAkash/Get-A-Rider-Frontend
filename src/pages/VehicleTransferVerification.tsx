@@ -96,15 +96,14 @@ interface Vehicle {
             verified: boolean;
         };
         _id: string;
-        processingSection :string;
+        processingSection: string;
     } | null;
     date: string;
     time: string;
     processingSection: string;
     isDriver: boolean;
     active: boolean;
-    payment?: string; 
-    
+    payment?: string;
 }
 
 interface APIResponse {
@@ -150,9 +149,7 @@ const VehicleTransferVerification = () => {
     const token = Cookies.get('token');
 
     const calculatePercentage = (fields: Record<string, any>, totalFields: number): number => {
-        const filledFields = Object.values(fields).filter(
-            (field) => (field.data && field.data !== '') || field.verified
-        ).length;
+        const filledFields = Object.values(fields).filter((field) => (field.data && field.data !== '') || field.verified).length;
         return Math.round((filledFields / totalFields) * 100);
     };
 
@@ -207,8 +204,8 @@ const VehicleTransferVerification = () => {
 
                 // Driver Documents Percentage
                 const driverDocumentsFields = vehicle.driverId?.driverDocument || {};
-                const driverDocumentsPercentage = calculatePercentage(driverDocumentsFields, 12);
-
+                const driverDocumentsPercentage = calculatePercentage(driverDocumentsFields, 13);
+                console.log(vehicle.driverId?.driverDocument);
                 // Vehicle Profile Percentage
                 const vehicleProfileFields = {
                     model: vehicle.details.model,
@@ -228,6 +225,7 @@ const VehicleTransferVerification = () => {
 
                 // Vehicle Documents Percentage
                 const vehicleDocumentsFields = vehicle.documents;
+                console.log(vehicle.documents);
                 const vehicleDocumentsPercentage = calculatePercentage(vehicleDocumentsFields, 9);
 
                 return {
@@ -241,12 +239,11 @@ const VehicleTransferVerification = () => {
                     vehicleId: vehicle._id,
                     vehicleModel: vehicle.details.model.data,
                     driverProfilePercentage,
-                    DriverTransfer : vehicle.driverId?.processingSection|| 'N/A',
+                    DriverTransfer: vehicle.driverId?.processingSection || 'N/A',
                     driverDocumentsPercentage,
                     vehicleProfilePercentage,
                     vehicleDocumentsPercentage,
                     payment: vehicle.payment || 'Pending',
-                     
                 };
             });
 
@@ -273,7 +270,6 @@ const VehicleTransferVerification = () => {
         setPage(1);
     }, [pageSize]);
 
-   
     const handleDownload = async (id: string, driverId: string, vehicleId: string, vehicleModel: string) => {
         const vehicle = recordsData.find((v) => v.id === id);
         if (!vehicle) {
@@ -285,48 +281,70 @@ const VehicleTransferVerification = () => {
             return;
         }
     
-        // Create PDF instance
-        const doc = new jsPDF('p', 'mm', 'a4');
+        try {
+            // Update the printout status to true
+            const response = await axios.post(
+                `${host}/updateVehiclePrintout/${id}`,
+                { printout: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            console.log('API Response:', response.data);
+            // Create PDF instance
+            const doc = new jsPDF('p', 'mm', 'a4');
     
-        // Certificate Background
-        doc.setFillColor(240, 240, 240);
-        doc.rect(5, 5, 200, 287, 'F');
+            // Certificate Background
+            doc.setFillColor(240, 240, 240);
+            doc.rect(5, 5, 200, 287, 'F');
     
-        // Title
-        doc.setFont('times', 'bold');
-        doc.setFontSize(22);
-        doc.text('Vehicle Registration Certificate', 105, 40, { align: 'center' });
+            // Title
+            doc.setFont('times', 'bold');
+            doc.setFontSize(22);
+            doc.text('Vehicle Registration Certificate', 105, 40, { align: 'center' });
     
-        // Subtitle
-        doc.setFont('times', 'normal');
-        doc.setFontSize(14);
-        doc.text(`This is to certify that the following vehicle has been successfully registered.`, 105, 55, { align: 'center' });
+            // Subtitle
+            doc.setFont('times', 'normal');
+            doc.setFontSize(14);
+            doc.text(`This is to certify that the following vehicle has been successfully registered.`, 105, 55, { align: 'center' });
     
-        // Vehicle Details
-        doc.setFont('times', 'bold');
-        doc.setFontSize(16);
-        doc.text(`Vehicle Details:`, 20, 75);
+            // Vehicle Details
+            doc.setFont('times', 'bold');
+            doc.setFontSize(16);
+            doc.text(`Vehicle Details:`, 20, 75);
     
-        doc.setFont('times', 'normal');
-        doc.setFontSize(14);
-        doc.text(`Vehicle Registration No: ${vehicle.vehicleRegistrationNumber}`, 20, 90);
-        doc.text(`Vehicle Model: ${vehicle.vehicleModel}`, 20, 105);
-        doc.text(`Owner Name: ${vehicle.driverName}`, 20, 120);
-        doc.text(`Driver ID: ${vehicle.driverId}`, 20, 135);
-        doc.text(`Phone Number: ${vehicle.phoneNumber}`, 20, 150);
-        doc.text(`Processing Section: ${vehicle.DriverTransfer}`, 20, 165);
+            doc.setFont('times', 'normal');
+            doc.setFontSize(14);
+            doc.text(`Vehicle Registration No: ${vehicle.vehicleRegistrationNumber}`, 20, 90);
+            doc.text(`Vehicle Model: ${vehicle.vehicleModel}`, 20, 105);
+            doc.text(`Owner Name: ${vehicle.driverName}`, 20, 120);
+            doc.text(`Driver ID: ${vehicle.driverId}`, 20, 135);
+            doc.text(`Phone Number: ${vehicle.phoneNumber}`, 20, 150);
+            doc.text(`Processing Section: ${vehicle.DriverTransfer}`, 20, 165);
     
-        // Signature Section
-        doc.setFont('times', 'bold');
-        doc.text('Authorized Signatory', 160, 260);
-        doc.setFontSize(12);
-        doc.text('Date:', 20, 270);
-        doc.text(vehicle.date, 40, 270);
+            // Signature Section
+            doc.setFont('times', 'bold');
+            doc.text('Authorized Signatory', 160, 260);
+            doc.setFontSize(12);
+            doc.text('Date:', 20, 270);
+            doc.text(vehicle.date, 40, 270);
     
-        // Save PDF
-        doc.save(`Vehicle_Certificate_${vehicle.vehicleRegistrationNumber}.pdf`);
+            // Save PDF
+            doc.save(`Vehicle_Certificate_${vehicle.vehicleRegistrationNumber}.pdf`);
+    
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to update printout status or generate PDF. Please try again.',
+            });
+        }
     };
-    
+
+    const isTransferDisabled = selectedRecords.some((record) => record.vehicleProfilePercentage !== 100 || record.vehicleDocumentsPercentage !== 100 || record.DriverTransfer !== 'VERIFY');
+
     const handleTransfer = async () => {
         if (selectedRecords.length === 0) {
             Swal.fire({
@@ -372,9 +390,7 @@ const VehicleTransferVerification = () => {
     const handlePayment = async (vehicleId: string) => {
         const { value: formValues } = await Swal.fire({
             title: 'Enter Payment Details',
-            html:
-                '<input id="swal-input1" class="swal2-input" placeholder="Email">' +
-                '<input id="swal-input2" class="swal2-input" placeholder="Phone">',
+            html: '<input id="swal-input1" class="swal2-input" placeholder="Email">' + '<input id="swal-input2" class="swal2-input" placeholder="Phone">',
             focusConfirm: false,
             showCancelButton: true,
             preConfirm: () => {
@@ -384,10 +400,10 @@ const VehicleTransferVerification = () => {
                 };
             },
         });
-    
+
         if (formValues) {
             const { email, phone } = formValues;
-    
+
             if (!email || !phone) {
                 Swal.fire({
                     icon: 'error',
@@ -396,7 +412,7 @@ const VehicleTransferVerification = () => {
                 });
                 return;
             }
-    
+
             try {
                 const response = await axios.post(
                     `${host}/vehiclePayment`,
@@ -411,7 +427,7 @@ const VehicleTransferVerification = () => {
                         },
                     }
                 );
-    
+
                 // Check if the response contains the short_url
                 if (response.data && response.data.short_url) {
                     // Redirect to the provided short URL
@@ -433,7 +449,7 @@ const VehicleTransferVerification = () => {
             }
         }
     };
-    
+
     return (
         <div>
             <div className="panel mt-6">
@@ -449,11 +465,7 @@ const VehicleTransferVerification = () => {
                         />
                     </div>
                     <div>
-                        <button
-                            type="button"
-                            className="btn btn-primary ltr:ml-4 rtl:mr-4"
-                            onClick={handleTransfer}
-                        >
+                        <button type="button" className="btn btn-primary ltr:ml-4 rtl:mr-4" onClick={handleTransfer} disabled={isTransferDisabled || selectedRecords.length === 0}>
                             Transfer
                         </button>
                     </div>
@@ -536,9 +548,7 @@ const VehicleTransferVerification = () => {
                                     render: ({ id, payment }) => (
                                         <button
                                             type="button"
-                                            className={`btn ${
-                                                payment === 'Paid' ? 'bg-green-500' : 'bg-red-500'
-                                            } text-white`}
+                                            className={`btn ${payment === 'Paid' ? 'bg-green-500' : 'bg-red-500'} text-white`}
                                             onClick={() => handlePayment(id)}
                                             disabled={payment === 'Paid'}
                                         >
@@ -549,16 +559,12 @@ const VehicleTransferVerification = () => {
                                 {
                                     accessor: 'download',
                                     title: 'Download',
-                                    render: ({ id, driverId, vehicleId, vehicleModel, }) => (
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary"
-                                            onClick={() => handleDownload(id, driverId, vehicleId, vehicleModel)}
-                                        >
+                                    render: ({ id, driverId, vehicleId, vehicleModel }) => (
+                                        <button type="button" className="btn btn-primary" onClick={() => handleDownload(id, driverId, vehicleId, vehicleModel)}>
                                             Download
                                         </button>
                                     ),
-                                }
+                                },
                             ]}
                             highlightOnHover
                             totalRecords={totalRecords}
@@ -675,14 +681,14 @@ export default VehicleTransferVerification;
 //                     },
 //                 }
 //             );
-    
+
 //             // Check if the API response is valid
 //             if (!response.data || !response.data.vehicles) {
 //                 throw new Error('Invalid API response');
 //             }
-    
+
 //             const { vehicles, totalVehicles } = response.data;
-    
+
 //             const formattedData = vehicles.map((vehicle) => ({
 //                 id: vehicle._id,
 //                 date: vehicle.date,
@@ -694,7 +700,7 @@ export default VehicleTransferVerification;
 //                 vehicleId: vehicle._id,
 //                 vehicleModel: vehicle.details.model.data,
 //             }));
-    
+
 //             setRecordsData(formattedData);
 //             setTotalRecords(totalVehicles);
 //         } catch (error) {

@@ -1,127 +1,465 @@
-import React, { useEffect, useState } from 'react';
+// import React, { useEffect, useState } from 'react';
+// import { useForm } from 'react-hook-form';
+// import useGetIdCreation from '../hooks/useGetIdCreation'; // Adjust the import path as necessary
+
+// interface CareCenterFormFields {
+//     branch: string; // This will store the branchId
+//     zone: string; // This will store the zoneId
+//     numberOfZone: string;
+//     vehicletype: string;
+//     email: string;
+//     whatsappNumber: string;
+//     phoneNumber: string;
+//     nearestCareCenter: string;
+//     computerAvailable: boolean;
+//     printerAvailable: boolean;
+//     franchiseAmount: number;
+// }
+
+// interface OfficialDetailsformProps {
+//     careCenterId: string; // Passed as a prop
+//     onSubmit: (data: CareCenterFormFields) => void;
+//     onCancel: () => void;
+//     initialData: Partial<CareCenterFormFields>; // Initial data for the form
+// }
+
+// const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: OfficialDetailsformProps) => {
+//     const {
+//         register,
+//         handleSubmit,
+//         reset,
+//         watch,
+//         formState: { errors },
+//     } = useForm<CareCenterFormFields>({
+//         defaultValues: {
+//             branch: initialData.branch || '',
+//             zone: initialData.zone || '',
+//             numberOfZone: initialData.numberOfZone || '',
+//             vehicletype: initialData.vehicletype || '',
+//             email: initialData.email || '',
+//             whatsappNumber: initialData.whatsappNumber || '',
+//             phoneNumber: initialData.phoneNumber || '',
+//             nearestCareCenter: initialData.nearestCareCenter || '',
+//             computerAvailable: initialData.computerAvailable || false,
+//             printerAvailable: initialData.printerAvailable || false,
+//             franchiseAmount: initialData.franchiseAmount || 0,
+//         },
+//     });
+
+//     // Fetch branch and zone data using the custom hook
+//     const { branch, zone, refetchData } = useGetIdCreation();
+
+//     // Watch the selected branch
+//     const selectedBranch = watch('branch');
+
+//     // Filter zones based on the selected branch's branchCode
+//     const filteredZones = selectedBranch ? zone.filter((z) => z.branchCode === branch.find((b) => b.branchId === selectedBranch)?.branchCode) : [];
+
+//     useEffect(() => {
+//         reset({
+//             branch: initialData.branch || '',
+//             zone: initialData.zone || '',
+//             numberOfZone: initialData.numberOfZone || '',
+//             vehicletype: initialData.vehicletype || '',
+//             email: initialData.email || '',
+//             whatsappNumber: initialData.whatsappNumber || '',
+//             phoneNumber: initialData.phoneNumber || '',
+//             nearestCareCenter: initialData.nearestCareCenter || '',
+//             computerAvailable: initialData.computerAvailable || false,
+//             printerAvailable: initialData.printerAvailable || false,
+//             franchiseAmount: initialData.franchiseAmount || 0,
+//         });
+//     }, [initialData, reset]);
+
+//     return (
+//         <div>
+//             <div className="panel">
+//                 <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+//                     {/* Form fields */}
+//                     <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
+//                         {/* Branch Dropdown */}
+//                         <div>
+//                             <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
+//                                 Branch
+//                             </label>
+//                             <select id="branch" {...register('branch', { required: 'Branch is required' })} className="form-select mt-1">
+//                                 <option value="">Select Branch</option>
+//                                 {branch.map((b) => (
+//                                     <option key={b._id} value={b.branchId}>
+//                                         {b.branchName}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                             {errors.branch && <p className="text-red-500 text-sm">{errors.branch.message}</p>}
+//                         </div>
+
+//                         {/* Zone Dropdown */}
+//                         <div>
+//                             <label htmlFor="zone" className="block text-sm font-medium text-gray-700">
+//                                 Zone
+//                             </label>
+//                             <select
+//                                 id="zone"
+//                                 {...register('zone', { required: 'Zone is required' })}
+//                                 className="form-select mt-1"
+//                                 disabled={!selectedBranch} // Disable if no branch is selected
+//                             >
+//                                 <option value="">Select Zone</option>
+//                                 {filteredZones.map((z) => (
+//                                     <option key={z._id} value={z.zoneId}>
+//                                         {z.zoneName}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                             {errors.zone && <p className="text-red-500 text-sm">{errors.zone.message}</p>}
+//                         </div>
+
+//                         {/* Number of Zone */}
+//                         <div>
+//                             <label htmlFor="numberOfZone" className="block text-sm font-medium text-gray-700">
+//                                 Number of Zone
+//                             </label>
+//                             <input
+//                                 id="numberOfZone"
+//                                 type="text"
+//                                 {...register('numberOfZone', { required: 'Number of Zone is required' })}
+//                                 placeholder="Enter Number of Zone"
+//                                 className="form-input mt-1"
+//                             />
+//                             {errors.numberOfZone && <p className="text-red-500 text-sm">{errors.numberOfZone.message}</p>}
+//                         </div>
+
+//                         {/* Vehicle Type */}
+//                         <div>
+//                             <label htmlFor="vehicletype" className="block text-sm font-medium text-gray-700">
+//                                 Vehicle Type
+//                             </label>
+//                             <select id="vehicletype" {...register('vehicletype', { required: 'Vehicle Type is required' })} className="form-select mt-1">
+//                                 <option value="">Select Vehicle Type</option>
+//                                 {[
+//                                     { label: 'Light weight', value: 'R' },
+//                                     { label: 'Heavy weight', value: 'S' },
+//                                     { label: 'All type', value: 'T' },
+//                                 ].map((option) => (
+//                                     <option key={option.value} value={option.value}>
+//                                         {option.label}
+//                                     </option>
+//                                 ))}
+//                             </select>
+//                             {errors.vehicletype && <p className="text-red-500 text-sm">{errors.vehicletype.message}</p>}
+//                         </div>
+
+//                         {/* Email */}
+//                         <div>
+//                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+//                                 Email
+//                             </label>
+//                             <input id="email" type="email" {...register('email', { required: 'Email is required' })} placeholder="Enter Email" className="form-input mt-1" />
+//                             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+//                         </div>
+
+//                         {/* Whatsapp Number */}
+//                         <div>
+//                             <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">
+//                                 Whatsapp Number
+//                             </label>
+//                             <input
+//                                 id="whatsappNumber"
+//                                 type="text"
+//                                 {...register('whatsappNumber', { required: 'Whatsapp Number is required' })}
+//                                 placeholder="Enter Whatsapp Number"
+//                                 className="form-input mt-1"
+//                             />
+//                             {errors.whatsappNumber && <p className="text-red-500 text-sm">{errors.whatsappNumber.message}</p>}
+//                         </div>
+
+//                         {/* Phone Number */}
+//                         <div>
+//                             <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+//                                 Phone Number
+//                             </label>
+//                             <input id="phoneNumber" type="text" {...register('phoneNumber', { required: 'Phone Number is required' })} placeholder="Enter Phone Number" className="form-input mt-1" />
+//                             {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
+//                         </div>
+
+//                         {/* Nearest CareCenter */}
+//                         <div>
+//                             <label htmlFor="nearestCareCenter" className="block text-sm font-medium text-gray-700">
+//                                 Nearest CareCenter
+//                             </label>
+//                             <input
+//                                 id="nearestCareCenter"
+//                                 type="text"
+//                                 {...register('nearestCareCenter', { required: 'Nearest CareCenter is required' })}
+//                                 placeholder="Enter Nearest CareCenter"
+//                                 className="form-input mt-1"
+//                             />
+//                             {errors.nearestCareCenter && <p className="text-red-500 text-sm">{errors.nearestCareCenter.message}</p>}
+//                         </div>
+
+//                         {/* Computer Available */}
+//                         <div>
+//                             <label htmlFor="computerAvailable" className="block text-sm font-medium text-gray-700">
+//                                 Computer Available
+//                             </label>
+//                             <input id="computerAvailable" type="checkbox" {...register('computerAvailable')} className="form-checkbox mt-1" />
+//                         </div>
+
+//                         {/* Printer Available */}
+//                         <div>
+//                             <label htmlFor="printerAvailable" className="block text-sm font-medium text-gray-700">
+//                                 Printer Available
+//                             </label>
+//                             <input id="printerAvailable" type="checkbox" {...register('printerAvailable')} className="form-checkbox mt-1" />
+//                         </div>
+
+//                         {/* Franchise Amount */}
+//                         <div>
+//                             <label htmlFor="franchiseAmount" className="block text-sm font-medium text-gray-700">
+//                                 Franchise Amount
+//                             </label>
+//                             <input
+//                                 id="franchiseAmount"
+//                                 type="number"
+//                                 {...register('franchiseAmount', { required: 'Franchise Amount is required' })}
+//                                 placeholder="Enter Franchise Amount"
+//                                 className="form-input mt-1"
+//                             />
+//                             {errors.franchiseAmount && <p className="text-red-500 text-sm">{errors.franchiseAmount.message}</p>}
+//                         </div>
+//                     </div>
+
+//                     {/* Submit and Cancel Buttons */}
+//                     <div className="flex justify-center mt-8 gap-4">
+//                         <button type="submit" className="bg-teal-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-teal-600">
+//                             Update Official Details
+//                         </button>
+//                         <button type="button" onClick={onCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">
+//                             Cancel
+//                         </button>
+//                     </div>
+//                 </form>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default OfficialDetailsform;
+
+import React, { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import useGetIdCreation from '../hooks/useGetIdCreation'; // Adjust the import path as necessary
+import useGetIdCreation from '../hooks/useGetIdCreation';
 
 interface CareCenterFormFields {
-    branch: string; // This will store the branchId
-    zone: string; // This will store the zoneId
-    numberOfZone: string;
-    vehicletype: string;
-    email: string;
-    whatsappNumber: string;
-    phoneNumber: string;
-    nearestCareCenter: string;
-    computerAvailable: boolean;
-    printerAvailable: boolean;
-    franchiseAmount: number;
+  branch: string; 
+  zone: string; 
+  numberOfZone: string;
+  vehicletype: string;
+  email: string;
+  whatsappNumber: string;
+  phoneNumber: string;
+  nearestCareCenter: string;
+  computerAvailable: boolean;
+  printerAvailable: boolean;
+  franchiseAmount: number;
 }
 
 interface OfficialDetailsformProps {
-    careCenterId: string; // Passed as a prop
-    onSubmit: (data: CareCenterFormFields) => void;
-    onCancel: () => void;
-    initialData: Partial<CareCenterFormFields>; // Initial data for the form
+  careCenterId: string; 
+  onSubmit: (data: CareCenterFormFields) => void;
+  onCancel: () => void;
+  initialData: Partial<CareCenterFormFields>; 
 }
 
 const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: OfficialDetailsformProps) => {
-    const {
-        register,
-        handleSubmit,
-        reset,
-        watch,
-        formState: { errors },
-    } = useForm<CareCenterFormFields>({
-        defaultValues: {
-            branch: initialData.branch || '',
-            zone: initialData.zone || '',
-            numberOfZone: initialData.numberOfZone || '',
-            vehicletype: initialData.vehicletype || '',
-            email: initialData.email || '',
-            whatsappNumber: initialData.whatsappNumber || '',
-            phoneNumber: initialData.phoneNumber || '',
-            nearestCareCenter: initialData.nearestCareCenter || '',
-            computerAvailable: initialData.computerAvailable || false,
-            printerAvailable: initialData.printerAvailable || false,
-            franchiseAmount: initialData.franchiseAmount || 0,
-        },
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CareCenterFormFields>();
 
-    // Fetch branch and zone data using the custom hook
-    const { branch, zone, refetchData } = useGetIdCreation();
 
-    // Watch the selected branch
-    const selectedBranch = watch('branch');
+  const { branch, zone } = useGetIdCreation();
 
-    // Filter zones based on the selected branch's branchCode
-    const filteredZones = selectedBranch
-        ? zone.filter((z) => z.branchCode === branch.find((b) => b.branchId === selectedBranch)?.branchCode)
-        : [];
+  const [showBranchSuggestions, setShowBranchSuggestions] = useState(false);
+  const [showZoneSuggestions, setShowZoneSuggestions] = useState(false);
 
-    useEffect(() => {
-        reset({
-            branch: initialData.branch || '',
-            zone: initialData.zone || '',
-            numberOfZone: initialData.numberOfZone || '',
-            vehicletype: initialData.vehicletype || '',
-            email: initialData.email || '',
-            whatsappNumber: initialData.whatsappNumber || '',
-            phoneNumber: initialData.phoneNumber || '',
-            nearestCareCenter: initialData.nearestCareCenter || '',
-            computerAvailable: initialData.computerAvailable || false,
-            printerAvailable: initialData.printerAvailable || false,
-            franchiseAmount: initialData.franchiseAmount || 0,
-        });
-    }, [initialData, reset]);
+  const [displayBranchName, setDisplayBranchName] = useState('');
 
-    return (
-        <div>
-            <div className="panel">
-                <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-                    {/* Form fields */}
-                    <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
-                        {/* Branch Dropdown */}
-                        <div>
-                            <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
-                                Branch
-                            </label>
-                            <select
-                                id="branch"
-                                {...register('branch', { required: 'Branch is required' })}
-                                className="form-select mt-1"
-                            >
-                                <option value="">Select Branch</option>
-                                {branch.map((b) => (
-                                    <option key={b._id} value={b.branchId}>
-                                        {b.branchName}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.branch && <p className="text-red-500 text-sm">{errors.branch.message}</p>}
-                        </div>
+  const [displayZoneName, setDisplayZoneName] = useState('');
 
-                        {/* Zone Dropdown */}
-                        <div>
-                            <label htmlFor="zone" className="block text-sm font-medium text-gray-700">
-                                Zone
-                            </label>
-                            <select
-                                id="zone"
-                                {...register('zone', { required: 'Zone is required' })}
-                                className="form-select mt-1"
-                                disabled={!selectedBranch} // Disable if no branch is selected
-                            >
-                                <option value="">Select Zone</option>
-                                {filteredZones.map((z) => (
-                                    <option key={z._id} value={z.zoneId}>
-                                        {z.zoneName}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.zone && <p className="text-red-500 text-sm">{errors.zone.message}</p>}
-                        </div>
+  const [filteredZones, setFilteredZones] = useState<{ zoneId: string; zoneName: string }[]>([]);
 
-                        {/* Number of Zone */}
-                        <div>
+  const selectedBranch = watch('branch');
+
+  const branchDropdownRef = useRef<HTMLDivElement>(null);
+  const zoneDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialData && branch.length > 0 && zone.length > 0) {
+      const initialBranch = branch.find((b) => b.branchId === initialData.branch);
+      const initialBranchName = initialBranch ? initialBranch.branchName : '';
+
+      const initialZone = zone.find((z) => z.zoneId === initialData.zone);
+      const initialZoneName = initialZone ? initialZone.zoneName : '';
+
+      reset({
+         branch:  initialBranchName,
+         zone: initialZoneName,
+        numberOfZone: initialData.numberOfZone || '',
+        vehicletype: initialData.vehicletype || '',
+        email: initialData.email || '',
+        whatsappNumber: initialData.whatsappNumber || '',
+        phoneNumber: initialData.phoneNumber || '',
+        nearestCareCenter: initialData.nearestCareCenter || '',
+        computerAvailable: initialData.computerAvailable || false,
+        printerAvailable: initialData.printerAvailable || false,
+        franchiseAmount: initialData.franchiseAmount || 0,
+      });
+
+      setDisplayBranchName(initialBranchName);
+
+      setDisplayZoneName(initialZoneName);
+
+      if (initialData.branch) {
+        const filtered = zone.filter((z) => z.branchCode === initialBranch?.branchCode);
+        setFilteredZones(filtered);
+      }
+    }
+  }, [initialData, reset, branch, zone]);
+
+  const handleBranchSelection = (branchId: string, branchName: string) => {
+    setValue('branch', branchId); // Set branchId in form
+    setDisplayBranchName(branchName); // Set branch name for display
+    setShowBranchSuggestions(false); // Hide suggestions
+
+    const selectedBranch = branch.find((b) => b.branchId === branchId);
+    if (selectedBranch) {
+      const filtered = zone.filter((z) => z.branchCode === selectedBranch.branchCode);
+      setFilteredZones(filtered);
+    }
+
+    setValue('zone', '');
+    setDisplayZoneName(''); 
+  };
+
+  const handleZoneSelection = (zoneId: string, zoneName: string) => {
+    setValue('zone', zoneId); 
+    setDisplayZoneName(zoneName); 
+    setShowZoneSuggestions(false); 
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        branchDropdownRef.current &&
+        !branchDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowBranchSuggestions(false);
+      }
+
+      if (
+        zoneDropdownRef.current &&
+        !zoneDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowZoneSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleFormSubmit = (data: CareCenterFormFields) => {
+    setShowBranchSuggestions(false);
+    setShowZoneSuggestions(false);
+    onSubmit(data);
+  };
+
+  const handleFormCancel = () => {
+    setShowBranchSuggestions(false);
+    setShowZoneSuggestions(false);
+    onCancel();
+  };
+
+  return (
+    <div>
+      <div className="panel">
+        <form className="space-y-5" onSubmit={handleSubmit(handleFormSubmit)}>
+          {/* Form fields */}
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-5">
+            {/* Branch Input with Suggestions */}
+            <div ref={branchDropdownRef}>
+              <label htmlFor="branch" className="block text-sm font-medium text-gray-700">
+                Branch
+              </label>
+              <input
+                id="branch"
+                type="text"
+                value={displayBranchName} // Display branch name
+                {...register('branch', { required: 'Branch is required' })}
+                onFocus={() => setShowBranchSuggestions(true)} // Show suggestions on focus
+                className="form-input mt-1"
+                placeholder="Select Branch"
+                readOnly // Make the input read-only to prevent manual typing
+              />
+              {errors.branch && <p className="text-red-500 text-sm">{errors.branch.message}</p>}
+              {/* Branch Suggestions */}
+              {showBranchSuggestions && (
+                <div className="mt-2 border border-gray-200 rounded-md max-h-40 overflow-y-auto">
+                  {branch.map((b) => (
+                    <div
+                      key={b.branchId}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleBranchSelection(b.branchId, b.branchName)}
+                    >
+                      {b.branchName}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Zone Input with Suggestions */}
+            <div ref={zoneDropdownRef}>
+              <label htmlFor="zone" className="block text-sm font-medium text-gray-700">
+                Zone
+              </label>
+              <input
+                id="zone"
+                type="text"
+                value={displayZoneName} // Display zone name
+                {...register('zone', { required: 'Zone is required' })}
+                onFocus={() => setShowZoneSuggestions(true)} // Show suggestions on focus
+                className="form-input mt-1"
+                placeholder="Select Zone"
+                readOnly // Make the input read-only to prevent manual typing
+                disabled={!selectedBranch} // Disable if no branch is selected
+              />
+              {errors.zone && <p className="text-red-500 text-sm">{errors.zone.message}</p>}
+              {/* Zone Suggestions */}
+              {showZoneSuggestions && (
+                <div className="mt-2 border border-gray-200 rounded-md max-h-40 overflow-y-auto">
+                  {filteredZones.map((z) => (
+                    <div
+                      key={z.zoneId}
+                      className="p-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleZoneSelection(z.zoneId, z.zoneName)}
+                    >
+                      {z.zoneName}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+                {/* Number of Zone */}
+                <div>
                             <label htmlFor="numberOfZone" className="block text-sm font-medium text-gray-700">
                                 Number of Zone
                             </label>
@@ -134,19 +472,23 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                             />
                             {errors.numberOfZone && <p className="text-red-500 text-sm">{errors.numberOfZone.message}</p>}
                         </div>
-
-                        {/* Vehicle Type */}
-                        <div>
+                {/* Vehicle Type */}
+                <div>
                             <label htmlFor="vehicletype" className="block text-sm font-medium text-gray-700">
                                 Vehicle Type
                             </label>
-                            <input
-                                id="vehicletype"
-                                type="text"
-                                {...register('vehicletype', { required: 'Vehicle Type is required' })}
-                                placeholder="Enter Vehicle Type"
-                                className="form-input mt-1"
-                            />
+                            <select id="vehicletype" {...register('vehicletype', { required: 'Vehicle Type is required' })} className="form-select mt-1">
+                                <option value="">Select Vehicle Type</option>
+                                {[
+                                    { label: 'Light weight', value: 'R' },
+                                    { label: 'Heavy weight', value: 'S' },
+                                    { label: 'All type', value: 'T' },
+                                ].map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
                             {errors.vehicletype && <p className="text-red-500 text-sm">{errors.vehicletype.message}</p>}
                         </div>
 
@@ -155,18 +497,11 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                 Email
                             </label>
-                            <input
-                                id="email"
-                                type="email"
-                                {...register('email', { required: 'Email is required' })}
-                                placeholder="Enter Email"
-                                className="form-input mt-1"
-                            />
+                            <input id="email" type="email" {...register('email', { required: 'Email is required' })} placeholder="Enter Email" className="form-input mt-1" />
                             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                         </div>
-
-                        {/* Whatsapp Number */}
-                        <div>
+                     {/* Whatsapp Number */}
+                     <div>
                             <label htmlFor="whatsappNumber" className="block text-sm font-medium text-gray-700">
                                 Whatsapp Number
                             </label>
@@ -185,17 +520,9 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                             <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
                                 Phone Number
                             </label>
-                            <input
-                                id="phoneNumber"
-                                type="text"
-                                {...register('phoneNumber', { required: 'Phone Number is required' })}
-                                placeholder="Enter Phone Number"
-                                className="form-input mt-1"
-                            />
+                            <input id="phoneNumber" type="text" {...register('phoneNumber', { required: 'Phone Number is required' })} placeholder="Enter Phone Number" className="form-input mt-1" />
                             {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
                         </div>
-
-                        {/* Nearest CareCenter */}
                         <div>
                             <label htmlFor="nearestCareCenter" className="block text-sm font-medium text-gray-700">
                                 Nearest CareCenter
@@ -209,35 +536,22 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                             />
                             {errors.nearestCareCenter && <p className="text-red-500 text-sm">{errors.nearestCareCenter.message}</p>}
                         </div>
-
-                        {/* Computer Available */}
-                        <div>
+                         {/* Computer Available */}
+                         <div>
                             <label htmlFor="computerAvailable" className="block text-sm font-medium text-gray-700">
                                 Computer Available
                             </label>
-                            <input
-                                id="computerAvailable"
-                                type="checkbox"
-                                {...register('computerAvailable')}
-                                className="form-checkbox mt-1"
-                            />
+                            <input id="computerAvailable" type="checkbox" {...register('computerAvailable')} className="form-checkbox mt-1" />
                         </div>
-
                         {/* Printer Available */}
                         <div>
                             <label htmlFor="printerAvailable" className="block text-sm font-medium text-gray-700">
                                 Printer Available
                             </label>
-                            <input
-                                id="printerAvailable"
-                                type="checkbox"
-                                {...register('printerAvailable')}
-                                className="form-checkbox mt-1"
-                            />
+                            <input id="printerAvailable" type="checkbox" {...register('printerAvailable')} className="form-checkbox mt-1" />
                         </div>
-
-                        {/* Franchise Amount */}
-                        <div>
+                           {/* Franchise Amount */}
+                           <div>
                             <label htmlFor="franchiseAmount" className="block text-sm font-medium text-gray-700">
                                 Franchise Amount
                             </label>
@@ -250,21 +564,22 @@ const OfficialDetailsform = ({ careCenterId, onSubmit, onCancel, initialData }: 
                             />
                             {errors.franchiseAmount && <p className="text-red-500 text-sm">{errors.franchiseAmount.message}</p>}
                         </div>
-                    </div>
+            
+          </div>
 
-                    {/* Submit and Cancel Buttons */}
-                    <div className="flex justify-center mt-8 gap-4">
-                        <button type="submit" className="bg-teal-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-teal-600">
-                            Update Official Details
-                        </button>
-                        <button type="button" onClick={onCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+          {/* Submit and Cancel Buttons */}
+          <div className="flex justify-center mt-8 gap-4">
+            <button type="submit" className="bg-teal-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-teal-600">
+              Update Official Details
+            </button>
+            {/* <button type="button" onClick={handleFormCancel} className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-600">
+              Cancel
+            </button> */}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default OfficialDetailsform;
