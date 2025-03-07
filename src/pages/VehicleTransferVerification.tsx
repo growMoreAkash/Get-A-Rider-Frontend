@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import barcode from "../assets/barcode1.svg";
 import icon from "../assets/icon_home.svg";
 import GYH from "../assets/gyh_logo.png";
+import { FaCreditCard } from 'react-icons/fa';
 
 interface Vehicle {
     _id: string;
@@ -609,13 +610,13 @@ const handleDownload = async () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="mt-6 flex justify-end gap-2">
+                        <div className="mt-6 flex justify-start gap-2">
                             <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                className="bg-green-500 text-white px-4 py-2 text-lg rounded-md flex items-center gap-4 hover:bg-green-600"
                                 onClick={handlePayment} // Call payment API
                                 disabled={selectedVehicle.payment === 'Paid'}
-                            >
-                                {selectedVehicle.payment === 'Paid' ? 'Paid' : 'Pay Now'}
+                            ><FaCreditCard/>
+                                {selectedVehicle.payment === 'Paid' ? 'Paid' : 'Click Here To Pay'}
                             </button>
                             <button
                                 className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"

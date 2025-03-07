@@ -42,6 +42,7 @@
         "js-cookie": "^3.0.5",
         "jspdf": "^2.5.2",
         "jspdf-autotable": "^3.8.4",
+        "lucide-react": "^0.479.0",
         "mantine-datatable": "^1.7.17",
         "nouislider-react": "^3.4.1",
         "react": "^18.2.0",
