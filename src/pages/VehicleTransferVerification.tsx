@@ -162,7 +162,9 @@ const VehicleTransferVerification = () => {
                     apiUrl: '/getAllVehicle',
                     page,
                     limit: pageSize,
-                    processingSection: 'REGISTER',
+                   // processingSection: 'REGISTER',
+                    
+                   // driverid.processingSection ='VERIFY',
                     ...(search && { registrationNumber: search }),
                     sortBy: sortStatus.columnAccessor,
                     sortOrder: sortStatus.direction,
