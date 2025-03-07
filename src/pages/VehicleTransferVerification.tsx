@@ -4,11 +4,14 @@ import { DataTable, DataTableSortStatus } from 'mantine-datatable';
 import VehicleDownload from './VehicleDownload';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-
+import { toPng } from 'html-to-image';
 // import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2';
+import barcode from "../assets/barcode1.svg";
+import icon from "../assets/icon_home.svg";
+import GYH from "../assets/gyh_logo.png";
 
 interface Vehicle {
     _id: string;
@@ -145,7 +148,11 @@ const VehicleTransferVerification = () => {
     });
     const [totalRecords, setTotalRecords] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectedVehicle, setSelectedVehicle] = useState<TableRecord | null>(null);
+    const [isDownloadModalOpen, setIsDownloadModalOpen] = useState<boolean>(false);
+    const [selectedDownloadVehicle, setSelectedDownloadVehicle] = useState<TableRecord | null>(null);
+    
     const token = Cookies.get('token');
 
     const calculatePercentage = (fields: Record<string, any>, totalFields: number): number => {
@@ -246,6 +253,7 @@ const VehicleTransferVerification = () => {
                     vehicleProfilePercentage,
                     vehicleDocumentsPercentage,
                     payment: vehicle.payment || 'Pending',
+                    documents: vehicle.documents,
                 };
             });
 
@@ -272,8 +280,8 @@ const VehicleTransferVerification = () => {
         setPage(1);
     }, [pageSize]);
 
-    const handleDownload = async (id: string, driverId: string, vehicleId: string, vehicleModel: string) => {
-        const vehicle = recordsData.find((v) => v.id === id);
+    const handleDownloadClick = (vehicleId: string) => {
+        const vehicle = recordsData.find((v) => v.id === vehicleId);
         if (!vehicle) {
             Swal.fire({
                 icon: 'error',
@@ -283,68 +291,44 @@ const VehicleTransferVerification = () => {
             return;
         }
     
-        try {
-            // Update the printout status to true
-            const response = await axios.post(
-                `${host}/updateVehiclePrintout/${id}`,
-                { printout: true },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            console.log('API Response:', response.data);
-            // Create PDF instance
-            const doc = new jsPDF('p', 'mm', 'a4');
-    
-            // Certificate Background
-            doc.setFillColor(240, 240, 240);
-            doc.rect(5, 5, 200, 287, 'F');
-    
-            // Title
-            doc.setFont('times', 'bold');
-            doc.setFontSize(22);
-            doc.text('Vehicle Registration Certificate', 105, 40, { align: 'center' });
-    
-            // Subtitle
-            doc.setFont('times', 'normal');
-            doc.setFontSize(14);
-            doc.text(`This is to certify that the following vehicle has been successfully registered.`, 105, 55, { align: 'center' });
-    
-            // Vehicle Details
-            doc.setFont('times', 'bold');
-            doc.setFontSize(16);
-            doc.text(`Vehicle Details:`, 20, 75);
-    
-            doc.setFont('times', 'normal');
-            doc.setFontSize(14);
-            doc.text(`Vehicle Registration No: ${vehicle.vehicleRegistrationNumber}`, 20, 90);
-            doc.text(`Vehicle Model: ${vehicle.vehicleModel}`, 20, 105);
-            doc.text(`Owner Name: ${vehicle.driverName}`, 20, 120);
-            doc.text(`Driver ID: ${vehicle.driverId}`, 20, 135);
-            doc.text(`Phone Number: ${vehicle.phoneNumber}`, 20, 150);
-            doc.text(`Processing Section: ${vehicle.DriverTransfer}`, 20, 165);
-    
-            // Signature Section
-            doc.setFont('times', 'bold');
-            doc.text('Authorized Signatory', 160, 260);
-            doc.setFontSize(12);
-            doc.text('Date:', 20, 270);
-            doc.text(vehicle.date, 40, 270);
-    
-            // Save PDF
-            doc.save(`Vehicle_Certificate_${vehicle.vehicleRegistrationNumber}.pdf`);
-    
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to update printout status or generate PDF. Please try again.',
-            });
-        }
+        setSelectedDownloadVehicle(vehicle);
+        setIsDownloadModalOpen(true);
     };
+    
 
+    
+
+const handleDownload = async () => {
+    if (!selectedDownloadVehicle) return;
+
+    try {
+        // Get the modal content element
+        const modalContent = document.getElementById('download-modal-content');
+        if (!modalContent) {
+            throw new Error('Modal content not found.');
+        }
+
+        // Use html-to-image to capture the modal content as a PNG
+        const image = await toPng(modalContent);
+
+        // Create a temporary link element to trigger the download
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = `Vehicle_Details_${selectedDownloadVehicle.vehicleRegistrationNumber}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Close the download modal after successful download
+        setIsDownloadModalOpen(false);
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to download modal as PNG. Please try again.',
+        });
+    }
+};
     const isTransferDisabled = selectedRecords.some((record) => record.vehicleProfilePercentage !== 100 || record.vehicleDocumentsPercentage !== 100 || record.DriverTransfer !== 'VERIFY');
 
     const handleTransfer = async () => {
@@ -389,68 +373,69 @@ const VehicleTransferVerification = () => {
         }
     };
 
-    const handlePayment = async (vehicleId: string) => {
-        const { value: formValues } = await Swal.fire({
-            title: 'Enter Payment Details',
-            html: '<input id="swal-input1" class="swal2-input" placeholder="Email">' + '<input id="swal-input2" class="swal2-input" placeholder="Phone">',
-            focusConfirm: false,
-            showCancelButton: true,
-            preConfirm: () => {
-                return {
-                    email: (document.getElementById('swal-input1') as HTMLInputElement).value,
-                    phone: (document.getElementById('swal-input2') as HTMLInputElement).value,
-                };
-            },
-        });
+     // Open modal and set selected vehicle
+     const handlePaymentClick = (vehicleId: string) => {
+        const vehicle = recordsData.find((v) => v.id === vehicleId);
+        if (!vehicle) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Vehicle details not found.',
+            });
+            return;
+        }
 
-        if (formValues) {
-            const { email, phone } = formValues;
+        setSelectedVehicle(vehicle);
+        setIsModalOpen(true);
+    };
 
-            if (!email || !phone) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Please fill in both email and phone fields.',
-                });
-                return;
-            }
+    // Close modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedVehicle(null);
+    };
 
-            try {
-                const response = await axios.post(
-                    `${host}/vehiclePayment`,
-                    {
-                        vehicleId,
-                        phone,
-                        email,
+    // Handle payment inside the modal
+    const handlePayment = async () => {
+        if (!selectedVehicle) return;
+
+        try {
+            const response = await axios.post(
+                `${host}/vehiclePayment`,
+                {
+                    vehicleId: selectedVehicle.id,
+                    phone: selectedVehicle.phoneNumber,
+                    email: 'example@example.com', // Replace with actual email if available
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
                     },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-
-                // Check if the response contains the short_url
-                if (response.data && response.data.short_url) {
-                    // Redirect to the provided short URL
-                    window.location.href = response.data.short_url;
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Payment processed successfully!',
-                    });
-                    getAllVehicle(); // Refresh the data after payment
                 }
-            } catch (error) {
+            );
+
+            // Check if the response contains the short_url
+            if (response.data && response.data.short_url) {
+                // Redirect to the provided short URL
+                window.location.href = response.data.short_url;
+            } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to process payment. Please try again.',
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Payment processed successfully!',
                 });
+                getAllVehicle(); // Refresh the data after payment
             }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to process payment. Please try again.',
+            });
         }
     };
+
+    
 
     return (
         <div>
@@ -551,7 +536,7 @@ const VehicleTransferVerification = () => {
                                         <button
                                             type="button"
                                             className={`btn ${payment === 'Paid' ? 'bg-green-500' : 'bg-red-500'} text-white`}
-                                            onClick={() => handlePayment(id)}
+                                            onClick={() => handlePaymentClick(id)} // Open modal instead of handling payment
                                             disabled={payment === 'Paid'}
                                         >
                                             {payment === 'Paid' ? 'Paid' : 'Pay Now'}
@@ -561,12 +546,16 @@ const VehicleTransferVerification = () => {
                                 {
                                     accessor: 'download',
                                     title: 'Download',
-                                    render: ({ id, driverId, vehicleId, vehicleModel }) => (
-                                        <button type="button" className="btn btn-primary" onClick={() => handleDownload(id, driverId, vehicleId, vehicleModel)}>
+                                    render: ({ id }) => (
+                                        <button
+                                            type="button"
+                                            className="btn btn-primary"
+                                            onClick={() => handleDownloadClick(id)} // Open download modal
+                                        >
                                             Download
                                         </button>
                                     ),
-                                },
+                                }
                             ]}
                             highlightOnHover
                             totalRecords={totalRecords}
@@ -585,6 +574,187 @@ const VehicleTransferVerification = () => {
                     )}
                 </div>
             </div>
+            {/* Custom Modal with Tailwind CSS */}
+            {isModalOpen && selectedVehicle && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6">
+                        <div className="flex justify-between items-center border-b pb-4">
+                            <h2 className="text-xl font-semibold">Vehicle and Driver Details</h2>
+                            <button
+                                className="text-gray-500 hover:text-gray-700"
+                                onClick={closeModal}
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div className="mt-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-sm text-gray-600"><strong>Driver ID:</strong> {selectedVehicle.driverId}</p>
+                                    <p className="text-sm text-gray-600"><strong>Driver Name:</strong> {selectedVehicle.driverName}</p>
+                                    <p className="text-sm text-gray-600"><strong>Vehicle ID:</strong> {selectedVehicle.vehicleId}</p>
+                                    <p className="text-sm text-gray-600"><strong>Vehicle Model:</strong> {selectedVehicle.vehicleModel}</p>
+                                    <p className="text-sm text-gray-600"><strong>Vehicle Registration Number:</strong> {selectedVehicle.vehicleRegistrationNumber}</p>
+                                </div>
+                                <div className="flex justify-center items-center">
+                                    {selectedVehicle.documents?.vehicleFrontRight?.data ? (
+                                        <img
+                                            src={selectedVehicle.documents.vehicleFrontRight.data}
+                                            alt="Vehicle Front Right"
+                                            className="w-32 h-32 rounded-lg object-cover"
+                                        />
+                                    ) : (
+                                        <p className="text-sm text-gray-600">No photo available</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mt-6 flex justify-end gap-2">
+                            <button
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                onClick={handlePayment} // Call payment API
+                                disabled={selectedVehicle.payment === 'Paid'}
+                            >
+                                {selectedVehicle.payment === 'Paid' ? 'Paid' : 'Pay Now'}
+                            </button>
+                            <button
+                                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                                onClick={closeModal}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
+{isDownloadModalOpen && selectedDownloadVehicle && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6" id="download-modal-content">
+            <div className="flex justify-between items-center border-b pb-4">
+                <h2 className="text-xl font-semibold">Download Vehicle Details</h2>
+                <button
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => setIsDownloadModalOpen(false)}
+                >
+                    &times;
+                </button>
+            </div>
+            <div className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p className="text-sm text-gray-600"><strong>Driver ID:</strong> {selectedDownloadVehicle.driverId}</p>
+                        <p className="text-sm text-gray-600"><strong>Driver Name:</strong> {selectedDownloadVehicle.driverName}</p>
+                        <p className="text-sm text-gray-600"><strong>Vehicle ID:</strong> {selectedDownloadVehicle.vehicleId}</p>
+                        <p className="text-sm text-gray-600"><strong>Vehicle Model:</strong> {selectedDownloadVehicle.vehicleModel}</p>
+                        <p className="text-sm text-gray-600"><strong>Vehicle Registration Number:</strong> {selectedDownloadVehicle.vehicleRegistrationNumber}</p>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        {selectedDownloadVehicle.documents?.vehicleFrontRight?.data ? (
+                            <img
+                                src={selectedDownloadVehicle.documents.vehicleFrontRight.data}
+                                alt="Vehicle Front Right"
+                                className="w-32 h-32 rounded-lg object-cover"
+                            />
+                        ) : (
+                            <p className="text-sm text-gray-600">No photo available</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-2">
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    onClick={handleDownload} // Call the download function
+                >
+                    Download as PNG
+                </button>
+                <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                    onClick={() => setIsDownloadModalOpen(false)}
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+)}{isDownloadModalOpen && selectedDownloadVehicle && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6" id="download-modal-content">
+            <div className="flex justify-between items-center border-b pb-4">
+                <h2 className="text-xl font-semibold">Download Vehicle Details</h2>
+                <button
+                    className="text-gray-500 hover:text-gray-700"
+                    onClick={() => setIsDownloadModalOpen(false)}
+                >
+                    &times;
+                </button>
+            </div>
+            <div className="mt-4">
+                 {/* Header Section */}
+      <div className="flex justify-between items-center mb-4 text-center">
+        <img src={icon} alt="Icon" className="h-16" />
+        <div>
+          <p className="text-xl font-normal">Care Centre Registration</p>
+          <h1 className="text-2xl font-extrabold">Get A Ride</h1>
+          <p className="text-sm italic">by Get Your Homes</p>
+        </div>
+        <img src={barcode} alt="Barcode" className="h-16" />
+      </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p className="text-sm text-gray-600"><strong>Driver ID:</strong> {selectedDownloadVehicle.driverId}</p>
+                        <p className="text-sm text-gray-600"><strong>Driver Name:</strong> {selectedDownloadVehicle.driverName}</p>
+                        <p className="text-sm text-gray-600"><strong>Vehicle ID:</strong> {selectedDownloadVehicle.vehicleId}</p>
+                        <p className="text-sm text-gray-600"><strong>Vehicle Model:</strong> {selectedDownloadVehicle.vehicleModel}</p>
+                        <p className="text-sm text-gray-600"><strong>Vehicle Registration Number:</strong> {selectedDownloadVehicle.vehicleRegistrationNumber}</p>
+                    </div>
+                    <div className="flex justify-center items-center">
+                        {selectedDownloadVehicle.documents?.vehicleFrontRight?.data ? (
+                            <img
+                                src={selectedDownloadVehicle.documents.vehicleFrontRight.data}
+                                alt="Vehicle Front Right"
+                                className="w-32 h-32 rounded-lg object-cover"
+                            />
+                        ) : (
+                            <p className="text-sm text-gray-600">No photo available</p>
+                        )}
+                    </div>
+                 
+                </div>
+                <div className="border p-4 shadow-md rounded mb-4">
+        <h3 className="font-bold mb-2 text-base">Shop Owner's Address Details</h3>
+        <div className="grid grid-cols-3 gap-4 text-sm">
+          <p><span className="font-bold">House/Shop Number:</span> </p>
+          <p><span className="font-bold">Ward/GP Name:</span></p>
+          <p><span className="font-bold">City/Town (Nearest):</span></p>
+          <p><span className="font-bold">Lane Name/Number:</span> </p>
+          <p><span className="font-bold">Post Office:</span> </p>
+          <p><span className="font-bold">Police Station:</span> </p>
+          <p><span className="font-bold">District:</span> </p>
+          <p><span className="font-bold">State:</span> </p>
+          <p><span className="font-bold">PIN:</span> </p>
+        </div>
+      </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-2">
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    onClick={handleDownload} // Call the download function
+                >
+                    Download as PNG
+                </button>
+                <button
+                    className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                    onClick={() => setIsDownloadModalOpen(false)}
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+)}
         </div>
     );
 };
