@@ -8,8 +8,10 @@ import autoTable from 'jspdf-autotable';
 import barcode from "../assets/barcode1.svg";
 import icon from "../assets/icon_home.svg";
 import GYH from "../assets/gyh_logo.png";
+import { toPng } from 'html-to-image';
 import bar1 from "../assets/bar1.png";
 import icon1 from "../assets/icon1.png";
+
 const TransferVerification = () => {
     const host = "http://localhost:8000/api";
     const [page, setPage] = useState(1);
@@ -23,6 +25,8 @@ const TransferVerification = () => {
         direction: 'asc',
     });
     const [totalRecords, setTotalRecords] = useState(0);
+    const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+    const [selectedDownloadRecord, setSelectedDownloadRecord] = useState<any>(null);
 
     const API_URL = import.meta.env.VITE_API_URL;
 
@@ -80,7 +84,7 @@ const TransferVerification = () => {
             const response = await axios.post(`${host}/getAllDrivers`, {
                 page,
                 limit: pageSize,
-            processingSection: 'REGISTER',
+                processingSection: 'REGISTER',
                 ...(search && { registrationNumber: search }),
             }, {
                 headers: {
@@ -141,7 +145,6 @@ const TransferVerification = () => {
 
             console.log('Transfer Response:', response.data);
             alert('Drivers transferred successfully!');
-            
             fetchData();
         } catch (error) {
             console.error('Error during transfer:', error);
@@ -149,91 +152,26 @@ const TransferVerification = () => {
         }
     };
 
+    const handleDownload = async (record) => {
+        setSelectedDownloadRecord(record);
+        setIsDownloadModalOpen(true);
+    };
 
+    const handleDownloadImage = async () => {
+        const modalContent = document.getElementById('download-modal-content');
+        if (modalContent) {
+            try {
+                const dataUrl = await toPng(modalContent);
+                const link = document.createElement('a');
+                link.download = `${selectedDownloadRecord.registrationNumber}_details.png`;
+                link.href = dataUrl;
+                link.click();
+            } catch (error) {
+                console.error('Error downloading image:', error);
+            }
+        }
+    };
 
-const handleDownload = async (record) => {
-    const doc = new jsPDF();
-    
-    // Logo
-    const imgLogo = icon1; // Update with actual path
-    doc.addImage(imgLogo, 'PNG', 15, 10, 40, 15);
-
-    // Title
-    doc.setFontSize(16);
-    doc.setFont('helvetica', 'normal');
-    doc.text('Driver-Vehicle Details', 80, 20);
-
-    // Subtitle
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Get A Ride', 90, 28);
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'italic');
-    doc.text('by Get Your Homes', 92, 33);
-    
-    // Barcode (Placeholder, replace with actual barcode logic if needed)
-    const barcodeImg = bar1; // Update with actual barcode image
-    doc.addImage(barcodeImg, 'PNG', 160, 10, 30, 15);
-    
-    // Applicant Details
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text(`Application Number: ${record.registrationNumber}`, 15, 45);
-    doc.text(`Beneficiary Name: ${record.fullname}`, 15, 50);
-    doc.text(`Branch: ${record.branch}`, 15, 55);
-    doc.text(`Zone: ${record.zone}`, 15, 60);
-    doc.text(`Centre ID: ${record.centreId}`, 15, 65);
-   // doc.text(`Center Location: ${record.centerLocation}`, 15, 70);
-    
-    // Draw Box for Driver's Details
-    doc.rect(10, 110, 190, 90); // (x, y, width, height)
-    
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text("Driver's Details", 15, 120);
-
-    // Inside Box
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Name: ${record.fullname}`, 15, 130);
-    doc.text(`Phone: ${record.phone}`, 15, 140);
-    doc.text(`WhatsApp: ${record.whatsapp}`, 15, 150);
-    doc.text(`Care of: ${record.careof}`, 15, 160);
-    doc.text(`Care of phone: ${record.careofPhone}`, 15, 170);
-    doc.text(`Pincode: ${record.pincode}`, 15, 180);
-    doc.text(`Street Address: ${record.street_address}`, 15, 190);
-    
-    // Footer Details
-    doc.setFontSize(9);
-    doc.text('Official Details', 15, doc.internal.pageSize.height - 30);
-    doc.text('Get A Ride by Get Your Homes', 15, doc.internal.pageSize.height - 25);
-    doc.text(`Address: ${record.address}`, 15, doc.internal.pageSize.height - 20);
-    doc.text(`Phone: ${record.companyPhone}`, 15, doc.internal.pageSize.height - 15);
-    doc.text(`WhatsApp: ${record.companyWhatsapp}`, 75, doc.internal.pageSize.height - 15);
-    doc.text(`Email: ${record.companyEmail}`, 135, doc.internal.pageSize.height - 15);
-    
-    // Save the PDF
-    doc.save(`driver_certificate_${record.index}.pdf`);
-    
-    // Update Printout Status
-    try {
-        const response = await fetch(`${host}/updateDriverPrintout/${record.id}`, {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Cookies.get("token")}`,
-            },
-            body: JSON.stringify({ printout: true }),
-        });
-        if (!response.ok) throw new Error('Failed to update printout status');
-        console.log('Printout status updated successfully');
-    } catch (error) {
-        console.error('Error updating printout status:', error);
-    }
-};
-
-
-    
     const isTransferDisabled = selectedRecords.some(
         (record) => record.profilePercentage !== '100.00' || record.documentPercentage !== '100.00'
     );
@@ -299,6 +237,72 @@ const handleDownload = async (record) => {
                     />
                 </div>
             </div>
+
+            {/* Download Modal */}
+            {isDownloadModalOpen && selectedDownloadRecord && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6" >
+                        <div className="flex justify-between items-center border-b pb-4">
+                            <h2 className="text-xl font-semibold">Download Vehicle Details</h2>
+                            <button
+                                className="text-gray-500 hover:text-gray-700"
+                                onClick={() => setIsDownloadModalOpen(false)}
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div className="mt-4 p-10 bg-white" id="download-modal-content">
+                            {/* Header Section */}
+                            <div className="flex flex-col md:flex-row justify-between items-center mb-4 text-center">
+                                <img src={icon} alt="Icon" className="h-12 md:h-16 mb-2 md:mb-0" />
+                                <div>
+                                    <p className="text-lg md:text-xl font-normal">Driver Details</p>
+                                    <h1 className="text-xl md:text-2xl font-extrabold">Get A Ride</h1>
+                                    <p className="text-sm italic">by Get Your Homes</p>
+                                </div>
+                                <img src={barcode} alt="Barcode" className="h-12 md:h-16 mt-2 md:mt-0" />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 shadow-md rounded mb-4">
+                                <div>
+                                    <p className="text-sm text-gray-800"><strong>Driver ID:</strong> {selectedDownloadRecord.id}</p>
+                                    <p className="text-sm text-gray-800"><strong>Driver Name:</strong> {selectedDownloadRecord.fullname}</p>
+                                    <p className="text-sm text-gray-800"><strong>Registration Number:</strong> {selectedDownloadRecord.registrationNumber}</p>
+                                    <p className="text-sm text-gray-800"><strong>Phone:</strong> {selectedDownloadRecord.phone}</p>
+                                </div>
+                                <div className="flex justify-center items-center">
+                                    <p className="text-sm text-gray-800">No photo available</p>
+                                </div>
+                            </div>
+                            {/* Footer Section */}
+                            <div className="flex flex-col md:flex-row justify-around items-center">
+                                <div className="text-center text-sm text-gray-800 mt-4">
+                                    <p><span className="font-bold">Company - Get A Ride</span></p>
+                                    <p><span className="font-bold">Parent Company - Get Your Homes</span></p>
+                                    <p>Address: Mamoni Enterprise, Opposite to Kalain HS Road, Kalain, Cachar, Assam</p>
+                                    <p>Approved by Founder & CEO</p>
+                                </div>
+                                <div>
+                                    <img src={GYH} alt="Icon" className="h-12 md:h-16 mt-4 md:mt-0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mt-6 flex flex-col md:flex-row justify-end gap-2">
+                            <button
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                                onClick={handleDownloadImage}
+                            >
+                                Download as PNG
+                            </button>
+                            <button
+                                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                                onClick={() => setIsDownloadModalOpen(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

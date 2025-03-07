@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataTable, DataTableSortStatus } from 'mantine-datatable';
-// import { toPng } from 'html-to-image';
+
 import VehicleDownload from './VehicleDownload';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -590,11 +590,11 @@ const handleDownload = async () => {
                         <div className="mt-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <p className="text-sm text-gray-600"><strong>Driver ID:</strong> {selectedVehicle.driverId}</p>
-                                    <p className="text-sm text-gray-600"><strong>Driver Name:</strong> {selectedVehicle.driverName}</p>
-                                    <p className="text-sm text-gray-600"><strong>Vehicle ID:</strong> {selectedVehicle.vehicleId}</p>
-                                    <p className="text-sm text-gray-600"><strong>Vehicle Model:</strong> {selectedVehicle.vehicleModel}</p>
-                                    <p className="text-sm text-gray-600"><strong>Vehicle Registration Number:</strong> {selectedVehicle.vehicleRegistrationNumber}</p>
+                                    <p className="text-sm text-gray-800"><strong>Driver ID:</strong> {selectedVehicle.driverId}</p>
+                                    <p className="text-sm text-gray-800"><strong>Driver Name:</strong> {selectedVehicle.driverName}</p>
+                                    <p className="text-sm text-gray-800"><strong>Vehicle ID:</strong> {selectedVehicle.vehicleId}</p>
+                                    <p className="text-sm text-gray-800"><strong>Vehicle Model:</strong> {selectedVehicle.vehicleModel}</p>
+                                    <p className="text-sm text-gray-800"><strong>Vehicle Registration Number:</strong> {selectedVehicle.vehicleRegistrationNumber}</p>
                                 </div>
                                 <div className="flex justify-center items-center">
                                     {selectedVehicle.documents?.vehicleFrontRight?.data ? (
@@ -604,7 +604,7 @@ const handleDownload = async () => {
                                             className="w-32 h-32 rounded-lg object-cover"
                                         />
                                     ) : (
-                                        <p className="text-sm text-gray-600">No photo available</p>
+                                        <p className="text-sm text-gray-800">No photo available</p>
                                     )}
                                 </div>
                             </div>
@@ -629,7 +629,7 @@ const handleDownload = async () => {
             )}
 
 
-{isDownloadModalOpen && selectedDownloadVehicle && (
+{/* {isDownloadModalOpen && selectedDownloadVehicle && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6" id="download-modal-content">
             <div className="flex justify-between items-center border-b pb-4">
@@ -644,11 +644,11 @@ const handleDownload = async () => {
             <div className="mt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="text-sm text-gray-600"><strong>Driver ID:</strong> {selectedDownloadVehicle.driverId}</p>
-                        <p className="text-sm text-gray-600"><strong>Driver Name:</strong> {selectedDownloadVehicle.driverName}</p>
-                        <p className="text-sm text-gray-600"><strong>Vehicle ID:</strong> {selectedDownloadVehicle.vehicleId}</p>
-                        <p className="text-sm text-gray-600"><strong>Vehicle Model:</strong> {selectedDownloadVehicle.vehicleModel}</p>
-                        <p className="text-sm text-gray-600"><strong>Vehicle Registration Number:</strong> {selectedDownloadVehicle.vehicleRegistrationNumber}</p>
+                        <p className="text-sm text-gray-800"><strong>Driver ID:</strong> {selectedDownloadVehicle.driverId}</p>
+                        <p className="text-sm text-gray-800"><strong>Driver Name:</strong> {selectedDownloadVehicle.driverName}</p>
+                        <p className="text-sm text-gray-800"><strong>Vehicle ID:</strong> {selectedDownloadVehicle.vehicleId}</p>
+                        <p className="text-sm text-gray-800"><strong>Vehicle Model:</strong> {selectedDownloadVehicle.vehicleModel}</p>
+                        <p className="text-sm text-gray-800"><strong>Vehicle Registration Number:</strong> {selectedDownloadVehicle.vehicleRegistrationNumber}</p>
                     </div>
                     <div className="flex justify-center items-center">
                         {selectedDownloadVehicle.documents?.vehicleFrontRight?.data ? (
@@ -658,7 +658,7 @@ const handleDownload = async () => {
                                 className="w-32 h-32 rounded-lg object-cover"
                             />
                         ) : (
-                            <p className="text-sm text-gray-600">No photo available</p>
+                            <p className="text-sm text-gray-800">No photo available</p>
                         )}
                     </div>
                 </div>
@@ -679,11 +679,13 @@ const handleDownload = async () => {
             </div>
         </div>
     </div>
-)}{isDownloadModalOpen && selectedDownloadVehicle && (
+)} */}
+
+{isDownloadModalOpen && selectedDownloadVehicle && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-6" id="download-modal-content">
+        <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3 p-4 md:p-6" >
             <div className="flex justify-between items-center border-b pb-4">
-                <h2 className="text-xl font-semibold">Download Vehicle Details</h2>
+                <h2 className="text-lg md:text-xl font-semibold">Download Vehicle Details</h2>
                 <button
                     className="text-gray-500 hover:text-gray-700"
                     onClick={() => setIsDownloadModalOpen(false)}
@@ -691,59 +693,56 @@ const handleDownload = async () => {
                     &times;
                 </button>
             </div>
-            <div className="mt-4">
-                 {/* Header Section */}
-      <div className="flex justify-between items-center mb-4 text-center">
-        <img src={icon} alt="Icon" className="h-16" />
-        <div>
-          <p className="text-xl font-normal">Care Centre Registration</p>
-          <h1 className="text-2xl font-extrabold">Get A Ride</h1>
-          <p className="text-sm italic">by Get Your Homes</p>
-        </div>
-        <img src={barcode} alt="Barcode" className="h-16" />
-      </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-4 p-10 bg-white" id="download-modal-content">
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-center mb-4 text-center">
+                    <img src={icon} alt="Icon" className="h-12 md:h-16 mb-2 md:mb-0" />
                     <div>
-                        <p className="text-sm text-gray-600"><strong>Driver ID:</strong> {selectedDownloadVehicle.driverId}</p>
-                        <p className="text-sm text-gray-600"><strong>Driver Name:</strong> {selectedDownloadVehicle.driverName}</p>
-                        <p className="text-sm text-gray-600"><strong>Vehicle ID:</strong> {selectedDownloadVehicle.vehicleId}</p>
-                        <p className="text-sm text-gray-600"><strong>Vehicle Model:</strong> {selectedDownloadVehicle.vehicleModel}</p>
-                        <p className="text-sm text-gray-600"><strong>Vehicle Registration Number:</strong> {selectedDownloadVehicle.vehicleRegistrationNumber}</p>
+                        <p className="text-lg md:text-xl font-normal">Driver Vehicle details</p>
+                        <h1 className="text-xl md:text-2xl font-extrabold">Get A Ride</h1>
+                        <p className="text-sm italic">by Get Your Homes</p>
+                    </div>
+                    <img src={barcode} alt="Barcode" className="h-12 md:h-16 mt-2 md:mt-0" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border p-4 shadow-md rounded mb-4">
+                    <div>
+                        <p className="text-sm text-gray-800"><strong>Driver ID :</strong> {selectedDownloadVehicle.driverId}</p>
+                        <p className="text-sm text-gray-800"><strong>Driver Name :</strong> {selectedDownloadVehicle.driverName}</p>
+                        <p className="text-sm text-gray-800"><strong>Vehicle ID :</strong> {selectedDownloadVehicle.vehicleId}</p>
+                        <p className="text-sm text-gray-800"><strong>Vehicle Model :</strong> {selectedDownloadVehicle.vehicleModel}</p>
+                        <p className="text-sm text-gray-800"><strong>Vehicle Registration Number :</strong> {selectedDownloadVehicle.vehicleRegistrationNumber}</p>
                     </div>
                     <div className="flex justify-center items-center">
                         {selectedDownloadVehicle.documents?.vehicleFrontRight?.data ? (
                             <img
                                 src={selectedDownloadVehicle.documents.vehicleFrontRight.data}
                                 alt="Vehicle Front Right"
-                                className="w-32 h-32 rounded-lg object-cover"
+                                className="w-24 h-24 md:w-32 md:h-32 rounded-lg object-cover"
                             />
                         ) : (
-                            <p className="text-sm text-gray-600">No photo available</p>
+                            <p className="text-sm text-gray-800">No photo available</p>
                         )}
                     </div>
-                 
                 </div>
-                <div className="border p-4 shadow-md rounded mb-4">
-        <h3 className="font-bold mb-2 text-base">Shop Owner's Address Details</h3>
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <p><span className="font-bold">House/Shop Number:</span> </p>
-          <p><span className="font-bold">Ward/GP Name:</span></p>
-          <p><span className="font-bold">City/Town (Nearest):</span></p>
-          <p><span className="font-bold">Lane Name/Number:</span> </p>
-          <p><span className="font-bold">Post Office:</span> </p>
-          <p><span className="font-bold">Police Station:</span> </p>
-          <p><span className="font-bold">District:</span> </p>
-          <p><span className="font-bold">State:</span> </p>
-          <p><span className="font-bold">PIN:</span> </p>
+                 {/* Footer Section */}
+      <div className="flex justify-around">
+        <div className="text-center text-sm text-gray-800 mt-4">
+          <p><span className="font-bold">Company - Get A Ride</span></p>
+          <p><span className="font-bold">Parent Company - Get Your Homes</span></p>
+          <p>Address: Mamoni Enterprise, Opposite to Kalain HS Road, Kalain, Cachar, Assam</p>
+          <p>Approved by Founder & CEO</p>
+        </div>
+        <div>
+          <img src={GYH} alt="Icon" className="h-16" />
         </div>
       </div>
             </div>
-            <div className="mt-6 flex justify-end gap-2">
+            <div className="mt-6 flex justify-center md:flex-row  gap-2">
                 <button
                     className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                    onClick={handleDownload} // Call the download function
+                    onClick={handleDownload}
                 >
-                    Download as PNG
+                    Download
                 </button>
                 <button
                     className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
