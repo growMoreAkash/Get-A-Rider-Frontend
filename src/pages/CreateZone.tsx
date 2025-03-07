@@ -24,15 +24,14 @@ const CreateZone = () => {
     const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(null);
     const [selectedZone, setSelectedZone] = useState<zoneOptions | null>(null);
 
-    const { zone, country, branch, state } = useGetIdCreation();
+    const { zone, branch } = useGetIdCreation();
     const { createBranch, success } = useCreateMapBranch();
     const { createZone } = useCreateZone();
     const [zoneName, setZoneName] = useState('');
 
     const [editZone, setEditZone] = useState(false);
 
-    const { branchZoneData, getZoneByBranch , zoneData } = useGetAllBranches();
-
+    const { branchZoneData, getZoneByBranch, zoneData } = useGetAllBranches();
 
     const { getBranchIdData, branchData } = useGetBranchIdData();
 
