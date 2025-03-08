@@ -157,19 +157,49 @@ const AssignRole = () => {
     };
 
 
+    // const handleDelete = async (roleId: string, userId: string, userType: string) => {
+       
+    //     try {
+    //         const response = await axios.post(`${host}/deleteUserRole`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //             },
+    //             data: {
+    //                 roleId,
+    //                 userId,
+    //                 userType,
+    //             },
+    //         });
+    //         console.log(response.data)
+    //         if (response.status === 200) {
+    //             Swal.fire('Success', 'User role deleted successfully', 'success');
+    //             onRefresh(); 
+    //         } else {
+    //             Swal.fire('Error', 'Failed to delete user role', 'error');
+    //         }
+    //     } catch (error) {
+    //         Swal.fire('Error', 'Failed to delete user role', 'error');
+    //     }
+    // };
+
     const handleDelete = async (roleId: string, userId: string, userType: string) => {
         try {
-            const response = await axios.post(`${host}/deleteUserRole`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                data: {
+            const response = await axios.post(
+                `${host}/deleteUserRole`,
+                {
                     roleId,
                     userId,
                     userType,
                 },
-            });
-            console.log(response.data)
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+    
+            console.log(response.data);
+    
             if (response.status === 200) {
                 Swal.fire('Success', 'User role deleted successfully', 'success');
                 onRefresh(); 
@@ -177,7 +207,25 @@ const AssignRole = () => {
                 Swal.fire('Error', 'Failed to delete user role', 'error');
             }
         } catch (error) {
-            Swal.fire('Error', 'Failed to delete user role', 'error');
+            console.error('Error deleting user role:', error);
+    
+            if (axios.isAxiosError(error)) {
+              
+                if (error.response) {
+                  
+                    const errorMessage = error.response.data?.message || 'Failed to delete user role';
+                    Swal.fire('Error', errorMessage, 'error');
+                } else if (error.request) {
+                   
+                    Swal.fire('Error', 'No response received from the server', 'error');
+                } else {
+                   
+                    Swal.fire('Error', 'Error setting up the request', 'error');
+                }
+            } else {
+               
+                Swal.fire('Error', 'An unexpected error occurred', 'error');
+            }
         }
     };
 
