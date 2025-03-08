@@ -593,8 +593,8 @@ const handleDownload = async () => {
                                 <div>
                                     <p className="text-sm text-gray-800"><strong>Driver ID:</strong> {selectedVehicle.driverId}</p>
                                     <p className="text-sm text-gray-800"><strong>Driver Name:</strong> {selectedVehicle.driverName}</p>
-                                    <p className="text-sm text-gray-800"><strong>Vehicle ID:</strong> {selectedVehicle.vehicleId}</p>
-                                    <p className="text-sm text-gray-800"><strong>Vehicle Model:</strong> {selectedVehicle.vehicleModel}</p>
+                                    {/* <p className="text-sm text-gray-800"><strong>Vehicle ID:</strong> {selectedVehicle.vehicleId}</p> */}
+                                    {/* <p className="text-sm text-gray-800"><strong>Vehicle Model:</strong> {selectedVehicle.vehicleModel}</p> */}
                                     <p className="text-sm text-gray-800"><strong>Vehicle Registration Number:</strong> {selectedVehicle.vehicleRegistrationNumber}</p>
                                 </div>
                                 <div className="flex justify-center items-center">
