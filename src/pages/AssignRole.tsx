@@ -51,22 +51,36 @@ const AssignRole = () => {
     const [selectedRole, setSelectedRole] = useState<string>('');
 
     const userColumns = [
-        // { header: 'Id', key: '_id' },
+         //{ header: 'Id', key: '_id' },
         { header: 'Index', key: 'index' },
         { header: 'Name', key: 'name' },
         { header: 'Phone', key: 'phone' },
         { header: 'Date', key: 'date' },
         { header: 'Time', key: 'time' },
     ];
+    const roleActions = [
+        {
+            icon: 'bi-trash-fill',
+            title: 'Delete',
+            onClick: (row: any) => handleDelete(row.roleId, row._id, type),
+            className: 'text-red-400',
+        },
+    ];
+
+
 
     var token = Cookies.get('token');
     const getAllRoles = async () => {
         try {
-            const response = await axios.post(`${host}/getAllRole`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.post(
+                `${host}/getAllRole`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setRoles(response?.data?.roles);
         } catch (error) {
             Swal.fire('Error', 'Failed to fetch roles', 'error');
@@ -75,11 +89,15 @@ const AssignRole = () => {
 
     const getAllEmployees = async () => {
         try {
-            const response = await axios.post(`${host}/getAllEmployee`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.post(
+                `${host}/getAllEmployee`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setEmployees(response?.data?.entity);
         } catch (error) {
             //.error('Error fetching employees:', error);
@@ -89,11 +107,15 @@ const AssignRole = () => {
 
     const getAllPartners = async () => {
         try {
-            const response = await axios.post(`${host}/getAllPartner`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.post(
+                `${host}/getAllPartner`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setPartners(response?.data?.entity);
         } catch (error) {
             //.error('Error fetching partners:', error);
@@ -103,11 +125,15 @@ const AssignRole = () => {
 
     const getAllCareCenters = async () => {
         try {
-            const response = await axios.post(`${host}/getAllCareCenter`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axios.post(
+                `${host}/getAllCareCenter`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
             setCareCenters(response?.data?.entity);
         } catch (error) {
             //.error('Error fetching careCenters:', error);
@@ -128,6 +154,31 @@ const AssignRole = () => {
 
     const onTrashed = () => {
         Swal.fire('Trashed', 'Trashed is not implemented yet', 'info');
+    };
+
+
+    const handleDelete = async (roleId: string, userId: string, userType: string) => {
+        try {
+            const response = await axios.post(`${host}/deleteUserRole`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                data: {
+                    roleId,
+                    userId,
+                    userType,
+                },
+            });
+            console.log(response.data)
+            if (response.status === 200) {
+                Swal.fire('Success', 'User role deleted successfully', 'success');
+                onRefresh(); 
+            } else {
+                Swal.fire('Error', 'Failed to delete user role', 'error');
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Failed to delete user role', 'error');
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -193,28 +244,27 @@ const AssignRole = () => {
                                                     ))}
                                                 </div>
                                             </div>
-                                            {type === 'Employee' && (<>
+                                            {type === 'Employee' && (
+                                                <>
+                                                    <div className="w-full h-px bg-gray-300 my-4"></div>
 
-                                                <div className="w-full h-px bg-gray-300 my-4"></div>
-
-                                                <div className="flex justify-center">
-                                                    <div className="flex flex-col w-full">
-                                                        <label className="text-lg text-gray-700">Employees</label>
-                                                        {employees.map((employee, index) => (
-                                                            <div key={index} className="flex items-center">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    className="me-2"
-                                                                    value={employee._id}
-                                                                    onChange={(e) => setSelectedEmployees([...selectedEmployees, e.target.value])}
-                                                                />
-                                                                <label className="text-lg text-gray-700 mb-0">{employee.phone}</label>
-                                                            </div>
-                                                        ))}
+                                                    <div className="flex justify-center">
+                                                        <div className="flex flex-col w-full">
+                                                            <label className="text-lg text-gray-700">Employees</label>
+                                                            {employees.map((employee, index) => (
+                                                                <div key={index} className="flex items-center">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        className="me-2"
+                                                                        value={employee._id}
+                                                                        onChange={(e) => setSelectedEmployees([...selectedEmployees, e.target.value])}
+                                                                    />
+                                                                    <label className="text-lg text-gray-700 mb-0">{employee.phone}</label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </>
-
+                                                </>
                                             )}
                                             {type === 'Partner' && (
                                                 <>
@@ -288,10 +338,13 @@ const AssignRole = () => {
                             <div id={`accordion-collapse-body-${index}`} aria-labelledby={`accordion-collapse-heading-${index}`}>
                                 <TypeBrandCategoryList
                                     columns={userColumns}
-                                    data={(type === 'Employee' ? employees : type === 'Partner' ? partners : careCenters).filter((user) => user.roleId.includes(role._id!))}
+                                    data={(type === 'Employee' ? employees : type === 'Partner' ? partners : careCenters)
+                                        .filter((user) => user.roleId.includes(role._id!))
+                                        .map((user) => ({ ...user, roleId: role._id }))} 
                                     onRefresh={onRefresh}
                                     onViewLog={onViewLog}
                                     onTrashed={onTrashed}
+                                    actions={roleActions}
                                 />
                             </div>
                         )}

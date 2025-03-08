@@ -230,12 +230,12 @@ const routes = [
     {
         path: dashHost + '/roles',
         element: <Role />,
-        apis: ['/getApiList', '/getAllRole', '/updateRole', '/createRole'],
+        apis: ['/getApiList', '/getAllRole', '/updateRole', '/createRole',],
     },
     {
         path: dashHost + '/assignRoles',
         element: <AssignRole />,
-        apis: ['/getAllRole', '/getAllEmployee', '/getAllPartner', '/getAllCareCenter', '/assignCustomUserRole'],
+        apis: ['/getAllRole', '/getAllEmployee', '/getAllPartner', '/getAllCareCenter', '/assignCustomUserRole','/deleteUserRole'],
     },
     {
         path: dashHost + '/addEmployee',
